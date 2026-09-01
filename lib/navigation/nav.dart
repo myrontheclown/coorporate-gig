@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import '../data/app_state.dart';
 import '../screens/admin/admin_home_shell.dart';
+import '../screens/auth/sign_in_screen.dart';
 import '../screens/client/client_home_shell.dart';
 import '../screens/worker/worker_home_shell.dart';
+import '../screens/role_selection/role_selection_screen.dart';
 import '../services/auth_service.dart';
+import '../theme/app_theme.dart';
 import '../services/worker_profile_service.dart';
 
 class Nav {
@@ -32,6 +35,34 @@ class Nav {
     );
   }
 
+  /// Navigate to the appropriate sign-in screen for a role.
+  static void toSignIn(BuildContext context, String role) {
+    final screen = _signInForRole(role);
+    push(context, screen);
+  }
+
+  /// Navigate to the appropriate dashboard after successful authentication.
+  static void navigateAfterAuth(BuildContext context, String role) {
+    switch (role) {
+      case 'customer':
+        toClient(context);
+        break;
+      case 'worker':
+        toWorker(context);
+        break;
+      case 'cooperative_admin':
+        toAdmin(context);
+        break;
+      default:
+        toClient(context);
+    }
+  }
+
+  /// Go to role selection (sign out destination).
+  static void toRoleSelection(BuildContext context) {
+    clearAll(context, const RoleSelectionScreen());
+  }
+
   static void toClient(BuildContext context) {
     AppState.reset();
     AppState.currentRole.value = 'customer';
@@ -51,6 +82,40 @@ class Nav {
     AppState.currentRole.value = 'cooperative_admin';
     _loadProfileIfAvailable('cooperative_admin');
     clearAll(context, const AdminHomeShell());
+  }
+
+  static Widget _signInForRole(String role) {
+    switch (role) {
+      case 'customer':
+        return const SignInScreen(
+          role: 'customer',
+          title: 'Welcome back',
+          subtitle: 'Sign in to continue booking trusted services.',
+          roleIndicator: 'Signing in as Client',
+          roleIcon: Icons.person_outline,
+          roleColor: AppColors.primary,
+        );
+      case 'worker':
+        return const SignInScreen(
+          role: 'worker',
+          title: 'Welcome back, Worker',
+          subtitle: 'Sign in to manage your jobs and earnings.',
+          roleIndicator: 'Signing in as Worker',
+          roleIcon: Icons.engineering_outlined,
+          roleColor: AppColors.cooperative,
+        );
+      case 'cooperative_admin':
+        return const SignInScreen(
+          role: 'cooperative_admin',
+          title: 'Cooperative Admin',
+          subtitle: 'Sign in to manage your cooperative workforce.',
+          roleIndicator: 'Signing in as Cooperative Admin',
+          roleIcon: Icons.account_balance_outlined,
+          roleColor: AppColors.warning,
+        );
+      default:
+        return _signInForRole('customer');
+    }
   }
 
   static void _loadProfileIfAvailable(String role) async {
