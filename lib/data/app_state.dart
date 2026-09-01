@@ -1,5 +1,7 @@
 import 'package:flutter/foundation.dart';
+import '../models/user_profile.dart';
 import '../models/worker.dart';
+import '../models/worker_profile.dart';
 
 class AppState {
   static final ValueNotifier<Worker?> selectedWorker =
@@ -18,6 +20,14 @@ class AppState {
   static final ValueNotifier<int> workerEarnings = ValueNotifier(24500);
   static final ValueNotifier<double> workerRating = ValueNotifier(4.8);
 
+  // Authenticated Supabase profile state
+  static final ValueNotifier<UserProfile?> currentUserProfile =
+      ValueNotifier(null);
+  static final ValueNotifier<WorkerProfile?> currentWorkerProfile =
+      ValueNotifier(null);
+  static final ValueNotifier<String> currentRole =
+      ValueNotifier('customer');
+
   static Worker? _activeWorker;
   static Worker? get activeWorker => _activeWorker;
   static set activeWorker(Worker? w) {
@@ -32,5 +42,8 @@ class AppState {
     serviceCompleted.value = false;
     paymentMade.value = false;
     workerOnDuty.value = false;
+    currentUserProfile.value = null;
+    currentWorkerProfile.value = null;
+    currentRole.value = 'customer';
   }
 }

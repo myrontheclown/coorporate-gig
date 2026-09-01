@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
 import '../../data/mock_models.dart';
+import '../../services/auth_service.dart';
+import '../../services/job_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
 import '../../widgets/status_badge.dart';
@@ -13,20 +16,57 @@ class BookingsHistoryScreen extends StatefulWidget {
 
 class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
   int _tab = 0;
+  List<Booking> _supabaseBookings = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadBookings();
+  }
+
+  Future<void> _loadBookings() async {
+    final customerId = AuthService.currentUserId ??
+        AppState.currentUserProfile.value?.id ??
+        '';
+
+    if (customerId.isEmpty) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final jobs = await JobService.getJobsForCustomer(customerId);
+      if (jobs.isNotEmpty && mounted) {
+        setState(() {
+          _supabaseBookings = jobs.map((j) => j.toBooking()).toList();
+        });
+      }
+    } catch (_) {
+      // Fallback seamlessly
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  List<Booking> get _currentList {
+    final all = _supabaseBookings.isNotEmpty
+        ? _supabaseBookings
+        : MockModels.bookings;
+
+    switch (_tab) {
+      case 0:
+        return all.where((b) => b.status == 'active').toList();
+      case 1:
+        return all
+            .where((b) => b.status == 'confirmed' || b.status == 'pending')
+            .toList();
+      default:
+        return all.where((b) => b.status == 'completed').toList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Booking> list;
-    switch (_tab) {
-      case 0:
-        list = MockModels.activeBookings;
-        break;
-      case 1:
-        list = MockModels.upcomingBookings;
-        break;
-      default:
-        list = MockModels.completedBookings;
-    }
+    final list = _currentList;
 
     return Scaffold(
       appBar: AppBar(
@@ -44,34 +84,36 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                _TabButton(label: 'Active', index: 0),
-                _TabButton(label: 'Upcoming', index: 1),
-                _TabButton(label: 'History', index: 2),
+                _buildTabButton(label: 'Active', index: 0),
+                _buildTabButton(label: 'Upcoming', index: 1),
+                _buildTabButton(label: 'History', index: 2),
               ],
             ),
           ),
           Expanded(
-            child: list.isEmpty
-                ? const Center(
-                    child: Text(
-                      'No bookings here',
-                      style: TextStyle(color: AppColors.textMuted),
-                    ),
-                  )
-                : ListView.builder(
-                    padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                    itemCount: list.length,
-                    itemBuilder: (context, i) {
-                      return _BookingCard(booking: list[i]);
-                    },
-                  ),
+            child: list.isEmpty && _isLoading
+                ? const Center(child: CircularProgressIndicator())
+                : list.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No bookings here',
+                          style: TextStyle(color: AppColors.textMuted),
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                        itemCount: list.length,
+                        itemBuilder: (context, i) {
+                          return _BookingCard(booking: list[i]);
+                        },
+                      ),
           ),
         ],
       ),
     );
   }
 
-  Widget _TabButton({required String label, required int index}) {
+  Widget _buildTabButton({required String label, required int index}) {
     final selected = _tab == index;
     return Expanded(
       child: GestureDetector(
@@ -242,6 +284,6 @@ class _BookingCard extends StatelessWidget {
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
-    return months[m - 1];
+    return (m >= 1 && m <= 12) ? months[m - 1] : '';
   }
 }

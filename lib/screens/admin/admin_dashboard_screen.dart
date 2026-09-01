@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../navigation/nav.dart';
+import '../../services/dashboard_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/status_badge.dart';
@@ -8,8 +9,26 @@ import 'admin_allocation_screen.dart';
 import 'admin_jobs_screen.dart';
 import 'admin_workers_screen.dart';
 
-class AdminDashboardScreen extends StatelessWidget {
+class AdminDashboardScreen extends StatefulWidget {
   const AdminDashboardScreen({super.key});
+
+  @override
+  State<AdminDashboardScreen> createState() => _AdminDashboardScreenState();
+}
+
+class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
+  AdminDashboardData _stats = const AdminDashboardData();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  Future<void> _loadStats() async {
+    final s = await DashboardService.getAdminDashboardStats();
+    if (mounted) setState(() => _stats = s);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,7 +59,7 @@ class AdminDashboardScreen extends StatelessWidget {
             children: [
               KpiCard(
                 icon: Icons.groups,
-                value: '128',
+                value: '${_stats.activeWorkers}',
                 label: 'Active Workers',
                 color: AppColors.primary,
                 onTap: () => Nav.push(context, const AdminWorkersScreen()),
@@ -48,7 +67,7 @@ class AdminDashboardScreen extends StatelessWidget {
               const SizedBox(width: 8),
               KpiCard(
                 icon: Icons.work,
-                value: '42',
+                value: '${_stats.activeJobs}',
                 label: 'Active Jobs',
                 color: AppColors.chartAccent,
                 onTap: () => Nav.push(context, const AdminJobsScreen()),
@@ -56,9 +75,10 @@ class AdminDashboardScreen extends StatelessWidget {
               const SizedBox(width: 8),
               KpiCard(
                 icon: Icons.pending_actions,
-                value: '18',
+                value: '${_stats.pendingRequests}',
                 label: 'Pending Requests',
                 color: AppColors.warning,
+                onTap: () => Nav.push(context, const AdminJobsScreen()),
               ),
             ],
           ),
@@ -67,21 +87,21 @@ class AdminDashboardScreen extends StatelessWidget {
             children: [
               KpiCard(
                 icon: Icons.check_circle,
-                value: '86',
+                value: '${_stats.completedJobs}',
                 label: 'Completed Jobs',
                 color: AppColors.success,
               ),
               const SizedBox(width: 8),
               KpiCard(
                 icon: Icons.star,
-                value: '4.7',
+                value: '${_stats.avgRating}',
                 label: 'Avg Rating',
                 color: AppColors.rating,
               ),
               const SizedBox(width: 8),
               KpiCard(
                 icon: Icons.trending_up,
-                value: '134',
+                value: '${_stats.todaysDemand}',
                 label: "Today's Demand",
                 color: AppColors.cooperative,
               ),
@@ -136,9 +156,9 @@ class AdminDashboardScreen extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 4),
-          _Hotspot(name: 'Grant Road', jobs: 18, demand: 0.92),
-          _Hotspot(name: 'Dadar', jobs: 14, demand: 0.78),
-          _Hotspot(name: 'Andheri West', jobs: 11, demand: 0.65),
+          const _Hotspot(name: 'Grant Road', jobs: 18, demand: 0.92),
+          const _Hotspot(name: 'Dadar', jobs: 14, demand: 0.78),
+          const _Hotspot(name: 'Andheri West', jobs: 11, demand: 0.65),
           const SizedBox(height: 20),
           const Text(
             'Active Services',
@@ -151,11 +171,11 @@ class AdminDashboardScreen extends StatelessWidget {
           const SizedBox(height: 8),
           Card(
             child: Column(
-              children: [
+              children: const [
                 _ServiceRow(name: 'Plumbing', active: 9, total: 14),
-                const Divider(height: 1),
+                Divider(height: 1),
                 _ServiceRow(name: 'Housekeeping', active: 8, total: 22),
-                const Divider(height: 1),
+                Divider(height: 1),
                 _ServiceRow(name: 'Electrician', active: 5, total: 9),
               ],
             ),
@@ -252,9 +272,10 @@ class _MiniStat extends StatelessWidget {
 }
 
 class _DemandChart extends StatelessWidget {
-  final List<double> demand = [0.4, 0.7, 0.5, 0.9, 0.6, 1.0, 0.8, 0.3];
-  final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
-  final List<double> supply = [0.3, 0.5, 0.4, 0.6, 0.5, 0.7, 0.6, 0.55];
+  final List<double> demand = const [0.4, 0.7, 0.5, 0.9, 0.6, 1.0, 0.8, 0.3];
+  final List<String> months = const ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
+  final List<double> supply = const [0.3, 0.5, 0.4, 0.6, 0.5, 0.7, 0.6, 0.55];
+
   @override
   Widget build(BuildContext context) {
     final high = demand.asMap().entries.fold(0, (acc, e) => e.value > demand[acc] ? e.key : acc);
@@ -280,8 +301,8 @@ class _DemandChart extends StatelessWidget {
                             height: 140 * demand[i],
                             decoration: BoxDecoration(
                               color: i == high
-                                  ? AppColors.chartAccent
-                                  : AppColors.primary.withValues(alpha: 0.7),
+                                    ? AppColors.chartAccent
+                                    : AppColors.primary.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(4),
                             ),
                           ),
@@ -313,7 +334,7 @@ class _DemandChart extends StatelessWidget {
           children: [
             _Legend(color: AppColors.primary.withValues(alpha: 0.7), label: 'Demand'),
             const SizedBox(width: 16),
-            _Legend(color: AppColors.divider, label: 'Supply'),
+            const _Legend(color: AppColors.divider, label: 'Supply'),
           ],
         ),
       ],

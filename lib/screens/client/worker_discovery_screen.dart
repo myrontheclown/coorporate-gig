@@ -3,6 +3,7 @@ import '../../data/app_state.dart';
 import '../../data/mock_data.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/worker_profile_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/map_card.dart';
 import '../../widgets/search_bar.dart';
@@ -23,10 +24,42 @@ class WorkerDiscoveryScreen extends StatefulWidget {
 class _WorkerDiscoveryScreenState extends State<WorkerDiscoveryScreen> {
   String _selectedService = 'All';
   Worker? _selectedMapWorker;
+  List<Worker> _supabaseWorkers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkers();
+  }
+
+  Future<void> _loadWorkers() async {
+    try {
+      final profiles = await WorkerProfileService.getWorkers();
+      if (profiles.isNotEmpty && mounted) {
+        setState(() {
+          _supabaseWorkers = profiles.map((p) => p.toWorker()).toList();
+        });
+      }
+    } catch (_) {
+      // Fallback seamlessly
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final nearby = MockData.workersByRating.take(6).toList();
+    final allWorkers = _supabaseWorkers.isNotEmpty
+        ? _supabaseWorkers
+        : MockData.workersByRating;
+
+    final filtered = _selectedService == 'All'
+        ? allWorkers
+        : allWorkers
+            .where((w) => w.profession
+                .toLowerCase()
+                .contains(_selectedService.toLowerCase()))
+            .toList();
+
+    final nearby = filtered.take(6).toList();
 
     return Scaffold(
       body: SafeArea(
@@ -39,21 +72,34 @@ class _WorkerDiscoveryScreenState extends State<WorkerDiscoveryScreen> {
             }),
             const SizedBox(height: 20),
             // Greeting
-            const Text(
-              'Good evening, Rahul',
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.w700,
-                color: AppColors.textPrimary,
-              ),
-            ),
-            const SizedBox(height: 4),
-            const Text(
-              'Find trusted professionals near you.',
-              style: TextStyle(
-                fontSize: 14,
-                color: AppColors.textSecondary,
-              ),
+            ValueListenableBuilder(
+              valueListenable: AppState.currentUserProfile,
+              builder: (context, profile, _) {
+                final name = profile?.fullName.isNotEmpty == true
+                    ? profile!.fullName
+                    : 'Rahul';
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Good evening, $name',
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    const Text(
+                      'Find trusted professionals near you.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
+                );
+              },
             ),
             const SizedBox(height: 16),
             // Search
@@ -71,7 +117,7 @@ class _WorkerDiscoveryScreenState extends State<WorkerDiscoveryScreen> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: MockData.services.length + 1,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
                   if (i == 0) {
                     return ServiceChip(
@@ -182,13 +228,21 @@ class _HomeHeader extends StatelessWidget {
                   color: AppColors.textSecondary,
                 ),
                 const SizedBox(width: 2),
-                const Text(
-                  'Grant Road, Mumbai',
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                    color: AppColors.textPrimary,
-                  ),
+                ValueListenableBuilder(
+                  valueListenable: AppState.currentUserProfile,
+                  builder: (context, profile, _) {
+                    final loc = profile?.city.isNotEmpty == true
+                        ? '${profile!.address.isNotEmpty ? "${profile.address}, " : ""}${profile.city}'
+                        : 'Grant Road, Mumbai';
+                    return Text(
+                      loc,
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w600,
+                        color: AppColors.textPrimary,
+                      ),
+                    );
+                  },
                 ),
                 const SizedBox(width: 2),
                 const Icon(

@@ -1,12 +1,38 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
 import '../../navigation/nav.dart';
 import '../../screens/role_selection/role_selection_screen.dart';
+import '../../services/auth_service.dart';
+import '../../services/dashboard_service.dart';
 import '../../theme/app_theme.dart';
-import 'previously_hired_screen.dart';
+import 'bookings_history_screen.dart';
+import 'my_requests_screen.dart';
 import 'notification_screen.dart';
+import 'previously_hired_screen.dart';
 
-class ClientProfileScreen extends StatelessWidget {
+class ClientProfileScreen extends StatefulWidget {
   const ClientProfileScreen({super.key});
+
+  @override
+  State<ClientProfileScreen> createState() => _ClientProfileScreenState();
+}
+
+class _ClientProfileScreenState extends State<ClientProfileScreen> {
+  ClientDashboardData _stats = const ClientDashboardData();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  Future<void> _loadStats() async {
+    final uid = AuthService.currentUserId;
+    if (uid != null && uid.isNotEmpty) {
+      final s = await DashboardService.getClientDashboardStats(uid);
+      if (mounted) setState(() => _stats = s);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,72 +49,107 @@ class ClientProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  Container(
-                    padding: const EdgeInsets.all(4),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppColors.primary, width: 2),
-                    ),
-                    child: const CircleAvatar(
-                      radius: 34,
-                      backgroundColor: AppColors.primary,
-                      child: Text(
-                        'PM',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
+          ValueListenableBuilder(
+            valueListenable: AppState.currentUserProfile,
+            builder: (context, profile, _) {
+              final name = profile?.fullName.isNotEmpty == true
+                  ? profile!.fullName
+                  : 'Priya Mehta';
+              final phone = profile?.phone.isNotEmpty == true
+                  ? profile!.phone
+                  : '+91 98765 43210';
+              final location = profile?.city.isNotEmpty == true
+                  ? '📍 ${profile!.address.isNotEmpty ? "${profile.address}, " : ""}${profile.city}'
+                  : '📍 Grant Road, Mumbai';
+              final initials = name
+                  .trim()
+                  .split(' ')
+                  .map((p) => p.isNotEmpty ? p[0] : '')
+                  .take(2)
+                  .join()
+                  .toUpperCase();
+
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border:
+                              Border.all(color: AppColors.primary, width: 2),
+                        ),
+                        child: CircleAvatar(
+                          radius: 34,
+                          backgroundColor: AppColors.primary,
+                          child: Text(
+                            initials.isNotEmpty ? initials : 'PM',
+                            style: const TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              phone,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              location,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  const Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Priya Mehta',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                          ),
-                        ),
-                        Text(
-                          '+91 98765 43210',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          '📍 Grant Road, Mumbai',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 16),
           Row(
             children: [
-              _StatCard(icon: Icons.verified_user, value: '12', label: 'Services Used'),
+              _StatCard(
+                icon: Icons.verified_user,
+                value: '${_stats.servicesUsed}',
+                label: 'Services Used',
+              ),
               const SizedBox(width: 8),
-              _StatCard(icon: Icons.groups, value: '3', label: 'Workers Hired'),
+              _StatCard(
+                icon: Icons.groups,
+                value: '${_stats.workersHired}',
+                label: 'Workers Hired',
+              ),
               const SizedBox(width: 8),
-              _StatCard(icon: Icons.favorite, value: '₹9.5k', label: 'Total Paid'),
+              _StatCard(
+                icon: Icons.favorite,
+                value: '₹${(_stats.totalPaid / 1000).toStringAsFixed(1)}k',
+                label: 'Total Paid',
+              ),
             ],
           ),
           const SizedBox(height: 16),
@@ -99,13 +160,13 @@ class ClientProfileScreen extends StatelessWidget {
                 _MenuTile(
                   icon: Icons.assignment_outlined,
                   title: 'My Requests',
-                  onTap: () => Nav.toClient(context),
+                  onTap: () => Nav.push(context, const MyRequestsScreen()),
                 ),
                 const Divider(height: 1),
                 _MenuTile(
                   icon: Icons.calendar_month_outlined,
                   title: 'My Bookings & History',
-                  onTap: () => Nav.toClient(context),
+                  onTap: () => Nav.push(context, const BookingsHistoryScreen()),
                 ),
                 const Divider(height: 1),
                 _MenuTile(
@@ -125,26 +186,26 @@ class ClientProfileScreen extends StatelessWidget {
           const SizedBox(height: 16),
           const _SectionHeader('Manage'),
           Card(
-            child: Column(
+            child: const Column(
               children: [
                 _MenuTile(
                   icon: Icons.location_on_outlined,
                   title: 'Saved Addresses',
                   value: '2',
                 ),
-                const Divider(height: 1),
+                Divider(height: 1),
                 _MenuTile(
                   icon: Icons.payments_outlined,
                   title: 'Payment Methods',
                   value: 'UPI + Wallet',
                 ),
-                const Divider(height: 1),
+                Divider(height: 1),
                 _MenuTile(
                   icon: Icons.wallet_outlined,
                   title: 'Wallet',
                   value: '₹1,250',
                 ),
-                const Divider(height: 1),
+                Divider(height: 1),
                 _MenuTile(
                   icon: Icons.card_giftcard,
                   title: 'Refer & Earn',
@@ -157,12 +218,27 @@ class ClientProfileScreen extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                _MenuTile(icon: Icons.headset_mic_outlined, title: 'Help & Support'),
+                const _MenuTile(
+                  icon: Icons.headset_mic_outlined,
+                  title: 'Help & Support',
+                ),
                 const Divider(height: 1),
-                _MenuTile(icon: Icons.info_outline, title: 'About Coorporate Gig'),
+                const _MenuTile(
+                  icon: Icons.info_outline,
+                  title: 'About Coorporate Gig',
+                ),
                 const Divider(height: 1),
-                _MenuTile(icon: Icons.logout, title: 'Logout / Switch Role',
-                    onTap: () => Nav.clearAll(context, const RoleSelectionScreen())),
+                _MenuTile(
+                  icon: Icons.logout,
+                  title: 'Logout / Switch Role',
+                  onTap: () async {
+                    await AuthService.signOut();
+                    if (context.mounted) {
+                      AppState.reset();
+                      Nav.clearAll(context, const RoleSelectionScreen());
+                    }
+                  },
+                ),
               ],
             ),
           ),

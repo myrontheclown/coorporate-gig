@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../data/mock_data.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/worker_profile_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
 import 'admin_worker_detail_screen.dart';
@@ -16,9 +17,35 @@ class AdminWorkersScreen extends StatefulWidget {
 class _AdminWorkersScreenState extends State<AdminWorkersScreen> {
   String _filter = 'All';
   final _query = TextEditingController();
-
-  // Simulated availability override for deactivate/activate action.
   final Map<String, bool> _active = {};
+  List<Worker> _supabaseWorkers = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadWorkers();
+  }
+
+  Future<void> _loadWorkers() async {
+    setState(() => _isLoading = true);
+    try {
+      final list = await WorkerProfileService.getWorkers();
+      if (list.isNotEmpty && mounted) {
+        setState(() {
+          _supabaseWorkers = list.map((w) {
+            final workerUi = w.toWorker();
+            _active[workerUi.id] = workerUi.available;
+            return workerUi;
+          }).toList();
+        });
+      }
+    } catch (_) {
+      // Fallback
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
 
   @override
   void dispose() {
@@ -28,7 +55,9 @@ class _AdminWorkersScreenState extends State<AdminWorkersScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final workers = MockData.workers.where((w) {
+    final all = _supabaseWorkers.isNotEmpty ? _supabaseWorkers : MockData.workers;
+
+    final workers = all.where((w) {
       final matchQuery = _query.text.isEmpty ||
           w.name.toLowerCase().contains(_query.text.toLowerCase());
       final effectiveActive = _active[w.id] ?? w.available;
@@ -98,24 +127,34 @@ class _AdminWorkersScreenState extends State<AdminWorkersScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-              itemCount: workers.length,
-              itemBuilder: (context, i) {
-                final w = workers[i];
-                return _AdminWorkerCard(
-                  worker: w,
-                  active: _active[w.id] ?? w.available,
-                  onToggle: () {
-                    setState(() => _active[w.id] = !(_active[w.id] ?? w.available));
-                  },
-                  onView: () => Nav.push(
-                    context,
-                    AdminWorkerDetailScreen(worker: w),
+            child: _isLoading && workers.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : ListView.builder(
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+                    itemCount: workers.length,
+                    itemBuilder: (context, i) {
+                      final w = workers[i];
+                      final currentAct = _active[w.id] ?? w.available;
+                      return _AdminWorkerCard(
+                        worker: w,
+                        active: currentAct,
+                        onToggle: () async {
+                          final newVal = !currentAct;
+                          setState(() => _active[w.id] = newVal);
+                          if (w.id.length == 36) {
+                            await WorkerProfileService.updateAvailability(
+                              w.id,
+                              newVal ? 'available' : 'off_duty',
+                            );
+                          }
+                        },
+                        onView: () => Nav.push(
+                          context,
+                          AdminWorkerDetailScreen(worker: w),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
         ],
       ),

@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
+import '../../navigation/nav.dart';
+import '../../screens/role_selection/role_selection_screen.dart';
+import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/status_badge.dart';
 
@@ -12,54 +16,69 @@ class AdminProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                children: [
-                  const CircleAvatar(
-                    radius: 30,
-                    backgroundColor: AppColors.primary,
-                    child: Icon(Icons.person, color: Colors.white, size: 30),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text(
-                          'Sandeep Naik',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.w800,
-                          ),
+          ValueListenableBuilder(
+            valueListenable: AppState.currentUserProfile,
+            builder: (context, user, _) {
+              final name = user?.fullName.isNotEmpty == true
+                  ? user!.fullName
+                  : 'Sandeep Naik';
+              final roleTitle = user?.role == 'cooperative_admin'
+                  ? 'Federation Admin'
+                  : 'Administrator';
+              final coop = user?.city.isNotEmpty == true
+                  ? 'Goa Federation • ${user!.city} Coop'
+                  : 'Goa Federation • Shram Shakti Coop';
+
+              return Card(
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    children: [
+                      const CircleAvatar(
+                        radius: 30,
+                        backgroundColor: AppColors.primary,
+                        child: Icon(Icons.person, color: Colors.white, size: 30),
+                      ),
+                      const SizedBox(width: 14),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              name,
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w800,
+                              ),
+                            ),
+                            Text(
+                              roleTitle,
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: AppColors.textSecondary,
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              coop,
+                              style: const TextStyle(
+                                fontSize: 12,
+                                color: AppColors.cooperative,
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          'Federation Admin',
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: AppColors.textSecondary,
-                          ),
-                        ),
-                        SizedBox(height: 6),
-                        Text(
-                          'Goa Federation • Shram Shakti Coop',
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: AppColors.cooperative,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                      const StatusBadge(
+                        label: 'Active',
+                        color: AppColors.success,
+                      ),
+                    ],
                   ),
-                  const StatusBadge(
-                    label: 'Active',
-                    color: AppColors.success,
-                  ),
-                ],
-              ),
-            ),
+                ),
+              );
+            },
           ),
           const SizedBox(height: 16),
           const Text(
@@ -74,28 +93,43 @@ class AdminProfileScreen extends StatelessWidget {
           Card(
             child: Column(
               children: [
-                _SettingsTile(
+                const _SettingsTile(
                   icon: Icons.notifications_outlined,
                   title: 'Notifications',
                   subtitle: 'Job alerts, allocation updates',
                 ),
                 const Divider(height: 1, indent: 56),
-                _SettingsTile(
+                const _SettingsTile(
                   icon: Icons.business_outlined,
                   title: 'Organization Details',
                   subtitle: 'Federation & cooperative profile',
                 ),
                 const Divider(height: 1, indent: 56),
-                _SettingsTile(
+                const _SettingsTile(
                   icon: Icons.lock_outline,
                   title: 'Permissions',
                   subtitle: 'Manage admin access levels',
                 ),
                 const Divider(height: 1, indent: 56),
-                _SettingsTile(
+                const _SettingsTile(
                   icon: Icons.help_outline,
                   title: 'Help & Support',
                   subtitle: 'Docs, contact and FAQs',
+                ),
+                const Divider(height: 1, indent: 56),
+                ListTile(
+                  leading: const Icon(Icons.logout, color: AppColors.error),
+                  title: const Text(
+                    'Logout / Switch Role',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  ),
+                  onTap: () async {
+                    await AuthService.signOut();
+                    if (context.mounted) {
+                      AppState.reset();
+                      Nav.clearAll(context, const RoleSelectionScreen());
+                    }
+                  },
                 ),
               ],
             ),
@@ -110,11 +144,11 @@ class AdminProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Card(
+          const Card(
             child: Padding(
-              padding: const EdgeInsets.all(14),
+              padding: EdgeInsets.all(14),
               child: Column(
-                children: const [
+                children: [
                   _StatRow(label: 'Cooperatives', value: '12'),
                   _StatRow(label: 'Total Workers', value: '428'),
                   _StatRow(label: 'Active Services', value: '86'),

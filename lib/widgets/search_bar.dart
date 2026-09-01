@@ -55,7 +55,7 @@ class GigSearchBar extends StatelessWidget {
                       ),
                     ),
             ),
-            if (trailing != null) trailing!,
+            ?trailing,
           ],
         ),
       ),

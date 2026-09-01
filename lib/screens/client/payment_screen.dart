@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
+import '../../models/transaction.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/auth_service.dart';
+import '../../services/job_service.dart';
+import '../../services/transaction_service.dart';
 import '../../theme/app_theme.dart';
 import 'feedback_rating_screen.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Worker worker;
-  const PaymentScreen({super.key, required this.worker});
+  final String? jobId;
+  const PaymentScreen({super.key, required this.worker, this.jobId});
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -16,6 +21,46 @@ class PaymentScreen extends StatefulWidget {
 class _PaymentScreenState extends State<PaymentScreen> {
   String _method = 'UPI';
   bool _paid = false;
+
+  Future<void> _processPayment(double total) async {
+    setState(() {
+      _paid = true;
+      AppState.paymentMade.value = true;
+    });
+
+    final customerId = AuthService.currentUserId ??
+        AppState.currentUserProfile.value?.id ??
+        '';
+
+    if (customerId.isNotEmpty) {
+      if (widget.jobId != null && widget.jobId!.isNotEmpty) {
+        await JobService.updateJobStatus(widget.jobId!, 'completed');
+      }
+
+      final newTx = Transaction(
+        id: '',
+        jobId: widget.jobId,
+        customerId: customerId,
+        workerId: widget.worker.id.length == 36 ? widget.worker.id : null,
+        amount: total,
+        paymentMethod: _method,
+        status: 'completed',
+        transactionReference: 'TXN${DateTime.now().millisecondsSinceEpoch}',
+        createdAt: DateTime.now(),
+      );
+
+      await TransactionService.createTransaction(newTx);
+    }
+
+    Future.delayed(const Duration(seconds: 2), () {
+      if (mounted) {
+        Nav.pushReplacement(
+          context,
+          FeedbackRatingScreen(worker: widget.worker),
+        );
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,20 +143,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
                   const SizedBox(height: 20),
                   SafeArea(
                     child: ElevatedButton(
-                      onPressed: () {
-                        setState(() {
-                          _paid = true;
-                          AppState.paymentMade.value = true;
-                        });
-                        Future.delayed(const Duration(seconds: 2), () {
-                          if (context.mounted) {
-                            Nav.pushReplacement(
-                              context,
-                              FeedbackRatingScreen(worker: widget.worker),
-                            );
-                          }
-                        });
-                      },
+                      onPressed: () => _processPayment(total),
                       child: Text(
                         _method == 'Cash'
                             ? 'Complete & Mark Paid'

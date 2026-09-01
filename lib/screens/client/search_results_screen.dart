@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../data/mock_data.dart';
 import '../../data/app_state.dart';
+import '../../data/mock_data.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/worker_profile_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/worker_card.dart';
 import 'worker_profile_screen.dart';
@@ -17,15 +18,34 @@ class SearchResultsScreen extends StatefulWidget {
 class _SearchResultsScreenState extends State<SearchResultsScreen> {
   String _query = '';
   String _filter = 'Relevance';
-  List<String> _filters = ['Relevance', 'Rating', 'Price', 'Distance'];
+  static const List<String> _filters = ['Relevance', 'Rating', 'Price', 'Distance'];
+  List<Worker> _supabaseWorkers = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchWorkers();
+  }
+
+  Future<void> _fetchWorkers() async {
+    try {
+      final list = await WorkerProfileService.getWorkers();
+      if (list.isNotEmpty && mounted) {
+        setState(() {
+          _supabaseWorkers = list.map((w) => w.toWorker()).toList();
+        });
+      }
+    } catch (_) {}
+  }
 
   List<Worker> get _results {
-    var list = [...MockData.workers];
+    var list = _supabaseWorkers.isNotEmpty ? [..._supabaseWorkers] : [...MockData.workers];
     if (_query.isNotEmpty) {
-      list = MockData.workers
+      list = list
           .where((w) =>
               w.name.toLowerCase().contains(_query.toLowerCase()) ||
-              w.profession.toLowerCase().contains(_query.toLowerCase()))
+              w.profession.toLowerCase().contains(_query.toLowerCase()) ||
+              w.skills.any((s) => s.toLowerCase().contains(_query.toLowerCase())))
           .toList();
     }
     switch (_filter) {
@@ -36,6 +56,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
         list.sort((a, b) => a.pricePerHour.compareTo(b.pricePerHour));
         break;
       case 'Distance':
+        list.sort((a, b) => a.distanceKm.compareTo(b.distanceKm));
         break;
       default:
         break;
@@ -69,7 +90,7 @@ class _SearchResultsScreenState extends State<SearchResultsScreen> {
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 16),
               itemCount: _filters.length,
-              separatorBuilder: (_, __) => const SizedBox(width: 8),
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
               itemBuilder: (context, i) {
                 final f = _filters[i];
                 return ChoiceChip(

@@ -1,12 +1,53 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
+import '../../models/transaction.dart';
+import '../../services/transaction_service.dart';
 import '../../theme/app_theme.dart';
 
-class WorkerEarningsScreen extends StatelessWidget {
+class WorkerEarningsScreen extends StatefulWidget {
   const WorkerEarningsScreen({super.key});
 
   @override
+  State<WorkerEarningsScreen> createState() => _WorkerEarningsScreenState();
+}
+
+class _WorkerEarningsScreenState extends State<WorkerEarningsScreen> {
+  List<Transaction> _supabaseTransactions = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadTransactions();
+  }
+
+  Future<void> _loadTransactions() async {
+    final workerId = AppState.currentWorkerProfile.value?.id ?? '';
+    if (workerId.isEmpty) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final txs = await TransactionService.getTransactionsForWorker(workerId);
+      if (txs.isNotEmpty && mounted) {
+        setState(() => _supabaseTransactions = txs);
+      }
+    } catch (_) {
+      // Fallback
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
+    double totalEarned = AppState.workerEarnings.value.toDouble();
+    if (_supabaseTransactions.isNotEmpty) {
+      totalEarned = _supabaseTransactions.fold<double>(
+        0.0,
+        (sum, item) => sum + item.amount,
+      );
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Earnings'),
@@ -34,24 +75,24 @@ class WorkerEarningsScreen extends StatelessWidget {
                       style: TextStyle(color: Colors.white70, fontSize: 13),
                     ),
                     const SizedBox(height: 4),
-                    ValueListenableBuilder<int>(
-                      valueListenable: AppState.workerEarnings,
-                      builder: (context, v, _) => Text(
-                        '₹${v.toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]},')}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 30,
-                          fontWeight: FontWeight.w800,
-                        ),
+                    Text(
+                      '₹${totalEarned.toInt().toString().replaceAllMapped(RegExp(r'(\d)(?=(\d{3})+$)'), (m) => '${m[1]},')}',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 30,
+                        fontWeight: FontWeight.w800,
                       ),
                     ),
                     const SizedBox(height: 10),
                     Row(
                       children: [
-                        _InlineStat(value: '48', label: 'Jobs Done'),
-                        _InlineStat(value: '4.8★', label: 'Rating'),
-                        _InlineStat(value: '₹0', label: 'Pending'),
-                        _InlineStat(value: '₹2,350', label: 'This Week'),
+                        const _InlineStat(value: '48', label: 'Jobs Done'),
+                        const _InlineStat(value: '4.8★', label: 'Rating'),
+                        const _InlineStat(value: '₹0', label: 'Pending'),
+                        _InlineStat(
+                          value: '₹${(totalEarned * 0.2).toInt()}',
+                          label: 'This Week',
+                        ),
                       ],
                     ),
                   ],
@@ -87,18 +128,18 @@ class WorkerEarningsScreen extends StatelessWidget {
                       size: 32,
                     ),
                     const SizedBox(width: 12),
-                    const Expanded(
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            '₹12,500',
-                            style: TextStyle(
+                            '₹${(totalEarned * 0.5).toInt()}',
+                            style: const TextStyle(
                               fontSize: 22,
                               fontWeight: FontWeight.w800,
                             ),
                           ),
-                          Text(
+                          const Text(
                             'Available in Gig Wallet',
                             style: TextStyle(
                               fontSize: 12,
@@ -126,37 +167,57 @@ class WorkerEarningsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Card(
-              child: Column(
-                children: [
-                  _Tx(
-                    title: 'Plumbing - Priya M.',
-                    amount: '+₹1,050',
-                    date: '28 Aug',
-                    color: AppColors.success,
-                  ),
-                  const Divider(height: 1),
-                  _Tx(
-                    title: 'Pipe replacement - Sharma',
-                    amount: '+₹900',
-                    date: '29 Aug',
-                    color: AppColors.success,
-                  ),
-                  const Divider(height: 1),
-                  _Tx(
-                    title: 'Withdrawal to bank',
-                    amount: '-₹5,000',
-                    date: '27 Aug',
-                    color: AppColors.error,
-                  ),
-                  const Divider(height: 1),
-                  _Tx(
-                    title: 'Sink repair - Verma',
-                    amount: '+₹750',
-                    date: '25 Aug',
-                    color: AppColors.success,
-                  ),
-                ],
-              ),
+              child: _isLoading && _supabaseTransactions.isEmpty
+                  ? const Padding(
+                      padding: EdgeInsets.all(20),
+                      child: Center(child: CircularProgressIndicator()),
+                    )
+                  : Column(
+                      children: _supabaseTransactions.isNotEmpty
+                          ? _supabaseTransactions.map((tx) {
+                              final dt = tx.createdAt ?? DateTime.now();
+                              return Column(
+                                children: [
+                                  _Tx(
+                                    title: 'Job Payment (${tx.paymentMethod})',
+                                    amount: '+₹${tx.amount.toInt()}',
+                                    date: '${dt.day}/${dt.month}/${dt.year}',
+                                    color: AppColors.success,
+                                  ),
+                                  const Divider(height: 1),
+                                ],
+                              );
+                            }).toList()
+                          : const [
+                              _Tx(
+                                title: 'Plumbing - Priya M.',
+                                amount: '+₹1,050',
+                                date: '28 Aug',
+                                color: AppColors.success,
+                              ),
+                              Divider(height: 1),
+                              _Tx(
+                                title: 'Pipe replacement - Sharma',
+                                amount: '+₹900',
+                                date: '29 Aug',
+                                color: AppColors.success,
+                              ),
+                              Divider(height: 1),
+                              _Tx(
+                                title: 'Withdrawal to bank',
+                                amount: '-₹5,000',
+                                date: '27 Aug',
+                                color: AppColors.error,
+                              ),
+                              Divider(height: 1),
+                              _Tx(
+                                title: 'Sink repair - Verma',
+                                amount: '+₹750',
+                                date: '25 Aug',
+                                color: AppColors.success,
+                              ),
+                            ],
+                    ),
             ),
           ],
         ),
@@ -194,11 +255,11 @@ class _InlineStat extends StatelessWidget {
 }
 
 class _Chart extends StatelessWidget {
-  final List<double> _data = [1.2, 2.4, 1.8, 3.2, 2.1, 4.0, 2.8];
+  final List<double> _data = const [1.2, 2.4, 1.8, 3.2, 2.1, 4.0, 2.8];
 
   @override
   Widget build(BuildContext context) {
-    final maxV = 4.0;
+    const maxV = 4.0;
     return Column(
       children: [
         SizedBox(
@@ -243,9 +304,12 @@ class _Chart extends StatelessWidget {
         const Divider(height: 24),
         Row(
           children: [
-            _Legend(color: AppColors.primary.withValues(alpha: 0.6), label: 'Earned'),
+            _Legend(
+              color: AppColors.primary.withValues(alpha: 0.6),
+              label: 'Earned',
+            ),
             const SizedBox(width: 16),
-            _Legend(color: AppColors.chartAccent, label: 'Best day'),
+            const _Legend(color: AppColors.chartAccent, label: 'Best day'),
           ],
         ),
       ],

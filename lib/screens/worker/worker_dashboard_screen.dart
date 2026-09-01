@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
 import '../../navigation/nav.dart';
+import '../../services/dashboard_service.dart';
+import '../../services/worker_profile_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/section_header.dart';
 import '../../widgets/status_badge.dart';
@@ -10,22 +12,55 @@ import 'worker_job_details_screen.dart';
 import 'worker_job_requests_screen.dart';
 import 'worker_jobs_screen.dart';
 
-class WorkerDashboardScreen extends StatelessWidget {
+class WorkerDashboardScreen extends StatefulWidget {
   const WorkerDashboardScreen({super.key});
+
+  @override
+  State<WorkerDashboardScreen> createState() => _WorkerDashboardScreenState();
+}
+
+class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
+  WorkerDashboardData _stats = const WorkerDashboardData();
+
+  @override
+  void initState() {
+    super.initState();
+    _loadStats();
+  }
+
+  Future<void> _loadStats() async {
+    final workerId = AppState.currentWorkerProfile.value?.id ?? '';
+    if (workerId.isNotEmpty) {
+      final s = await DashboardService.getWorkerDashboardStats(workerId);
+      if (mounted) setState(() => _stats = s);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Good morning, Ramesh', style: TextStyle(fontSize: 17)),
-            Text(
-              'Plumber • Grant Road',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-            ),
-          ],
+        title: ValueListenableBuilder(
+          valueListenable: AppState.currentUserProfile,
+          builder: (context, profile, _) {
+            final name = profile?.fullName.isNotEmpty == true
+                ? profile!.fullName.split(' ').first
+                : 'Ramesh';
+            final profession = profile?.address.isNotEmpty == true
+                ? 'Plumber • ${profile!.address}'
+                : 'Plumber • Grant Road';
+
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Good morning, $name', style: const TextStyle(fontSize: 17)),
+                Text(
+                  profession,
+                  style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
+                ),
+              ],
+            );
+          },
         ),
         actions: [
           IconButton(
@@ -40,7 +75,19 @@ class WorkerDashboardScreen extends StatelessWidget {
           return ListView(
             padding: const EdgeInsets.all(16),
             children: [
-              _OnDutyCard(onDuty: onDuty),
+              _OnDutyCard(
+                onDuty: onDuty,
+                onChanged: (v) async {
+                  AppState.workerOnDuty.value = v;
+                  final workerId = AppState.currentWorkerProfile.value?.id;
+                  if (workerId != null && workerId.isNotEmpty) {
+                    await WorkerProfileService.updateAvailability(
+                      workerId,
+                      v ? 'on_duty' : 'off_duty',
+                    );
+                  }
+                },
+              ),
               const SizedBox(height: 16),
               const SectionHeader(title: 'Today at a glance'),
               const SizedBox(height: 10),
@@ -49,7 +96,7 @@ class WorkerDashboardScreen extends StatelessWidget {
                   _StatCard(
                     icon: Icons.work_outline,
                     label: "Today's Jobs",
-                    value: '3',
+                    value: '${_stats.todayJobs}',
                     color: AppColors.primary,
                     onTap: () => Nav.push(context, const WorkerJobsScreen()),
                   ),
@@ -57,7 +104,7 @@ class WorkerDashboardScreen extends StatelessWidget {
                   _StatCard(
                     icon: Icons.notifications_active_outlined,
                     label: 'Pending Requests',
-                    value: '2',
+                    value: '${_stats.pendingRequests}',
                     color: AppColors.warning,
                     onTap: () => Nav.push(
                       context,
@@ -68,7 +115,7 @@ class WorkerDashboardScreen extends StatelessWidget {
                   _StatCard(
                     icon: Icons.star,
                     label: 'Rating',
-                    value: '4.8',
+                    value: '${_stats.rating}',
                     color: AppColors.rating,
                   ),
                 ],
@@ -79,7 +126,7 @@ class WorkerDashboardScreen extends StatelessWidget {
                   _StatCard(
                     icon: Icons.payments_outlined,
                     label: "Today's Earnings",
-                    value: '₹${AppState.workerEarnings.value}',
+                    value: '₹${_stats.totalEarnings.toInt()}',
                     color: AppColors.success,
                     onTap: () => Nav.push(
                       context,
@@ -90,7 +137,7 @@ class WorkerDashboardScreen extends StatelessWidget {
                   _StatCard(
                     icon: Icons.verified_user_outlined,
                     label: 'Verified',
-                    value: 'Yes',
+                    value: _stats.isVerified ? 'Yes' : 'Pending',
                     color: AppColors.cooperative,
                   ),
                 ],
@@ -174,7 +221,8 @@ class WorkerDashboardScreen extends StatelessWidget {
 
 class _OnDutyCard extends StatelessWidget {
   final bool onDuty;
-  const _OnDutyCard({required this.onDuty});
+  final ValueChanged<bool>? onChanged;
+  const _OnDutyCard({required this.onDuty, this.onChanged});
 
   @override
   Widget build(BuildContext context) {
@@ -219,7 +267,7 @@ class _OnDutyCard extends StatelessWidget {
               value: onDuty,
               activeTrackColor: const Color(0x33FFFFFF),
               activeThumbColor: AppColors.success,
-              onChanged: (v) => AppState.workerOnDuty.value = v,
+              onChanged: onChanged ?? (v) => AppState.workerOnDuty.value = v,
             ),
           ],
         ),

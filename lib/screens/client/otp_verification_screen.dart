@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
+import '../../models/job.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/auth_service.dart';
+import '../../services/job_service.dart';
 import '../../theme/app_theme.dart';
 import 'active_service_screen.dart';
 
@@ -27,6 +30,41 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       f.dispose();
     }
     super.dispose();
+  }
+
+  Future<void> _verifyAndCreateJob() async {
+    final customerId = AuthService.currentUserId ??
+        AppState.currentUserProfile.value?.id ??
+        '';
+
+    String? createdJobId;
+
+    if (customerId.isNotEmpty) {
+      final newJob = Job(
+        id: '',
+        workerId: widget.worker.id.length == 36 ? widget.worker.id : null,
+        customerId: customerId,
+        jobTitle: widget.worker.profession,
+        description: 'Service request for ${widget.worker.profession}',
+        status: 'in_progress',
+        scheduledAt: DateTime.now(),
+        amount: widget.worker.pricePerHour * 3,
+        createdAt: DateTime.now(),
+      );
+
+      final created = await JobService.createJob(newJob);
+      createdJobId = created?.id;
+    }
+
+    if (!mounted) return;
+    AppState.currentBookingStatus.value = 'active';
+    Nav.pushReplacement(
+      context,
+      ActiveServiceScreen(
+        worker: widget.worker,
+        jobId: createdJobId,
+      ),
+    );
   }
 
   @override
@@ -108,14 +146,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             ),
             const SizedBox(height: 20),
             ElevatedButton(
-              onPressed: () {
-                setState(() {});
-                AppState.currentBookingStatus.value = 'active';
-                Nav.pushReplacement(
-                  context,
-                  ActiveServiceScreen(worker: widget.worker),
-                );
-              },
+              onPressed: _verifyAndCreateJob,
               child: const Text('Verify OTP'),
             ),
           ],

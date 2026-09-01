@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
+import '../../models/job.dart';
+import '../../services/job_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/status_badge.dart';
 import 'worker_active_job_screen.dart';
@@ -13,11 +16,36 @@ class WorkerJobsScreen extends StatefulWidget {
 
 class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
   int _tab = 0;
-
   static const _tabs = ['New', 'Upcoming', 'Active', 'Completed'];
 
-  final _new = [
-    _Job(
+  List<Job> _supabaseJobs = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadJobs();
+  }
+
+  Future<void> _loadJobs() async {
+    final workerId = AppState.currentWorkerProfile.value?.id ?? '';
+    if (workerId.isEmpty) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final jobs = await JobService.getJobsForWorker(workerId);
+      if (jobs.isNotEmpty && mounted) {
+        setState(() => _supabaseJobs = jobs);
+      }
+    } catch (_) {
+      // Fallback
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  final _mockNew = [
+    const _Job(
       client: 'Mrs. Priya',
       service: 'Plumbing',
       location: 'Grant Road',
@@ -27,7 +55,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
       status: 'New',
       detail: 'Fix leaking kitchen sink & replace pipes',
     ),
-    _Job(
+    const _Job(
       client: 'Mr. Sharma',
       service: 'Plumbing',
       location: 'Dadar',
@@ -39,8 +67,8 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
     ),
   ];
 
-  final _upcoming = [
-    _Job(
+  final _mockUpcoming = [
+    const _Job(
       client: 'Ms. Priya',
       service: 'Plumbing',
       location: 'Grant Road',
@@ -50,7 +78,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
       status: 'Confirmed',
       detail: 'Kitchen plumbing work',
     ),
-    _Job(
+    const _Job(
       client: 'Ms. Anita',
       service: 'Plumbing',
       location: 'Malad',
@@ -62,8 +90,8 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
     ),
   ];
 
-  final _active = [
-    _Job(
+  final _mockActive = [
+    const _Job(
       client: 'Ms. Priya',
       service: 'Plumbing',
       location: 'Grant Road',
@@ -75,8 +103,8 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
     ),
   ];
 
-  final _completed = [
-    _Job(
+  final _mockCompleted = [
+    const _Job(
       client: 'Sharma family',
       service: 'Plumbing',
       location: 'Dadar',
@@ -86,7 +114,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
       status: 'Completed',
       detail: 'Pipe replacement',
     ),
-    _Job(
+    const _Job(
       client: 'Verma S.',
       service: 'Plumbing',
       location: 'Andheri',
@@ -96,7 +124,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
       status: 'Completed',
       detail: 'Sink repair',
     ),
-    _Job(
+    const _Job(
       client: 'Iyer S.',
       service: 'Plumbing',
       location: 'Powai',
@@ -108,23 +136,68 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
     ),
   ];
 
+  _Job _convertJob(Job j) {
+    final clientName = j.customerProfile?.fullName.isNotEmpty == true
+        ? j.customerProfile!.fullName
+        : 'Customer';
+    final location = j.customerProfile?.city.isNotEmpty == true
+        ? j.customerProfile!.city
+        : 'Grant Road';
+    final date = j.scheduledAt ?? j.createdAt ?? DateTime.now();
+
+    String statusLabel = 'New';
+    if (j.status == 'in_progress') statusLabel = 'In Progress';
+    if (j.status == 'accepted') statusLabel = 'Confirmed';
+    if (j.status == 'completed') statusLabel = 'Completed';
+
+    return _Job(
+      id: j.id,
+      client: clientName,
+      service: j.jobTitle.isNotEmpty ? j.jobTitle : 'Services',
+      location: location,
+      time: '${date.day}/${date.month} ${date.hour}:${date.minute.toString().padLeft(2, '0')}',
+      distance: '1.5 km',
+      earnings: '₹${j.amount.toInt()}',
+      status: statusLabel,
+      detail: j.description,
+    );
+  }
+
   List<_Job> get _current {
+    if (_supabaseJobs.isNotEmpty) {
+      final converted = _supabaseJobs.map(_convertJob).toList();
+      switch (_tab) {
+        case 0:
+          return converted.where((j) => j.status == 'New' || j.status == 'pending').toList();
+        case 1:
+          return converted.where((j) => j.status == 'Confirmed' || j.status == 'Upcoming').toList();
+        case 2:
+          return converted.where((j) => j.status == 'In Progress').toList();
+        case 3:
+          return converted.where((j) => j.status == 'Completed').toList();
+        default:
+          return converted;
+      }
+    }
+
     switch (_tab) {
       case 0:
-        return _new;
+        return _mockNew;
       case 1:
-        return _upcoming;
+        return _mockUpcoming;
       case 2:
-        return _active;
+        return _mockActive;
       case 3:
-        return _completed;
+        return _mockCompleted;
       default:
-        return _new;
+        return _mockNew;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final currentList = _current;
+
     return Scaffold(
       appBar: AppBar(title: const Text('My Jobs')),
       body: Column(
@@ -136,7 +209,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
               child: ListView.separated(
                 scrollDirection: Axis.horizontal,
                 itemCount: _tabs.length,
-                separatorBuilder: (_, __) => const SizedBox(width: 8),
+                separatorBuilder: (_, _) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
                   return _Tab(
                     label: _tabs[i],
@@ -149,32 +222,41 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
-              itemCount: _current.length,
-              itemBuilder: (context, i) {
-                return _JobCard(
-                  job: _current[i],
-                  onTap: () {
-                    if (_current[i].status == 'In Progress') {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const WorkerActiveJobScreen(),
+            child: _isLoading && currentList.isEmpty
+                ? const Center(child: CircularProgressIndicator())
+                : currentList.isEmpty
+                    ? const Center(
+                        child: Text(
+                          'No jobs in this category',
+                          style: TextStyle(color: AppColors.textMuted),
                         ),
-                      );
-                    } else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const WorkerJobDetailsScreen(),
-                        ),
-                      );
-                    }
-                  },
-                );
-              },
-            ),
+                      )
+                    : ListView.builder(
+                        padding: const EdgeInsets.fromLTRB(16, 8, 16, 20),
+                        itemCount: currentList.length,
+                        itemBuilder: (context, i) {
+                          return _JobCard(
+                            job: currentList[i],
+                            onTap: () {
+                              if (currentList[i].status == 'In Progress') {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const WorkerActiveJobScreen(),
+                                  ),
+                                );
+                              } else {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const WorkerJobDetailsScreen(),
+                                  ),
+                                );
+                              }
+                            },
+                          );
+                        },
+                      ),
           ),
         ],
       ),
@@ -182,15 +264,31 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
   }
 
   int _countFor(int tab) {
+    if (_supabaseJobs.isNotEmpty) {
+      final converted = _supabaseJobs.map(_convertJob).toList();
+      switch (tab) {
+        case 0:
+          return converted.where((j) => j.status == 'New' || j.status == 'pending').length;
+        case 1:
+          return converted.where((j) => j.status == 'Confirmed' || j.status == 'Upcoming').length;
+        case 2:
+          return converted.where((j) => j.status == 'In Progress').length;
+        case 3:
+          return converted.where((j) => j.status == 'Completed').length;
+        default:
+          return 0;
+      }
+    }
+
     switch (tab) {
       case 0:
-        return _new.length;
+        return _mockNew.length;
       case 1:
-        return _upcoming.length;
+        return _mockUpcoming.length;
       case 2:
-        return _active.length;
+        return _mockActive.length;
       case 3:
-        return _completed.length;
+        return _mockCompleted.length;
       default:
         return 0;
     }
@@ -198,6 +296,7 @@ class _WorkerJobsScreenState extends State<WorkerJobsScreen> {
 }
 
 class _Job {
+  final String? id;
   final String client;
   final String service;
   final String location;
@@ -208,6 +307,7 @@ class _Job {
   final String detail;
 
   const _Job({
+    this.id,
     required this.client,
     required this.service,
     required this.location,

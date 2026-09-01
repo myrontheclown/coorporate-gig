@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
+import '../../navigation/nav.dart';
+import '../../screens/role_selection/role_selection_screen.dart';
+import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/verification_badge.dart';
 
@@ -22,86 +26,109 @@ class WorkerProfileScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  children: [
-                    const CircleAvatar(
-                      radius: 36,
-                      backgroundColor: Color(0xFF0284C7),
-                      child: Text(
-                        'RK',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                          color: Colors.white,
+            ValueListenableBuilder(
+              valueListenable: AppState.currentUserProfile,
+              builder: (context, user, _) {
+                final worker = AppState.currentWorkerProfile.value;
+                final name = user?.fullName.isNotEmpty == true
+                    ? user!.fullName
+                    : 'Ramesh Kumar';
+                final location = user?.city.isNotEmpty == true
+                    ? 'Plumber • ${user!.city}'
+                    : 'Plumber • Grant Road, Mumbai';
+                final exp = worker?.experienceYears != null && worker!.experienceYears > 0
+                    ? '${worker.experienceYears} years experience'
+                    : '8 years experience';
+                final initials = name
+                    .trim()
+                    .split(' ')
+                    .map((p) => p.isNotEmpty ? p[0] : '')
+                    .take(2)
+                    .join()
+                    .toUpperCase();
+
+                return Card(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Row(
+                      children: [
+                        CircleAvatar(
+                          radius: 36,
+                          backgroundColor: const Color(0xFF0284C7),
+                          child: Text(
+                            initials.isNotEmpty ? initials : 'RK',
+                            style: const TextStyle(
+                              fontSize: 26,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
                         ),
-                      ),
-                    ),
-                    const SizedBox(width: 16),
-                    const Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
+                        const SizedBox(width: 16),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    name,
+                                    style: const TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 6),
+                                  const Icon(
+                                    Icons.verified,
+                                    color: AppColors.primary,
+                                    size: 18,
+                                  ),
+                                ],
+                              ),
                               Text(
-                                'Ramesh Kumar',
-                                style: TextStyle(
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.w800,
+                                location,
+                                style: const TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
                                 ),
                               ),
-                              SizedBox(width: 6),
-                              Icon(
-                                Icons.verified,
-                                color: AppColors.primary,
-                                size: 18,
+                              const SizedBox(height: 6),
+                              Text(
+                                exp,
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: AppColors.primary,
+                                  fontWeight: FontWeight.w600,
+                                ),
                               ),
                             ],
                           ),
-                          Text(
-                            'Plumber • Grant Road, Mumbai',
-                            style: TextStyle(
-                              fontSize: 13,
-                              color: AppColors.textSecondary,
-                            ),
-                          ),
-                          SizedBox(height: 6),
-                          Text(
-                            '8 years experience',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: AppColors.primary,
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                        const Icon(Icons.chevron_right, color: AppColors.textMuted),
+                      ],
                     ),
-                    const Icon(Icons.chevron_right, color: AppColors.textMuted),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
             const SizedBox(height: 16),
             Row(
               children: [
-                _Stat2(value: '4.8★', label: 'Rating', color: AppColors.rating),
+                const _Stat2(value: '4.8★', label: 'Rating', color: AppColors.rating),
                 const SizedBox(width: 8),
-                _Stat2(value: '48', label: 'Jobs Done', color: AppColors.primary),
+                const _Stat2(value: '48', label: 'Jobs Done', color: AppColors.primary),
                 const SizedBox(width: 8),
-                _Stat2(value: '100%', label: 'On-time', color: AppColors.success),
+                const _Stat2(value: '100%', label: 'On-time', color: AppColors.success),
                 const SizedBox(width: 8),
-                _Stat2(value: '₹0', label: 'Cancels', color: AppColors.error),
+                const _Stat2(value: '₹0', label: 'Cancels', color: AppColors.error),
               ],
             ),
             const SizedBox(height: 20),
-            Wrap(
+            const Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: const [
+              children: [
                 VerificationBadge(label: 'Aadhaar Verified', emphasized: true),
                 VerificationBadge(label: 'Skill Verified'),
                 VerificationBadge(label: 'Background Checked'),
@@ -110,17 +137,17 @@ class WorkerProfileScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Card(
               color: AppColors.cooperative.withValues(alpha: 0.06),
-              child: Padding(
-                padding: const EdgeInsets.all(14),
+              child: const Padding(
+                padding: EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.account_balance,
                       color: AppColors.cooperative,
                       size: 22,
                     ),
-                    const SizedBox(width: 12),
-                    const Expanded(
+                    SizedBox(width: 12),
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -141,7 +168,7 @@ class WorkerProfileScreen extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Icon(
+                    Icon(
                       Icons.verified_user,
                       color: AppColors.cooperative,
                       size: 20,
@@ -198,17 +225,17 @@ class WorkerProfileScreen extends StatelessWidget {
             const _Heading('Earnings & Transactions'),
             const SizedBox(height: 8),
             Card(
-              child: Padding(
-                padding: const EdgeInsets.all(14),
+              child: const Padding(
+                padding: EdgeInsets.all(14),
                 child: Row(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.account_balance_wallet,
                       color: AppColors.primary,
                       size: 32,
                     ),
-                    const SizedBox(width: 12),
-                    const Expanded(
+                    SizedBox(width: 12),
+                    Expanded(
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -242,9 +269,9 @@ class WorkerProfileScreen extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 8),
-            Card(
+            const Card(
               child: Column(
-                children: const [
+                children: [
                   _TxRow(title: 'Plumbing - Priya M.', amount: '+₹1,050'),
                   Divider(height: 1),
                   _TxRow(title: 'Pipe replacement - Sharma', amount: '+₹900'),
@@ -256,9 +283,9 @@ class WorkerProfileScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const _Heading('Job History'),
             const SizedBox(height: 8),
-            Card(
+            const Card(
               child: Column(
-                children: const [
+                children: [
                   _JobRow(title: 'Kitchen plumbing - Priya M.', date: '28 Aug', status: 'Completed'),
                   Divider(height: 1),
                   _JobRow(title: 'Pipe replacement - Sharma', date: '25 Aug', status: 'Completed'),
@@ -270,20 +297,35 @@ class WorkerProfileScreen extends StatelessWidget {
             const SizedBox(height: 20),
             const _Heading('My Reviews'),
             const SizedBox(height: 8),
-            Card(
+            const Card(
               child: Padding(
-                padding: const EdgeInsets.all(12),
+                padding: EdgeInsets.all(12),
                 child: Column(
                   children: [
                     _ReviewRow(name: 'Priya M.', stars: 5, text: 'Excellent work, fixed the sink quickly!', date: '2 weeks ago'),
-                    const Divider(height: 16),
+                    Divider(height: 16),
                     _ReviewRow(name: 'Amit K.', stars: 5, text: 'Very professional and on time.', date: '1 month ago'),
-                    const Divider(height: 16),
+                    Divider(height: 16),
                     _ReviewRow(name: 'Neha S.', stars: 4, text: 'Good job overall.', date: '2 months ago'),
                   ],
                 ),
               ),
             ),
+            const SizedBox(height: 20),
+            Card(
+              child: ListTile(
+                leading: const Icon(Icons.logout, color: AppColors.error),
+                title: const Text('Logout / Switch Role'),
+                onTap: () async {
+                  await AuthService.signOut();
+                  if (context.mounted) {
+                    AppState.reset();
+                    Nav.clearAll(context, const RoleSelectionScreen());
+                  }
+                },
+              ),
+            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'dart:ui' show FontFeature;
 import '../../data/app_state.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
@@ -10,7 +9,8 @@ import 'payment_screen.dart';
 
 class ActiveServiceScreen extends StatefulWidget {
   final Worker worker;
-  const ActiveServiceScreen({super.key, required this.worker});
+  final String? jobId;
+  const ActiveServiceScreen({super.key, required this.worker, this.jobId});
 
   @override
   State<ActiveServiceScreen> createState() => _ActiveServiceScreenState();
@@ -146,7 +146,7 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                       : AppColors.textMuted,
                                   title: 'Service in progress',
                                   subtitle: _serviceState == 'in_progress'
-                                      ? 'Elapsed ${_elapsedMinutes} min'
+                                      ? 'Elapsed $_elapsedMinutes min'
                                       : 'Waiting to start',
                                 ),
                               ],
@@ -159,21 +159,21 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                             padding: const EdgeInsets.all(14),
                             child: Column(
                               children: [
-                                Row(
+                                const Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.call,
                                       color: AppColors.primary,
                                       size: 20,
                                     ),
-                                    const SizedBox(width: 12),
-                                    const Text(
+                                    SizedBox(width: 12),
+                                    Text(
                                       'Call Worker',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const Spacer(),
+                                    Spacer(),
                                     Icon(
                                       Icons.chevron_right,
                                       color: AppColors.textMuted,
@@ -181,21 +181,21 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                   ],
                                 ),
                                 const Divider(height: 24),
-                                Row(
+                                const Row(
                                   children: [
-                                    const Icon(
+                                    Icon(
                                       Icons.chat_bubble_outline,
                                       color: AppColors.primary,
                                       size: 20,
                                     ),
-                                    const SizedBox(width: 12),
-                                    const Text(
+                                    SizedBox(width: 12),
+                                    Text(
                                       'Chat with Worker',
                                       style: TextStyle(
                                         fontWeight: FontWeight.w600,
                                       ),
                                     ),
-                                    const Spacer(),
+                                    Spacer(),
                                     Icon(
                                       Icons.chevron_right,
                                       color: AppColors.textMuted,
@@ -253,7 +253,10 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                     AppState.serviceCompleted.value = true;
                     Nav.push(
                       context,
-                      PaymentScreen(worker: widget.worker),
+                      PaymentScreen(
+                        worker: widget.worker,
+                        jobId: widget.jobId,
+                      ),
                     );
                   },
                   label: const Text('Complete Service'),
@@ -293,7 +296,7 @@ class _MapPlaceholder extends StatelessWidget {
                   style: TextStyle(color: Color(0xFF90A4AE)),
                 ),
                 Text(
-                  worker.locality + ', Mumbai',
+                  '${worker.locality}, Mumbai',
                   style: const TextStyle(
                     color: Color(0xFFB0BEC5),
                     fontSize: 12,
@@ -332,7 +335,7 @@ class _MapPlaceholder extends StatelessWidget {
               ),
             ),
           ),
-          Positioned(
+          const Positioned(
             left: 40,
             bottom: 30,
             child: Icon(

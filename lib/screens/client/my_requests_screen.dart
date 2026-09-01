@@ -1,15 +1,57 @@
 import 'package:flutter/material.dart';
-import '../../data/user_data.dart';
+import '../../data/app_state.dart';
 import '../../data/mock_models.dart';
+import '../../data/user_data.dart';
+import '../../services/auth_service.dart';
+import '../../services/job_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/status_badge.dart';
 
-class MyRequestsScreen extends StatelessWidget {
+class MyRequestsScreen extends StatefulWidget {
   const MyRequestsScreen({super.key});
 
   @override
+  State<MyRequestsScreen> createState() => _MyRequestsScreenState();
+}
+
+class _MyRequestsScreenState extends State<MyRequestsScreen> {
+  List<UserRequest> _supabaseRequests = [];
+  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadRequests();
+  }
+
+  Future<void> _loadRequests() async {
+    final customerId = AuthService.currentUserId ??
+        AppState.currentUserProfile.value?.id ??
+        '';
+
+    if (customerId.isEmpty) return;
+
+    setState(() => _isLoading = true);
+    try {
+      final jobs = await JobService.getJobsForCustomer(customerId);
+      if (jobs.isNotEmpty && mounted) {
+        setState(() {
+          _supabaseRequests = jobs.map((j) => j.toUserRequest()).toList();
+        });
+      }
+    } catch (_) {
+      // Fallback seamlessly
+    } finally {
+      if (mounted) setState(() => _isLoading = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final requests = UserData.requests;
+    final requests = _supabaseRequests.isNotEmpty
+        ? _supabaseRequests
+        : UserData.requests;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Requests'),
@@ -22,14 +64,16 @@ class MyRequestsScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: requests.length,
-        itemBuilder: (context, i) {
-          final r = requests[i];
-          return _RequestCard(request: r);
-        },
-      ),
+      body: requests.isEmpty && _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: requests.length,
+              itemBuilder: (context, i) {
+                final r = requests[i];
+                return _RequestCard(request: r);
+              },
+            ),
     );
   }
 }
