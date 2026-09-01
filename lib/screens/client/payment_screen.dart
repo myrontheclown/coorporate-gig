@@ -267,12 +267,12 @@ class _PaymentSuccess extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
+              color: AppColors.success.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.check_circle,
-              color: Colors.green,
+              color: AppColors.success,
               size: 72,
             ),
           ),

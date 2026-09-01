@@ -96,13 +96,13 @@ class BookingConfirmationScreen extends StatelessWidget {
                       label: 'Date',
                       value: '02 September 2026',
                     ),
-                    const Divider(height: 20),
+                    const SizedBox(height: 20),
                     _DetailRow(
                       icon: Icons.schedule,
                       label: 'Time Slot',
                       value: '10:00 AM - 1:00 PM',
                     ),
-                    const Divider(height: 20),
+                    const SizedBox(height: 20),
                     _DetailRow(
                       icon: Icons.location_on_outlined,
                       label: 'Address',

@@ -74,7 +74,8 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.picture_as_pdf_outlined),
-            onPressed: () {},
+            tooltip: 'Export invoices',
+            onPressed: () => _showExportSheet(context, list),
           ),
         ],
       ),
@@ -139,6 +140,69 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
           ),
         ),
       ),
+    );
+  }
+void _showExportSheet(BuildContext context, List<Booking> bookings) {
+    final total = bookings.fold<double>(0, (sum, b) => sum + b.amount);
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Export Invoices',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  '${bookings.length} booking${bookings.length == 1 ? '' : 's'} in this view',
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                _DetailRow(
+                  icon: Icons.request_quote_outlined,
+                  label: 'Total billed',
+                  value: '₹${total.toInt()}',
+                ),
+                _DetailRow(
+                  icon: Icons.picture_as_pdf_outlined,
+                  label: 'Format',
+                  value: 'PDF document',
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton.icon(
+                    icon: const Icon(Icons.download_outlined),
+                    onPressed: () {
+                      Navigator.pop(ctx);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Invoices queued — check your downloads shortly.',
+                          ),
+                        ),
+                      );
+                    },
+                    label: const Text('Download Invoices'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -263,12 +327,12 @@ class _BookingCard extends StatelessWidget {
                       backgroundColor: AppColors.success,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: () {},
+                    onPressed: () => _showTrack(context, booking),
                     child: const Text('Track'),
                   )
                 else
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => _showDetails(context, booking),
                     child: const Text('View Details'),
                   ),
               ],
@@ -279,11 +343,324 @@ class _BookingCard extends StatelessWidget {
     );
   }
 
+  void _showDetails(BuildContext context, Booking booking) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatarImage(
+                      initials: booking.avatarInitials,
+                      color: booking.color,
+                      size: 48,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            booking.workerName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            booking.profession,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    StatusBadge(label: booking.statusLabel, color: booking.statusColor),
+                  ],
+                ),
+                const SizedBox(height: 20),
+                _DetailRow(
+                  icon: Icons.calendar_today_outlined,
+                  label: 'Date & time',
+                  value:
+                      '${booking.date.day} ${_month(booking.date.month)} ${booking.date.year} • ${booking.timeSlot}',
+                ),
+                _DetailRow(
+                  icon: Icons.location_on_outlined,
+                  label: 'Address',
+                  value: booking.address,
+                ),
+                _DetailRow(
+                  icon: Icons.currency_rupee,
+                  label: 'Amount',
+                  value: '₹${booking.amount.toInt()}',
+                ),
+                _DetailRow(
+                  icon: Icons.payment_outlined,
+                  label: 'Payment',
+                  value: booking.paymentStatus,
+                ),
+                _DetailRow(
+                  icon: Icons.receipt_long_outlined,
+                  label: 'Booking ID',
+                  value: booking.id,
+                ),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void _showTrack(BuildContext context, Booking booking) {
+    const steps = [
+      (Icons.check_circle, 'Booking confirmed', 'Worker accepted your request'),
+      (Icons.local_shipping_outlined, 'On the way', 'Heading to your location'),
+      (Icons.build_circle_outlined, 'In progress', 'Job in progress at your place'),
+      (Icons.flag_outlined, 'Completed', 'Task finished and billed'),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatarImage(
+                      initials: booking.avatarInitials,
+                      color: booking.color,
+                      size: 48,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            booking.workerName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          Text(
+                            booking.profession,
+                            style: const TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                const Text(
+                  'Live job status',
+                  style: TextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                  ),
+                ),
+                const SizedBox(height: 16),
+                for (var i = 0; i < steps.length; i++)
+                  _TrackStep(
+                    icon: steps[i].$1,
+                    title: steps[i].$2,
+                    subtitle: steps[i].$3,
+                    isActive: i == 1,
+                    isDone: i < 1,
+                    isLast: i == steps.length - 1,
+                  ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   String _month(int m) {
     const months = [
       'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
       'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec',
     ];
     return (m >= 1 && m <= 12) ? months[m - 1] : '';
+  }
+}
+
+class _DetailRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _DetailRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: 34,
+            height: 34,
+            decoration: BoxDecoration(
+              color: AppColors.primaryLight,
+              borderRadius: BorderRadius.circular(8),
+            ),
+            child: Icon(icon, size: 18, color: AppColors.primary),
+          ),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _TrackStep extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final bool isActive;
+  final bool isDone;
+  final bool isLast;
+
+  const _TrackStep({
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.isActive,
+    required this.isDone,
+    required this.isLast,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final color = isDone
+        ? AppColors.success
+        : isActive
+            ? AppColors.primary
+            : AppColors.textMuted;
+
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Column(
+            children: [
+              Icon(icon, color: color, size: 24),
+              if (!isLast)
+                Expanded(
+                  child: Container(
+                    width: 2,
+                    margin: const EdgeInsets.symmetric(vertical: 4),
+                    color: isDone ? AppColors.success : AppColors.divider,
+                  ),
+                ),
+            ],
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Padding(
+              padding: EdgeInsets.only(bottom: isLast ? 0 : 20),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      fontSize: 14,
+                      fontWeight: FontWeight.w700,
+                      color: isActive || isDone
+                          ? AppColors.textPrimary
+                          : AppColors.textMuted,
+                    ),
+                  ),
+                  const SizedBox(height: 2),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

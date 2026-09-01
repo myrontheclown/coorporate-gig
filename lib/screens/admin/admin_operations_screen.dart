@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../navigation/nav.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/section_header.dart';
+import '../client/notification_screen.dart';
 import 'admin_allocation_screen.dart';
 import 'admin_federation_screen.dart';
 import 'admin_jobs_screen.dart';
@@ -21,7 +22,8 @@ class AdminOperationsScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () =>
+                Nav.push(context, const NotificationListScreen()),
           ),
         ],
       ),

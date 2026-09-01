@@ -5,6 +5,7 @@ import '../../screens/role_selection/role_selection_screen.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/verification_badge.dart';
+import 'worker_settings_screen.dart';
 
 class WorkerProfileScreen extends StatelessWidget {
   const WorkerProfileScreen({super.key});
@@ -17,7 +18,8 @@ class WorkerProfileScreen extends StatelessWidget {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
+            tooltip: 'Settings',
+            onPressed: () => Nav.push(context, const WorkerSettingsScreen()),
           ),
         ],
       ),
@@ -54,7 +56,7 @@ class WorkerProfileScreen extends StatelessWidget {
                       children: [
                         CircleAvatar(
                           radius: 36,
-                          backgroundColor: const Color(0xFF0284C7),
+                          backgroundColor: AppColors.primary,
                           child: Text(
                             initials.isNotEmpty ? initials : 'RK',
                             style: const TextStyle(
@@ -303,9 +305,9 @@ class WorkerProfileScreen extends StatelessWidget {
                 child: Column(
                   children: [
                     _ReviewRow(name: 'Priya M.', stars: 5, text: 'Excellent work, fixed the sink quickly!', date: '2 weeks ago'),
-                    Divider(height: 16),
+                    SizedBox(height: 16),
                     _ReviewRow(name: 'Amit K.', stars: 5, text: 'Very professional and on time.', date: '1 month ago'),
-                    Divider(height: 16),
+                    SizedBox(height: 16),
                     _ReviewRow(name: 'Neha S.', stars: 4, text: 'Good job overall.', date: '2 months ago'),
                   ],
                 ),
@@ -408,7 +410,7 @@ class _ReviewRow extends StatelessWidget {
                 return Icon(
                   Icons.star,
                   size: 14,
-                  color: i < stars ? Colors.amber : AppColors.divider,
+                  color: i < stars ? AppColors.rating : AppColors.divider,
                 );
               }),
             ),

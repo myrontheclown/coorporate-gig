@@ -97,12 +97,12 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                 _serviceState == 'on_way'
                                     ? const StatusBadge(
                                         label: 'On the way',
-                                        color: Colors.blue,
+                                        color: AppColors.primary,
                                         icon: Icons.directions_car,
                                       )
                                     : const StatusBadge(
                                         label: 'In Progress',
-                                        color: Colors.green,
+                                        color: AppColors.success,
                                         icon: Icons.build,
                                       ),
                               ],
@@ -119,7 +119,7 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                               children: [
                                 const _TimelineItem(
                                   icon: Icons.check_circle,
-                                  color: Colors.green,
+                                  color: AppColors.success,
                                   title: 'Booking Confirmed',
                                   subtitle: 'OTP verified successfully',
                                 ),
@@ -129,8 +129,8 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                       ? Icons.directions_car
                                       : Icons.check_circle,
                                   color: _serviceState == 'on_way'
-                                      ? Colors.blue
-                                      : Colors.green,
+                                      ? AppColors.primary
+                                      : AppColors.success,
                                   title: 'Worker reached location',
                                   subtitle: _serviceState == 'on_way'
                                       ? 'Arriving in ~12 min'
@@ -180,7 +180,7 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                     ),
                                   ],
                                 ),
-                                const Divider(height: 24),
+                                const SizedBox(height: 24),
                                 const Row(
                                   children: [
                                     Icon(
@@ -202,7 +202,7 @@ class _ActiveServiceScreenState extends State<ActiveServiceScreen> {
                                     ),
                                   ],
                                 ),
-                                const Divider(height: 24),
+                                const SizedBox(height: 24),
                                 Row(
                                   children: [
                                     const Icon(
@@ -279,7 +279,11 @@ class _MapPlaceholder extends StatelessWidget {
     return Container(
       height: 240,
       width: double.infinity,
-      color: const Color(0xFFE8EDF2),
+      decoration: BoxDecoration(
+        color: AppColors.background,
+        borderRadius: BorderRadius.circular(AppRadius.lg),
+        border: Border.all(color: AppColors.divider),
+      ),
       child: Stack(
         children: [
           Positioned.fill(
@@ -288,17 +292,17 @@ class _MapPlaceholder extends StatelessWidget {
               children: [
                 const Icon(
                   Icons.map_outlined,
-                  color: Color(0xFFB0BEC5),
+                  color: AppColors.textMuted,
                   size: 60,
                 ),
                 const Text(
                   'Live Map View',
-                  style: TextStyle(color: Color(0xFF90A4AE)),
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
                 Text(
                   '${worker.locality}, Mumbai',
                   style: const TextStyle(
-                    color: Color(0xFFB0BEC5),
+                    color: AppColors.textMuted,
                     fontSize: 12,
                   ),
                 ),
@@ -322,7 +326,7 @@ class _MapPlaceholder extends StatelessWidget {
               ),
               child: const Column(
                 children: [
-                  Icon(Icons.navigation, color: Colors.blue),
+                  Icon(Icons.navigation, color: AppColors.primary),
                   SizedBox(height: 2),
                   Text(
                     '12 min',
@@ -340,7 +344,7 @@ class _MapPlaceholder extends StatelessWidget {
             bottom: 30,
             child: Icon(
               Icons.location_pin,
-              color: Colors.red,
+              color: AppColors.error,
               size: 36,
             ),
           ),

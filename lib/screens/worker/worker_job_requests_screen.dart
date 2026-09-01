@@ -99,7 +99,7 @@ class _WorkerJobRequestsScreenState extends State<WorkerJobRequestsScreen> {
                       ),
                       const StatusBadge(
                         label: 'New',
-                        color: Colors.orange,
+                        color: AppColors.warning,
                         icon: Icons.new_releases,
                       ),
                     ],

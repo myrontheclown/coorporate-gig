@@ -89,7 +89,7 @@ class _MatchingEngineScreenState extends State<MatchingEngineScreen> {
                 children: [
                   const Icon(
                     Icons.check_circle,
-                    color: Colors.green,
+                    color: AppColors.success,
                     size: 72,
                   ),
                   const SizedBox(height: 12),
@@ -126,7 +126,7 @@ class _MatchingEngineScreenState extends State<MatchingEngineScreen> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       const Icon(Icons.star,
-                          color: Colors.amber, size: 18),
+                          color: AppColors.rating, size: 18),
                       Text(
                         ' ${_finalMatch!.ratingLabel} • ${_finalMatch!.reviews} reviews',
                         style: const TextStyle(
@@ -268,7 +268,7 @@ class _StepStatus extends StatelessWidget {
                       ? Icons.hourglass_top
                       : Icons.circle_outlined,
               color: i < current
-                  ? Colors.green
+                  ? AppColors.success
                   : i == current
                       ? AppColors.primary
                       : AppColors.divider,

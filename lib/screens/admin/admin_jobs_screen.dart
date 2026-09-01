@@ -134,10 +134,10 @@ class _AdminJobsScreenState extends State<AdminJobsScreen> {
                                   StatusBadge(
                                     label: j['status']!,
                                     color: j['status'] == 'Pending'
-                                        ? Colors.orange
+                                        ? AppColors.warning
                                         : j['status'] == 'In Progress'
-                                            ? Colors.blue
-                                            : Colors.green,
+                                            ? AppColors.primary
+                                            : AppColors.success,
                                   ),
                                 ],
                               ),

@@ -381,7 +381,7 @@ class _ReviewCard extends StatelessWidget {
                     return Icon(
                       Icons.star,
                       color: i < review.rating
-                          ? Colors.amber
+                          ? AppColors.rating
                           : AppColors.divider,
                       size: 16,
                     );

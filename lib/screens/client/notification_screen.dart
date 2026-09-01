@@ -82,7 +82,7 @@ class _NotificationTile extends StatelessWidget {
                           width: 8,
                           height: 8,
                           decoration: const BoxDecoration(
-                            color: Colors.red,
+                            color: AppColors.error,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -119,15 +119,15 @@ class _NotificationTile extends StatelessWidget {
       case 'match':
         return AppColors.primary;
       case 'payment':
-        return Colors.green;
+        return AppColors.success;
       case 'booking':
-        return Colors.indigo;
+        return AppColors.primary;
       case 'worker':
-        return Colors.purple;
+        return AppColors.primaryDark;
       case 'otp':
-        return Colors.teal;
+        return AppColors.cooperative;
       case 'rating':
-        return Colors.amber;
+        return AppColors.rating;
       default:
         return AppColors.primary;
     }

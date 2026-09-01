@@ -4,6 +4,7 @@ import '../../services/dashboard_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/buttons.dart';
 import '../../widgets/status_badge.dart';
+import '../client/notification_screen.dart';
 import 'admin_ai_forecast_screen.dart';
 import 'admin_allocation_screen.dart';
 import 'admin_jobs_screen.dart';
@@ -47,7 +48,8 @@ class _AdminDashboardScreenState extends State<AdminDashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () =>
+                Nav.push(context, const NotificationListScreen()),
           ),
         ],
       ),

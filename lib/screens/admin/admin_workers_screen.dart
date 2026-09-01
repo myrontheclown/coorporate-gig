@@ -47,6 +47,118 @@ class _AdminWorkersScreenState extends State<AdminWorkersScreen> {
     }
   }
 
+  void _showAddWorker() {
+    final nameController = TextEditingController();
+    final skillController = TextEditingController();
+    final rateController = TextEditingController();
+    final formKey = GlobalKey<FormState>();
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: Form(
+            key: formKey,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Add Worker',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Records the worker in your cooperative roster.',
+                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 20),
+                TextFormField(
+                  controller: nameController,
+                  decoration: const InputDecoration(labelText: 'Full name'),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Enter worker name' : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: skillController,
+                  decoration: const InputDecoration(
+                    labelText: 'Profession / skill',
+                    hintText: 'e.g. Plumber',
+                  ),
+                  validator: (v) =>
+                      (v == null || v.trim().isEmpty) ? 'Enter a profession' : null,
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  controller: rateController,
+                  keyboardType: TextInputType.number,
+                  decoration: const InputDecoration(
+                    labelText: 'Rate per hour (₹)',
+                  ),
+                  validator: (v) {
+                    final value = int.tryParse(v ?? '');
+                    return (value == null || value <= 0)
+                        ? 'Enter a valid hourly rate'
+                        : null;
+                  },
+                ),
+                const SizedBox(height: 20),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () {
+                      if (!(formKey.currentState?.validate() ?? false)) return;
+                      final name = nameController.text.trim();
+                      final skill = skillController.text.trim();
+                      final rate = int.parse(rateController.text.trim());
+                      final worker = Worker(
+                        id: 'local_${DateTime.now().millisecondsSinceEpoch}',
+                        name: name,
+                        profession: skill,
+                        location: 'Your cooperative area',
+                        locality: 'Local',
+                        rating: 5.0,
+                        reviews: 0,
+                        distanceKm: 1.0,
+                        pricePerHour: rate.toDouble(),
+                        avatarInitials: name.split(' ').map((p) => p[0]).take(2).join().toUpperCase(),
+                        color: AppColors.primary,
+                        skills: [skill],
+                        experience: 'Newly onboarded',
+                        description: 'Added by cooperative admin.',
+                        available: true,
+                      );
+                      Navigator.pop(ctx);
+                      setState(() {
+                        _supabaseWorkers.insert(0, worker);
+                        _active[worker.id] = true;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('Added $name to the roster.')),
+                      );
+                    },
+                    child: const Text('Add to Roster'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   void dispose() {
     _query.dispose();
@@ -119,7 +231,7 @@ class _AdminWorkersScreenState extends State<AdminWorkersScreen> {
                 ),
                 const Spacer(),
                 TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () => _showAddWorker(),
                   icon: const Icon(Icons.add, size: 18),
                   label: const Text('Add Worker'),
                 ),

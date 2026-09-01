@@ -199,13 +199,91 @@ class AdminWorkerDetailScreen extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton.icon(
                 icon: const Icon(Icons.handyman_outlined),
-                onPressed: () {},
+                onPressed: () => _showAssignJob(context),
                 label: const Text('Assign to Job'),
               ),
             ),
           ],
         ),
       ),
+    );
+  }
+
+  void _showAssignJob(BuildContext context) {
+    const jobs = [
+      (title: 'Pipe leak repair', location: 'Fatorda', loc: 'B2-104'),
+      (title: 'AC servicing', location: 'Margao', loc: '3rd Floor'),
+      (title: 'House deep clean', location: 'Vasco', loc: 'Flat 5'),
+      (title: 'Furniture assembly', location: 'Ponda', loc: 'Shop 12'),
+    ];
+
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Assign ${worker.name}',
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  'Pending jobs in your cooperative',
+                  style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
+                ),
+                const SizedBox(height: 16),
+                for (final job in jobs)
+                  Card(
+                    margin: const EdgeInsets.only(bottom: 8),
+                    child: ListTile(
+                      leading: const Icon(
+                        Icons.build_outlined,
+                        color: AppColors.primary,
+                      ),
+                      title: Text(
+                        job.title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      subtitle: Text(
+                        '${job.location} • ${job.loc}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      trailing: const Icon(
+                        Icons.chevron_right,
+                        color: AppColors.textMuted,
+                      ),
+                      onTap: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Assigned ${worker.name} to "${job.title}".',
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

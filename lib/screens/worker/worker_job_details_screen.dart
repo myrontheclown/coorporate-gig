@@ -90,19 +90,19 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                       label: 'Service',
                       value: 'Plumbing Repair',
                     ),
-                    const Divider(height: 20),
+                    const SizedBox(height: 20),
                     const _Detail(
                       icon: Icons.notes,
                       label: 'Description',
                       value: 'Fix leaking kitchen sink and replace old pipes under the washbasin.',
                     ),
-                    const Divider(height: 20),
+                    const SizedBox(height: 20),
                     const _Detail(
                       icon: Icons.location_on_outlined,
                       label: 'Location',
                       value: 'Flat 402, Royal Residency, Grant Road, Mumbai',
                     ),
-                    const Divider(height: 20),
+                    const SizedBox(height: 20),
                     const _Detail(
                       icon: Icons.schedule,
                       label: 'Preferred time',

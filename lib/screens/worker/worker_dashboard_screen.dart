@@ -11,6 +11,7 @@ import 'worker_earnings_screen.dart';
 import 'worker_job_details_screen.dart';
 import 'worker_job_requests_screen.dart';
 import 'worker_jobs_screen.dart';
+import '../client/notification_screen.dart';
 
 class WorkerDashboardScreen extends StatefulWidget {
   const WorkerDashboardScreen({super.key});
@@ -65,7 +66,8 @@ class _WorkerDashboardScreenState extends State<WorkerDashboardScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
-            onPressed: () {},
+            onPressed: () =>
+                Nav.push(context, const NotificationListScreen()),
           ),
         ],
       ),

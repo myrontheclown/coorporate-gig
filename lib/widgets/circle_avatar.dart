@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../theme/app_theme.dart';
 
 class CircleAvatarImage extends StatelessWidget {
   final String initials;
@@ -44,7 +45,7 @@ class CircleAvatarImage extends StatelessWidget {
               width: size * 0.28,
               height: size * 0.28,
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: AppColors.success,
                 shape: BoxShape.circle,
                 border: Border.all(color: Colors.white, width: 2),
               ),

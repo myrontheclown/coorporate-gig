@@ -38,6 +38,122 @@ class _WorkerEarningsScreenState extends State<WorkerEarningsScreen> {
     }
   }
 
+  void _showWithdraw(BuildContext context, int available) {
+    final amountController = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return Padding(
+          padding: EdgeInsets.only(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(ctx).viewInsets.bottom + 20,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Withdraw Balance',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+              ),
+              const SizedBox(height: 4),
+              Text(
+                'Available: ₹$available',
+                style: const TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textSecondary,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: amountController,
+                keyboardType: TextInputType.number,
+                decoration: const InputDecoration(
+                  labelText: 'Amount (₹)',
+                  prefixText: '₹ ',
+                  hintText: 'Enter amount to withdraw',
+                ),
+              ),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: FilledButton(
+                  onPressed: () {
+                    final value = int.tryParse(amountController.text.trim()) ?? 0;
+                    if (value <= 0 || value > available) {
+                      ScaffoldMessenger.of(ctx).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Enter a valid amount within your available balance.',
+                          ),
+                        ),
+                      );
+                      return;
+                    }
+                    Navigator.pop(ctx);
+                    _showWithdrawSuccess(context, value);
+                  },
+                  child: const Text('Request Withdrawal'),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showWithdrawSuccess(BuildContext context, int amount) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          icon: const Icon(Icons.check_circle, color: AppColors.success, size: 48),
+          title: const Text('Withdrawal Requested'),
+          content: Text(
+            'Your request to withdraw ₹$amount has been submitted. Funds will '
+            'be transferred to your linked bank account within 1–2 working days.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showHelp(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        return AlertDialog(
+          title: const Text('Earnings Help'),
+          content: const Text(
+            '• Earnings reflect approved completed jobs.\n'
+            '• 50% of your earnings is available to withdraw instantly.\n'
+            '• Payouts are processed within 1–2 working days.\n'
+            '• Contact your cooperative admin for payout issues.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx),
+              child: const Text('Got it'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     double totalEarned = AppState.workerEarnings.value.toDouble();
@@ -54,7 +170,7 @@ class _WorkerEarningsScreenState extends State<WorkerEarningsScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.help_outline),
-            onPressed: () {},
+            onPressed: () => _showHelp(context),
           ),
         ],
       ),
@@ -153,7 +269,8 @@ class _WorkerEarningsScreenState extends State<WorkerEarningsScreen> {
                       style: ElevatedButton.styleFrom(
                         minimumSize: const Size(96, 44),
                       ),
-                      onPressed: () {},
+                      onPressed: () =>
+                          _showWithdraw(context, (totalEarned * 0.5).toInt()),
                       child: const Text('Withdraw'),
                     ),
                   ],
@@ -301,7 +418,7 @@ class _Chart extends StatelessWidget {
             }),
           ),
         ),
-        const Divider(height: 24),
+        const SizedBox(height: 24),
         Row(
           children: [
             _Legend(

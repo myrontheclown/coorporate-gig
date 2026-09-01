@@ -5,7 +5,9 @@ import '../../screens/role_selection/role_selection_screen.dart';
 import '../../services/auth_service.dart';
 import '../../services/dashboard_service.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/app_settings.dart';
 import 'bookings_history_screen.dart';
+import 'client_settings_screen.dart';
 import 'my_requests_screen.dart';
 import 'notification_screen.dart';
 import 'previously_hired_screen.dart';
@@ -42,7 +44,8 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
         actions: [
           IconButton(
             icon: const Icon(Icons.settings_outlined),
-            onPressed: () {},
+            tooltip: 'Settings',
+            onPressed: () => Nav.push(context, const ClientSettingsScreen()),
           ),
         ],
       ),
@@ -154,93 +157,81 @@ class _ClientProfileScreenState extends State<ClientProfileScreen> {
           ),
           const SizedBox(height: 16),
           const _SectionHeader('My Services'),
-          Card(
-            child: Column(
-              children: [
-                _MenuTile(
-                  icon: Icons.assignment_outlined,
-                  title: 'My Requests',
-                  onTap: () => Nav.push(context, const MyRequestsScreen()),
-                ),
-                const Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.calendar_month_outlined,
-                  title: 'My Bookings & History',
-                  onTap: () => Nav.push(context, const BookingsHistoryScreen()),
-                ),
-                const Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.history,
-                  title: 'Previously Hired Workers',
-                  onTap: () => Nav.push(context, const PreviouslyHiredScreen()),
-                ),
-                const Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.notifications_outlined,
-                  title: 'Notifications',
-                  onTap: () => Nav.push(context, const NotificationListScreen()),
-                ),
-              ],
-            ),
+          SettingsCard(
+            children: [
+              AppSettingsTile(
+                icon: Icons.assignment_outlined,
+                title: 'My Requests',
+                onTap: () => Nav.push(context, const MyRequestsScreen()),
+              ),
+              AppSettingsTile(
+                icon: Icons.calendar_month_outlined,
+                title: 'My Bookings & History',
+                onTap: () => Nav.push(context, const BookingsHistoryScreen()),
+              ),
+              AppSettingsTile(
+                icon: Icons.history,
+                title: 'Previously Hired Workers',
+                onTap: () => Nav.push(context, const PreviouslyHiredScreen()),
+              ),
+              AppSettingsTile(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications',
+                onTap: () => Nav.push(context, const NotificationListScreen()),
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           const _SectionHeader('Manage'),
-          Card(
-            child: const Column(
-              children: [
-                _MenuTile(
-                  icon: Icons.location_on_outlined,
-                  title: 'Saved Addresses',
-                  value: '2',
-                ),
-                Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.payments_outlined,
-                  title: 'Payment Methods',
-                  value: 'UPI + Wallet',
-                ),
-                Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.wallet_outlined,
-                  title: 'Wallet',
-                  value: '₹1,250',
-                ),
-                Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.card_giftcard,
-                  title: 'Refer & Earn',
-                ),
-              ],
-            ),
+          SettingsCard(
+            children: [
+              const AppSettingsTile(
+                icon: Icons.location_on_outlined,
+                title: 'Saved Addresses',
+                value: '2',
+              ),
+              const AppSettingsTile(
+                icon: Icons.payments_outlined,
+                title: 'Payment Methods',
+                value: 'UPI + Wallet',
+              ),
+              const AppSettingsTile(
+                icon: Icons.wallet_outlined,
+                title: 'Wallet',
+                value: '₹1,250',
+              ),
+              const AppSettingsTile(
+                icon: Icons.card_giftcard,
+                title: 'Refer & Earn',
+                showDivider: false,
+              ),
+            ],
           ),
           const SizedBox(height: 16),
           const _SectionHeader('Support'),
-          Card(
-            child: Column(
-              children: [
-                const _MenuTile(
-                  icon: Icons.headset_mic_outlined,
-                  title: 'Help & Support',
-                ),
-                const Divider(height: 1),
-                const _MenuTile(
-                  icon: Icons.info_outline,
-                  title: 'About Coorporate Gig',
-                ),
-                const Divider(height: 1),
-                _MenuTile(
-                  icon: Icons.logout,
-                  title: 'Logout / Switch Role',
-                  onTap: () async {
-                    await AuthService.signOut();
-                    if (context.mounted) {
-                      AppState.reset();
-                      Nav.clearAll(context, const RoleSelectionScreen());
-                    }
-                  },
-                ),
-              ],
-            ),
+          SettingsCard(
+            children: [
+              const AppSettingsTile(
+                icon: Icons.headset_mic_outlined,
+                title: 'Help & Support',
+              ),
+              const AppSettingsTile(
+                icon: Icons.info_outline,
+                title: 'About Coorporate Gig',
+              ),
+              AppSettingsTile(
+                icon: Icons.logout,
+                title: 'Logout / Switch Role',
+                iconColor: AppColors.error,
+                onTap: () async {
+                  await AuthService.signOut();
+                  if (context.mounted) {
+                    AppState.reset();
+                    Nav.clearAll(context, const RoleSelectionScreen());
+                  }
+                },
+              ),
+            ],
           ),
         ],
       ),
@@ -308,47 +299,6 @@ class _SectionHeader extends StatelessWidget {
           color: AppColors.textSecondary,
         ),
       ),
-    );
-  }
-}
-
-class _MenuTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String? value;
-  final VoidCallback? onTap;
-
-  const _MenuTile({
-    required this.icon,
-    required this.title,
-    this.value,
-    this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(
-        title,
-        style: const TextStyle(fontSize: 15),
-      ),
-      trailing: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (value != null)
-            Text(
-              value!,
-              style: const TextStyle(
-                fontSize: 13,
-                color: AppColors.textSecondary,
-              ),
-            ),
-          const SizedBox(width: 4),
-          const Icon(Icons.chevron_right, color: AppColors.textMuted),
-        ],
-      ),
-      onTap: onTap,
     );
   }
 }

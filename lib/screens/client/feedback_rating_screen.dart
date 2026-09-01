@@ -60,7 +60,7 @@ class _FeedbackRatingScreenState extends State<FeedbackRatingScreen> {
                         icon: Icon(
                           i < _rating ? Icons.star : Icons.star_border,
                           color: i < _rating
-                              ? Colors.amber
+                              ? AppColors.rating
                               : AppColors.divider,
                         ),
                       );
@@ -82,7 +82,7 @@ class _FeedbackRatingScreenState extends State<FeedbackRatingScreen> {
                       fontWeight: FontWeight.w600,
                       color: _rating == 0
                           ? AppColors.textMuted
-                          : Colors.amber.shade800,
+                          : AppColors.warning,
                     ),
                   ),
                   const SizedBox(height: 24),
@@ -163,12 +163,12 @@ class _SubmittedView extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(16),
             decoration: BoxDecoration(
-              color: Colors.green.withValues(alpha: 0.1),
+              color: AppColors.success.withValues(alpha: 0.1),
               shape: BoxShape.circle,
             ),
             child: const Icon(
               Icons.thumb_up_alt,
-              color: Colors.green,
+              color: AppColors.success,
               size: 60,
             ),
           ),

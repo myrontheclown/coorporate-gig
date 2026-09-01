@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
 import '../../models/job.dart';
@@ -20,9 +21,34 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
   final List<TextEditingController> _controllers =
       List.generate(4, (_) => TextEditingController());
   final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+  Timer? _timer;
+  int _secondsLeft = 30;
+
+  @override
+  void initState() {
+    super.initState();
+    _startTimer();
+  }
+
+  void _startTimer() {
+    _timer?.cancel();
+    _secondsLeft = 30;
+    _timer = Timer.periodic(const Duration(seconds: 1), (_) {
+      if (mounted) {
+        setState(() {
+          if (_secondsLeft > 0) {
+            _secondsLeft--;
+          } else {
+            _timer?.cancel();
+          }
+        });
+      }
+    });
+  }
 
   @override
   void dispose() {
+    _timer?.cancel();
     for (final c in _controllers) {
       c.dispose();
     }
@@ -140,8 +166,21 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             const SizedBox(height: 20),
             Center(
               child: TextButton(
-                onPressed: () {},
-                child: const Text('Resend OTP (30s)'),
+                onPressed: _secondsLeft > 0
+                    ? null
+                    : () {
+                        _startTimer();
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('A new OTP has been sent.'),
+                          ),
+                        );
+                      },
+                child: Text(
+                  _secondsLeft > 0
+                      ? 'Resend OTP ($_secondsLeft s)'
+                      : 'Resend OTP',
+                ),
               ),
             ),
             const SizedBox(height: 20),

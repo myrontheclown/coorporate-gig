@@ -129,13 +129,13 @@ class _PhotoUploadTile extends StatelessWidget {
                   children: [
                     Container(
                       decoration: BoxDecoration(
-                        color: Colors.blueGrey.shade100,
+                        color: AppColors.background,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: const Icon(
                         Icons.image_outlined,
                         size: 40,
-                        color: Colors.grey,
+                        color: AppColors.textMuted,
                       ),
                     ),
                     Positioned(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/app_bottom_nav.dart';
 import 'client_profile_screen.dart';
 import 'my_requests_screen.dart';
 import 'worker_discovery_screen.dart';
@@ -23,23 +24,23 @@ class _ClientHomeShellState extends State<ClientHomeShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: AppBottomNav(
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
-            activeIcon: Icon(Icons.home),
+          AppBottomNavItem(
+            icon: Icons.home_outlined,
+            activeIcon: Icons.home,
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.assignment_outlined),
-            activeIcon: Icon(Icons.assignment),
+          AppBottomNavItem(
+            icon: Icons.assignment_outlined,
+            activeIcon: Icons.assignment,
             label: 'Requests',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
+          AppBottomNavItem(
+            icon: Icons.person_outline,
+            activeIcon: Icons.person,
             label: 'Profile',
           ),
         ],

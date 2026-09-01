@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/app_bottom_nav.dart';
 import 'worker_dashboard_screen.dart';
 import 'worker_jobs_screen.dart';
 import 'worker_profile_screen.dart';
@@ -23,23 +24,23 @@ class _WorkerHomeShellState extends State<WorkerHomeShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: AppBottomNav(
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
+          AppBottomNavItem(
+            icon: Icons.dashboard_outlined,
+            activeIcon: Icons.dashboard,
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.work_outline),
-            activeIcon: Icon(Icons.work),
+          AppBottomNavItem(
+            icon: Icons.work_outline,
+            activeIcon: Icons.work,
             label: 'Jobs',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
+          AppBottomNavItem(
+            icon: Icons.person_outline,
+            activeIcon: Icons.person,
             label: 'Profile',
           ),
         ],

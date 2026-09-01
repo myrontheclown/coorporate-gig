@@ -159,7 +159,7 @@ class _RequestCard extends StatelessWidget {
                   if (request.status == 'Matched') ...[
                     const SizedBox(width: 8),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () => _showMatchedWorker(context, request),
                       child: const Text('View'),
                     ),
                   ],
@@ -172,16 +172,99 @@ class _RequestCard extends StatelessWidget {
     );
   }
 
+  void _showMatchedWorker(BuildContext context, UserRequest request) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Matched Worker',
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  request.service,
+                  style: const TextStyle(
+                    fontSize: 13,
+                    color: AppColors.textSecondary,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 26,
+                      backgroundColor: AppColors.primaryLight,
+                      child: const Icon(
+                        Icons.person,
+                        color: AppColors.primary,
+                        size: 28,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            request.workerName,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                          const Text(
+                            'Matched to your request',
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                _InfoRow(icon: Icons.notes, label: 'Request', value: request.service),
+                _InfoRow(icon: Icons.calendar_today_outlined, label: 'Date', value: request.date),
+                _InfoRow(icon: Icons.description_outlined, label: 'Description', value: request.description),
+                const SizedBox(height: 16),
+                SizedBox(
+                  width: double.infinity,
+                  child: FilledButton(
+                    onPressed: () => Navigator.pop(ctx),
+                    child: const Text('Close'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   Widget _statusBadge(String status) {
     late Color color;
     late IconData icon;
     switch (status) {
       case 'In Progress':
-        color = Colors.blue;
+        color = AppColors.primary;
         icon = Icons.build;
         break;
       case 'Completed':
-        color = Colors.green;
+        color = AppColors.success;
         icon = Icons.check_circle;
         break;
       case 'Matched':
@@ -189,7 +272,7 @@ class _RequestCard extends StatelessWidget {
         icon = Icons.handshake;
         break;
       default:
-        color = Colors.orange;
+        color = AppColors.warning;
         icon = Icons.hourglass_top;
     }
     return StatusBadge(label: status, color: color, icon: icon);
@@ -208,5 +291,55 @@ class _RequestCard extends StatelessWidget {
       default:
         return Icons.build;
     }
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Icon(icon, size: 18, color: AppColors.textMuted),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  label,
+                  style: const TextStyle(
+                    fontSize: 11,
+                    color: AppColors.textMuted,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 14,
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

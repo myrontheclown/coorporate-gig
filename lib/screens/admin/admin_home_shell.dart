@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../widgets/app_bottom_nav.dart';
 import 'admin_dashboard_screen.dart';
 import 'admin_operations_screen.dart';
 import 'admin_profile_screen.dart';
@@ -25,28 +26,28 @@ class _AdminHomeShellState extends State<AdminHomeShell> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: IndexedStack(index: _index, children: _screens),
-      bottomNavigationBar: BottomNavigationBar(
+      bottomNavigationBar: AppBottomNav(
         currentIndex: _index,
         onTap: (i) => setState(() => _index = i),
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard_outlined),
-            activeIcon: Icon(Icons.dashboard),
+          AppBottomNavItem(
+            icon: Icons.dashboard_outlined,
+            activeIcon: Icons.dashboard,
             label: 'Dashboard',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.groups_outlined),
-            activeIcon: Icon(Icons.groups),
+          AppBottomNavItem(
+            icon: Icons.groups_outlined,
+            activeIcon: Icons.groups,
             label: 'Workers',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.handyman_outlined),
-            activeIcon: Icon(Icons.handyman),
+          AppBottomNavItem(
+            icon: Icons.handyman_outlined,
+            activeIcon: Icons.handyman,
             label: 'Operations',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
-            activeIcon: Icon(Icons.person),
+          AppBottomNavItem(
+            icon: Icons.person_outline,
+            activeIcon: Icons.person,
             label: 'Profile',
           ),
         ],

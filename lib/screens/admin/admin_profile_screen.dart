@@ -4,6 +4,7 @@ import '../../navigation/nav.dart';
 import '../../screens/role_selection/role_selection_screen.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/app_settings.dart';
 import '../../widgets/status_badge.dart';
 
 class AdminProfileScreen extends StatelessWidget {
@@ -90,49 +91,41 @@ class AdminProfileScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 8),
-          Card(
-            child: Column(
-              children: [
-                const _SettingsTile(
-                  icon: Icons.notifications_outlined,
-                  title: 'Notifications',
-                  subtitle: 'Job alerts, allocation updates',
-                ),
-                const Divider(height: 1, indent: 56),
-                const _SettingsTile(
-                  icon: Icons.business_outlined,
-                  title: 'Organization Details',
-                  subtitle: 'Federation & cooperative profile',
-                ),
-                const Divider(height: 1, indent: 56),
-                const _SettingsTile(
-                  icon: Icons.lock_outline,
-                  title: 'Permissions',
-                  subtitle: 'Manage admin access levels',
-                ),
-                const Divider(height: 1, indent: 56),
-                const _SettingsTile(
-                  icon: Icons.help_outline,
-                  title: 'Help & Support',
-                  subtitle: 'Docs, contact and FAQs',
-                ),
-                const Divider(height: 1, indent: 56),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: AppColors.error),
-                  title: const Text(
-                    'Logout / Switch Role',
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
-                  ),
-                  onTap: () async {
-                    await AuthService.signOut();
-                    if (context.mounted) {
-                      AppState.reset();
-                      Nav.clearAll(context, const RoleSelectionScreen());
-                    }
-                  },
-                ),
-              ],
-            ),
+          SettingsCard(
+            children: [
+              const AppSettingsTile(
+                icon: Icons.notifications_outlined,
+                title: 'Notifications',
+                subtitle: 'Job alerts, allocation updates',
+              ),
+              const AppSettingsTile(
+                icon: Icons.business_outlined,
+                title: 'Organization Details',
+                subtitle: 'Federation & cooperative profile',
+              ),
+              const AppSettingsTile(
+                icon: Icons.lock_outline,
+                title: 'Permissions',
+                subtitle: 'Manage admin access levels',
+              ),
+              const AppSettingsTile(
+                icon: Icons.help_outline,
+                title: 'Help & Support',
+                subtitle: 'Docs, contact and FAQs',
+              ),
+              AppSettingsTile(
+                icon: Icons.logout,
+                title: 'Logout / Switch Role',
+                iconColor: AppColors.error,
+                onTap: () async {
+                  await AuthService.signOut();
+                  if (context.mounted) {
+                    AppState.reset();
+                    Nav.clearAll(context, const RoleSelectionScreen());
+                  }
+                },
+              ),
+            ],
           ),
           const SizedBox(height: 20),
           const Text(
@@ -160,27 +153,6 @@ class AdminProfileScreen extends StatelessWidget {
           const SizedBox(height: 24),
         ],
       ),
-    );
-  }
-}
-
-class _SettingsTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final String subtitle;
-  const _SettingsTile({
-    required this.icon,
-    required this.title,
-    required this.subtitle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      leading: Icon(icon, color: AppColors.primary),
-      title: Text(title, style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14)),
-      subtitle: Text(subtitle, style: const TextStyle(fontSize: 12)),
-      trailing: const Icon(Icons.chevron_right, color: AppColors.textMuted),
     );
   }
 }

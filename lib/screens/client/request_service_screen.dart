@@ -247,7 +247,7 @@ class StatusNote extends StatelessWidget {
   Widget build(BuildContext context) {
     return const StatusBadge(
       label: 'Available',
-      color: Colors.green,
+      color: AppColors.success,
       icon: Icons.check_circle,
     );
   }
