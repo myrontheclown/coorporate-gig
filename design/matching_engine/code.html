@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+
+<html class="h-full" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Matching Engine</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+        }
+        
+        .pulse-ring {
+            animation: pulse-ring 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+
+        @keyframes pulse-ring {
+            0% { transform: scale(0.8); opacity: 0.5; }
+            100% { transform: scale(2.5); opacity: 0; }
+        }
+
+        .check-item {
+            opacity: 0.4;
+            transform: translateY(10px);
+            transition: all 0.5s ease;
+        }
+
+        .check-item.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .check-item .material-symbols-outlined {
+            color: transparent;
+            transition: color 0.3s ease;
+        }
+
+        .check-item.active .material-symbols-outlined {
+            color: theme('colors.primary');
+        }
+        
+        #match-state {
+            opacity: 0;
+            transform: translateY(20px) scale(0.95);
+            pointer-events: none;
+            transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        #match-state.show {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            pointer-events: auto;
+        }
+        
+        #searching-state {
+            transition: opacity 0.4s ease;
+        }
+        
+        #searching-state.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface h-full flex flex-col font-body-md text-on-surface antialiased overflow-hidden">
+<!-- Top Navigation (Hidden on logic, but structure kept for potential future use or desktop) -->
+<header class="w-full flex justify-between items-center px-margin-mobile h-16 bg-surface/80 backdrop-blur-xl sticky top-0 z-50 border-b border-border-light">
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface">arrow_back</span>
+</button>
+<span class="font-headline-md text-headline-md text-primary font-bold">Match</span>
+<div class="w-10"></div> <!-- Spacer for balance -->
+</header>
+<main class="flex-1 relative w-full max-w-[1200px] mx-auto flex flex-col md:flex-row items-center justify-center p-margin-mobile gap-section-gap h-full">
+<!-- Background ambient glow -->
+<div class="absolute inset-0 z-0 overflow-hidden pointer-events-none flex items-center justify-center">
+<div class="w-[300px] h-[300px] md:w-[600px] md:h-[600px] bg-primary-fixed-dim/30 rounded-full blur-[80px] md:blur-[120px]"></div>
+</div>
+<!-- SEARCHING STATE -->
+<div class="relative z-10 flex flex-col items-center w-full max-w-md mx-auto absolute inset-0 pt-20" id="searching-state">
+<h1 class="font-headline-lg-mobile md:font-headline-lg text-headline-lg-mobile md:text-headline-lg text-center mb-12 text-primary font-bold">
+                Finding the best worker for you
+            </h1>
+<!-- Radar / Spinner animation container -->
+<div class="relative w-32 h-32 mb-16 flex items-center justify-center">
+<div class="absolute inset-0 rounded-full border-2 border-primary/20 pulse-ring"></div>
+<div class="absolute inset-0 rounded-full border-2 border-primary/40 pulse-ring" style="animation-delay: 0.5s;"></div>
+<div class="w-16 h-16 bg-primary rounded-full shadow-[0_0_40px_rgba(0,6,102,0.4)] flex items-center justify-center z-10">
+<span class="material-symbols-outlined text-white text-3xl animate-spin" style="animation-duration: 3s;">search</span>
+</div>
+</div>
+<!-- Visual Checklist -->
+<div class="w-full max-w-sm flex flex-col gap-4">
+<div class="check-item flex items-center gap-4 p-4 rounded-xl glass-panel" id="check-1">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<span class="font-headline-md text-body-lg font-semibold text-charcoal-text">Skill match</span>
+</div>
+<div class="check-item flex items-center gap-4 p-4 rounded-xl glass-panel" id="check-2">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<span class="font-headline-md text-body-lg font-semibold text-charcoal-text">Nearby</span>
+</div>
+<div class="check-item flex items-center gap-4 p-4 rounded-xl glass-panel" id="check-3">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<span class="font-headline-md text-body-lg font-semibold text-charcoal-text">Available</span>
+</div>
+<div class="check-item flex items-center gap-4 p-4 rounded-xl glass-panel" id="check-4">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<span class="font-headline-md text-body-lg font-semibold text-charcoal-text">Experienced</span>
+</div>
+<div class="check-item flex items-center gap-4 p-4 rounded-xl glass-panel" id="check-5">
+<div class="w-8 h-8 rounded-full bg-surface-container flex items-center justify-center">
+<span class="material-symbols-outlined text-xl">check</span>
+</div>
+<span class="font-headline-md text-body-lg font-semibold text-charcoal-text">Highly rated</span>
+</div>
+</div>
+</div>
+<!-- MATCH FOUND STATE -->
+<div class="absolute inset-0 z-20 flex flex-col items-center justify-center w-full px-margin-mobile" id="match-state">
+<div class="w-full max-w-md bg-surface-container-lowest rounded-[2rem] p-6 shadow-[0_24px_48px_-12px_rgba(0,6,102,0.15)] border border-border-light relative overflow-hidden">
+<!-- Premium header badge -->
+<div class="absolute top-0 left-1/2 -translate-x-1/2 bg-gradient-to-r from-primary to-surface-tint text-white px-6 py-1.5 rounded-b-xl font-label-caps text-label-caps tracking-widest shadow-lg z-10 flex items-center gap-2">
+<span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">stars</span>
+                    BEST MATCH
+                </div>
+<!-- Profile Header -->
+<div class="mt-8 flex flex-col items-center text-center">
+<div class="relative w-24 h-24 mb-4">
+<img class="w-full h-full object-cover rounded-full border-4 border-white shadow-lg" data-alt="A professional headshot of a confident female UX designer with dark hair in a well-lit modern office setting. High quality photography with a shallow depth of field. Soft, bright lighting conveying trust and expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCBvOYMpJuCrOmdyuF9c_LF6_mEWP0G1yD8gesXevi_Pv66OBGJ4oq1djLLXq7lF_TguAdl_QGJWG-F80OWcyQvSLiNRIhpvAz_gz_3nHh7pIwvvEeWzhF5N3ZwCIjN4YSxr9Ny3zfhSJR23caVsfE7j2dBuyPosb0ykDkfIFFJ3_OxiPsKizyKsGJ_s22RN3TiYzexaZUQWaYNSVWo3JXtdKWExyIzNJW6UDNqASe_nQeH8aj1O4tf"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-success-green border-2 border-white rounded-full flex items-center justify-center" title="Online"></div>
+</div>
+<h2 class="font-headline-lg text-headline-lg-mobile text-charcoal-text">Elena Rodriguez</h2>
+<p class="font-body-md text-body-md text-slate-body mt-1">Senior UX/UI Designer</p>
+</div>
+<!-- Match Stats/Reasons -->
+<div class="mt-6 bg-surface-container-low rounded-xl p-4 flex flex-col gap-3">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">psychology</span>
+<span class="font-body-md text-body-md text-charcoal-text">Strong skill match</span>
+</div>
+<div class="w-full h-[1px] bg-border-light"></div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">location_on</span>
+<span class="font-body-md text-body-md text-charcoal-text">1.2 km away</span>
+</div>
+<div class="w-full h-[1px] bg-border-light"></div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-success-green">schedule</span>
+<span class="font-body-md text-body-md text-charcoal-text">Available now</span>
+</div>
+</div>
+<!-- Key Metrics -->
+<div class="flex justify-between items-center mt-6 px-4">
+<div class="text-center">
+<div class="font-stat-lg text-stat-lg text-charcoal-text">$85/hr</div>
+<div class="font-label-caps text-label-caps text-slate-body mt-1 uppercase">Rate</div>
+</div>
+<div class="w-[1px] h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="font-stat-lg text-stat-lg text-charcoal-text flex items-center justify-center gap-1">
+<span class="material-symbols-outlined text-[#FFB400] text-xl" style="font-variation-settings: 'FILL' 1;">star</span>
+                            4.9
+                        </div>
+<div class="font-label-caps text-label-caps text-slate-body mt-1 uppercase">Rating</div>
+</div>
+<div class="w-[1px] h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="font-stat-lg text-stat-lg text-charcoal-text">120+</div>
+<div class="font-label-caps text-label-caps text-slate-body mt-1 uppercase">Jobs</div>
+</div>
+</div>
+<!-- Action -->
+<button class="w-full mt-8 bg-primary text-white font-headline-md text-body-lg h-[52px] rounded-full flex items-center justify-center hover:bg-on-primary-fixed-variant transition-colors shadow-lg">
+                    View Profile &amp; Connect
+                </button>
+</div>
+</div>
+</main>
+<script>
+        // Simple sequence to simulate the matching process
+        document.addEventListener('DOMContentLoaded', () => {
+            const checks = [
+                document.getElementById('check-1'),
+                document.getElementById('check-2'),
+                document.getElementById('check-3'),
+                document.getElementById('check-4'),
+                document.getElementById('check-5')
+            ];
+
+            const searchingState = document.getElementById('searching-state');
+            const matchState = document.getElementById('match-state');
+
+            // Sequentially activate checklist items
+            checks.forEach((check, index) => {
+                setTimeout(() => {
+                    check.classList.add('active');
+                }, 500 + (index * 600)); // Staggered delay
+            });
+
+            // Transition to match state after all checks are done
+            setTimeout(() => {
+                searchingState.classList.add('hide');
+                
+                setTimeout(() => {
+                    matchState.classList.add('show');
+                }, 400); // Wait for fade out
+                
+            }, 4000); // Total wait time before showing match
+        });
+    </script>
+</body></html>

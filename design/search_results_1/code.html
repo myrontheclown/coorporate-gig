@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Bharat Seva - Search Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-tertiary": "#ffffff",
+                      "on-primary-fixed": "#000767",
+                      "on-secondary-fixed": "#002204",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "verified-blue": "#2D5BFF",
+                      "tertiary-container": "#5c1800",
+                      "inverse-on-surface": "#f0f1f2",
+                      "secondary-fixed": "#a3f69c",
+                      "error-container": "#ffdad6",
+                      "surface-container-highest": "#e1e3e4",
+                      "on-tertiary-fixed-variant": "#7b2e12",
+                      "on-secondary-container": "#217128",
+                      "on-tertiary-fixed": "#390c00",
+                      "tertiary": "#380b00",
+                      "on-surface-variant": "#454652",
+                      "inverse-primary": "#bdc2ff",
+                      "secondary-container": "#a0f399",
+                      "error": "#ba1a1a",
+                      "outline": "#767683",
+                      "on-error": "#ffffff",
+                      "primary-container": "#1a237e",
+                      "on-tertiary-container": "#e17c5a",
+                      "on-background": "#191c1d",
+                      "border-light": "#E5E7EB",
+                      "inverse-surface": "#2e3132",
+                      "on-error-container": "#93000a",
+                      "on-primary-fixed-variant": "#343d96",
+                      "surface-bright": "#f8f9fa",
+                      "surface-tint": "#4c56af",
+                      "surface-container-high": "#e7e8e9",
+                      "primary-fixed-dim": "#bdc2ff",
+                      "secondary": "#1b6d24",
+                      "on-secondary-fixed-variant": "#005312",
+                      "success-green": "#2E7D32",
+                      "slate-body": "#4B5563",
+                      "surface-container": "#edeeef",
+                      "surface-variant": "#e1e3e4",
+                      "surface": "#f8f9fa",
+                      "on-primary-container": "#8690ee",
+                      "background": "#f8f9fa",
+                      "tertiary-fixed": "#ffdbd0",
+                      "on-primary": "#ffffff",
+                      "surface-container-lowest": "#ffffff",
+                      "outline-variant": "#c6c5d4",
+                      "charcoal-text": "#121212",
+                      "primary-fixed": "#e0e0ff",
+                      "primary": "#000666",
+                      "on-secondary": "#ffffff",
+                      "on-surface": "#191c1d",
+                      "secondary-fixed-dim": "#88d982",
+                      "surface-dim": "#d9dadb",
+                      "surface-container-low": "#f3f4f5"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "section-gap": "32px",
+                      "gutter": "16px",
+                      "margin-desktop": "64px",
+                      "margin-mobile": "20px",
+                      "component-padding": "24px"
+              },
+              "fontFamily": {
+                      "display-lg": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "stat-lg": ["Hanken Grotesk"],
+                      "body-lg": ["Inter"],
+                      "body-md": ["Inter"],
+                      "label-caps": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+                      "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                      "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                      "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                      "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                      "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                      "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }]
+              },
+              "boxShadow": {
+                  "ambient": "0 24px 48px -12px rgba(0, 7, 103, 0.04)"
+              }
+            },
+          }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.filled {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .hide-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .hide-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col font-body-lg text-body-lg">
+<!-- Top AppBar (Mobile/Web Context) -->
+<header class="bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl docked full-width top-0 sticky border-b border-border-light z-40">
+<div class="flex justify-between items-center w-full px-margin-mobile h-16">
+<button aria-label="Go Back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors text-primary">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<div class="flex-1 mx-4">
+<div class="relative w-full">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-outline text-[20px]">search</span>
+<input class="w-full bg-surface-container-low border-0 rounded-full py-2.5 pl-10 pr-4 text-body-md font-body-md text-on-surface focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-colors shadow-sm outline-none" placeholder="Search workers, skills or services" type="text" value="Electrician"/>
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-outline hover:text-primary transition-colors flex items-center justify-center">
+<span class="material-symbols-outlined text-[18px]">close</span>
+</button>
+</div>
+</div>
+<button aria-label="Filter" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors text-primary">
+<span class="material-symbols-outlined">tune</span>
+</button>
+</div>
+<!-- Filters Scroll -->
+<div class="w-full overflow-x-auto hide-scrollbar px-margin-mobile pb-3 pt-1">
+<div class="flex gap-2 w-max">
+<button class="bg-primary text-on-primary px-4 py-2 rounded-full text-body-md font-body-md font-medium whitespace-nowrap transition-colors flex items-center gap-1.5 shadow-sm">
+<span class="material-symbols-outlined text-[16px]">location_on</span> Nearby
+                </button>
+<button class="bg-surface-container-low hover:bg-surface-container-high text-charcoal-text px-4 py-2 rounded-full text-body-md font-body-md font-medium whitespace-nowrap transition-colors border border-border-light shadow-sm">
+                    Top Rated
+                </button>
+<button class="bg-surface-container-low hover:bg-surface-container-high text-charcoal-text px-4 py-2 rounded-full text-body-md font-body-md font-medium whitespace-nowrap transition-colors border border-border-light shadow-sm">
+                    Most Experienced
+                </button>
+<button class="bg-surface-container-low hover:bg-surface-container-high text-charcoal-text px-4 py-2 rounded-full text-body-md font-body-md font-medium whitespace-nowrap transition-colors border border-border-light shadow-sm">
+                    Available Now
+                </button>
+<button class="bg-surface-container-low hover:bg-surface-container-high text-charcoal-text px-4 py-2 rounded-full text-body-md font-body-md font-medium whitespace-nowrap transition-colors border border-border-light shadow-sm flex items-center gap-1.5">
+<span class="material-symbols-outlined text-[16px] text-verified-blue">verified</span> Verified
+                </button>
+</div>
+</div>
+</header>
+<!-- Main Content Area -->
+<main class="flex-1 max-w-[1200px] w-full mx-auto px-margin-mobile md:px-margin-desktop py-6 pb-24 md:pb-8 flex flex-col gap-section-gap">
+<!-- Results Header -->
+<div class="flex items-center justify-between">
+<h1 class="font-headline-md text-headline-md text-on-surface">24 Electricians nearby</h1>
+<span class="text-body-md font-body-md text-slate-body">Sort by: <strong class="text-primary cursor-pointer">Relevance</strong></span>
+</div>
+<!-- Worker Cards List -->
+<div class="flex flex-col gap-gutter">
+<!-- Card 1: Rajesh Kumar (Premium Highlighted) -->
+<article class="bg-surface-container-lowest rounded-DEFAULT border border-border-light shadow-ambient p-component-padding relative overflow-hidden transition-all hover:shadow-lg">
+<!-- Highlight Banner -->
+<div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-primary to-verified-blue"></div>
+<div class="absolute top-4 right-4 bg-primary-container text-on-primary-container px-2 py-1 rounded text-label-caps font-label-caps flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">star</span> Best Match
+                </div>
+<div class="flex flex-col md:flex-row gap-6">
+<!-- Avatar & Quick Stats -->
+<div class="flex items-start md:flex-col gap-4 md:w-48 shrink-0">
+<div class="relative w-20 h-20 md:w-24 md:h-24 rounded-full overflow-hidden border-2 border-surface-container-lowest shadow-sm shrink-0">
+<img alt="Rajesh Kumar Profile" class="w-full h-full object-cover" data-alt="A professional portrait of a confident middle-aged Indian male electrician wearing a clean, modern navy blue uniform shirt. He is looking directly at the camera with a subtle, friendly smile. The background is a brightly lit, clean indoor setting with high-key lighting, maintaining a premium corporate minimal aesthetic with crisp whites and deep navy tones. The image feels trustworthy and highly professional." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDawrmWApv941G1HQ3cpfVrg3gUovZw69PDSPEe4-TGgLJPz3Y0t_KiheeGrCyIdHIRlwdG_XFq3M9TqW3BKE8gDm4vR2TMR0KHOb9FGfw_v5FtOy1vw4u439iacF8Ev8r702edpR4eg7_wEDhO_1GqiiY2DIbyLQnmf86slootlN6a4bsx6QteKZvkU5lHSNu7RekAtb3urewPshwfZAZU7zel6iDL37mGVH4oVmOVOAbpJ-r8JlAy"/>
+</div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined filled text-warning text-[18px]" style="color: #F59E0B">star</span>
+<span class="font-body-md text-body-md font-bold text-on-surface">4.8</span>
+<span class="text-body-md font-body-md">(240 jobs)</span>
+</div>
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined text-[16px]">work</span>
+<span class="text-body-md font-body-md">8 yrs exp.</span>
+</div>
+<div class="flex items-center gap-1 text-success-green mt-1">
+<span class="material-symbols-outlined text-[16px]">check_circle</span>
+<span class="text-body-md font-body-md font-medium">Available</span>
+</div>
+</div>
+</div>
+<!-- Core Info -->
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h2 class="font-headline-lg-mobile text-headline-lg-mobile md:font-headline-lg md:text-headline-lg text-on-surface">Rajesh Kumar</h2>
+<span class="material-symbols-outlined filled text-verified-blue text-[20px]" title="Aadhaar Verified">verified</span>
+</div>
+<p class="text-body-lg font-body-lg text-slate-body mb-4">Master Electrician • Commercial &amp; Residential</p>
+<!-- Badges -->
+<div class="flex flex-wrap gap-2 mb-4">
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-label-caps font-label-caps text-slate-body border border-border-light">
+<span class="material-symbols-outlined text-[14px] text-verified-blue">shield</span> Aadhaar Verified
+                                </div>
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-label-caps font-label-caps text-slate-body border border-border-light">
+<span class="material-symbols-outlined text-[14px] text-success-green">handyman</span> Skill Verified
+                                </div>
+<div class="flex items-center gap-1 bg-gradient-to-r from-amber-50 to-orange-50 px-2 py-1 rounded text-label-caps font-label-caps text-amber-800 border border-amber-200">
+<span class="material-symbols-outlined text-[14px]">groups</span> Goa Electrical Workers Cooperative
+                                </div>
+</div>
+</div>
+<!-- Footer / Actions -->
+<div class="flex items-center justify-between mt-4 md:mt-0 pt-4 border-t border-border-light/50">
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="text-body-md font-body-md">1.2 km away</span>
+</div>
+<button class="bg-primary hover:bg-primary/90 text-on-primary px-6 py-2 rounded-full text-body-md font-body-md font-medium transition-colors shadow-sm">
+                                View Profile
+                            </button>
+</div>
+</div>
+</div>
+</article>
+<!-- Card 2: Amit Desai (Standard) -->
+<article class="bg-surface-container-lowest rounded-DEFAULT border border-border-light shadow-sm p-component-padding transition-all hover:shadow-ambient">
+<div class="flex flex-col md:flex-row gap-6">
+<!-- Avatar & Quick Stats -->
+<div class="flex items-start md:flex-col gap-4 md:w-48 shrink-0">
+<div class="relative w-16 h-16 md:w-24 md:h-24 rounded-full overflow-hidden border border-border-light bg-surface-container-low shrink-0 flex items-center justify-center text-primary-container text-display-lg font-display-lg font-bold">
+                            AD
+                        </div>
+<div class="flex flex-col gap-1">
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined filled text-warning text-[18px]" style="color: #F59E0B">star</span>
+<span class="font-body-md text-body-md font-bold text-on-surface">4.5</span>
+<span class="text-body-md font-body-md">(85 jobs)</span>
+</div>
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined text-[16px]">work</span>
+<span class="text-body-md font-body-md">3 yrs exp.</span>
+</div>
+</div>
+</div>
+<!-- Core Info -->
+<div class="flex-1 flex flex-col justify-between">
+<div>
+<div class="flex items-center gap-2 mb-1">
+<h2 class="font-headline-md text-headline-md text-on-surface">Amit Desai</h2>
+</div>
+<p class="text-body-lg font-body-lg text-slate-body mb-4">Residential Electrician</p>
+<!-- Badges -->
+<div class="flex flex-wrap gap-2 mb-4">
+<div class="flex items-center gap-1 bg-surface-container px-2 py-1 rounded text-label-caps font-label-caps text-slate-body border border-border-light">
+<span class="material-symbols-outlined text-[14px] text-verified-blue">shield</span> Aadhaar Verified
+                                </div>
+</div>
+</div>
+<!-- Footer / Actions -->
+<div class="flex items-center justify-between mt-4 md:mt-0 pt-4 border-t border-border-light/50">
+<div class="flex items-center gap-1 text-slate-body">
+<span class="material-symbols-outlined text-[18px]">location_on</span>
+<span class="text-body-md font-body-md">2.5 km away</span>
+</div>
+<button class="bg-surface-container hover:bg-surface-container-high text-primary px-6 py-2 rounded-full text-body-md font-body-md font-medium transition-colors border border-primary/20">
+                                View Profile
+                            </button>
+</div>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden fixed bottom-0 w-full z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,7,103,0.04)] bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-2xl pt-3 pb-safe px-4 flex justify-around items-center h-20 border-t border-border-light/50">
+<!-- Active Tab: Home (Search context usually springs from home, but we adhere to instruction "Home active") -->
+<button aria-label="Home" class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-6 py-2 scale-[0.9] duration-200">
+<span class="material-symbols-outlined filled">home</span>
+<span class="text-label-caps font-label-caps mt-1">Home</span>
+</button>
+<button aria-label="Requests" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-caps font-label-caps mt-1">Requests</span>
+</button>
+<button aria-label="Profile" class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-caps font-label-caps mt-1">Profile</span>
+</button>
+</nav>
+<style>
+        /* Safe area padding for modern mobile browsers */
+        .pb-safe { padding-bottom: env(safe-area-inset-bottom, 16px); }
+    </style>
+</body></html>

@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Search Results</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    borderRadius: {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    spacing: {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    fontFamily: {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    fontSize: {
+                        "label-caps": ["12px", { lineHeight: "16px", letterSpacing: "0.05em", fontWeight: "700" }],
+                        "headline-lg-mobile": ["24px", { lineHeight: "30px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "body-md": ["14px", { lineHeight: "22px", fontWeight: "400" }],
+                        "headline-md": ["20px", { lineHeight: "28px", fontWeight: "600" }],
+                        "stat-lg": ["22px", { lineHeight: "28px", fontWeight: "700" }],
+                        "body-lg": ["16px", { lineHeight: "26px", fontWeight: "400" }],
+                        "headline-lg": ["28px", { lineHeight: "34px", letterSpacing: "-0.02em", fontWeight: "700" }],
+                        "display-lg": ["36px", { lineHeight: "44px", letterSpacing: "-0.03em", fontWeight: "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .material-symbols-outlined.fill {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        /* Custom scrollbar for horizontal filters */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background font-body-md antialiased min-h-screen flex flex-col md:flex-row">
+<!-- Top App Bar (Mobile Only) -->
+<header class="md:hidden flex justify-between items-center w-full px-margin-mobile h-16 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl docked full-width top-0 sticky z-40 border-b border-border-light dark:border-outline-variant">
+<div class="flex items-center gap-3">
+<button class="w-10 h-10 rounded-full bg-surface-container flex items-center justify-center text-primary">
+<span class="material-symbols-outlined">arrow_back_ios_new</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-extrabold text-primary dark:text-primary-fixed-dim">Panaji, Goa</h1>
+</div>
+<button class="w-10 h-10 rounded-full overflow-hidden border border-border-light">
+<img alt="User Profile Photo" class="w-full h-full object-cover" data-alt="A close-up portrait of a professional smiling warmly in soft, natural daylight. The background is slightly blurred showing a modern office environment. High-key lighting, bright and modern light-mode aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDk5bZ8SmQdusrAIjCBHljJPx0zw7iUbrVCA3q8fZ2jM5xzh7QPfQOm0kM7Z7aNNPZ8Mku8retavaIezIV6pgUg_oZ7j52b7CZYzrfbR_ShhRrzX9qDDxvLy118lEeqas-Lx-L-hEDxEECITQuV7__IZBRXjeph-_wM6s8qq0rX1mLTqnOYuBvZ4nTHoLBVlfIvbgKgNOhMnmICmyTgDRZiTvp8ubqp8Ns9m9lb-DDppqGoYYHIkl-L"/>
+</button>
+</header>
+<!-- Side Navigation (Web Only) -->
+<nav class="hidden md:flex flex-col w-64 bg-surface/90 border-r border-border-light h-screen sticky top-0 px-6 py-8 flex-shrink-0 z-40">
+<h1 class="text-display-lg font-display-lg text-primary mb-12">Logo</h1>
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-surface-variant/50 transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">home</span>
+<span class="text-label-caps font-label-caps">Home</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl bg-primary-container text-on-primary-container" href="#">
+<span class="material-symbols-outlined fill">search</span>
+<span class="text-label-caps font-label-caps">Explore</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-surface-variant/50 transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-caps font-label-caps">Requests</span>
+</a>
+<a class="flex items-center gap-4 px-4 py-3 rounded-xl hover:bg-surface-variant/50 transition-colors text-on-surface-variant" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-caps font-label-caps">Profile</span>
+</a>
+</div>
+</nav>
+<!-- Main Content Canvas -->
+<main class="flex-1 pb-24 md:pb-8 pt-4 md:pt-8 px-margin-mobile md:px-margin-desktop max-w-[1200px] mx-auto w-full">
+<!-- Header & Controls -->
+<div class="mb-section-gap">
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
+<div>
+<h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-charcoal-text mb-2">12 electricians near you</h2>
+<p class="text-slate-body text-body-md">Available for bookings today</p>
+</div>
+<div class="flex items-center gap-3">
+<div class="bg-surface-container-low rounded-full p-1 flex items-center border border-border-light">
+<button class="px-4 py-2 rounded-full bg-primary text-on-primary text-label-caps font-label-caps flex items-center gap-2 shadow-sm transition-transform active:scale-95">
+<span class="material-symbols-outlined text-[18px]">format_list_bulleted</span>
+                            List
+                        </button>
+<button class="px-4 py-2 rounded-full text-on-surface-variant hover:text-primary text-label-caps font-label-caps flex items-center gap-2 transition-colors">
+<span class="material-symbols-outlined text-[18px]">map</span>
+                            Map
+                        </button>
+</div>
+<button class="h-10 px-4 rounded-full bg-surface border border-border-light flex items-center gap-2 text-label-caps font-label-caps text-charcoal-text hover:bg-surface-variant/50 transition-colors">
+                        Recommended
+                        <span class="material-symbols-outlined text-[18px]">keyboard_arrow_down</span>
+</button>
+</div>
+</div>
+<!-- Horizontal Filters -->
+<div class="flex overflow-x-auto no-scrollbar gap-3 pb-2 -mx-margin-mobile px-margin-mobile md:mx-0 md:px-0">
+<button class="flex-shrink-0 h-10 w-10 rounded-full bg-primary text-on-primary flex items-center justify-center shadow-sm">
+<span class="material-symbols-outlined text-[20px]">tune</span>
+</button>
+<button class="flex-shrink-0 h-10 px-4 rounded-full bg-surface-container-low text-charcoal-text text-label-caps font-label-caps border border-border-light hover:bg-surface-variant/50 transition-colors flex items-center gap-2">
+                    Services
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex-shrink-0 h-10 px-4 rounded-full bg-surface-container-low text-charcoal-text text-label-caps font-label-caps border border-border-light hover:bg-surface-variant/50 transition-colors flex items-center gap-2">
+                    Budget
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex-shrink-0 h-10 px-4 rounded-full bg-surface-container-low text-charcoal-text text-label-caps font-label-caps border border-border-light hover:bg-surface-variant/50 transition-colors flex items-center gap-2">
+                    Level
+                    <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<button class="flex-shrink-0 h-10 px-4 rounded-full bg-surface-container-low text-charcoal-text text-label-caps font-label-caps border border-border-light hover:bg-surface-variant/50 transition-colors flex items-center gap-2">
+                    Availability
+                </button>
+</div>
+</div>
+<!-- Worker Cards Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-DEFAULT border border-border-light shadow-[0_4px_24px_rgba(0,7,103,0.04)] overflow-hidden relative group">
+<!-- Cover Image Area -->
+<div class="h-32 w-full relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Abstract gradient background in deep blues and purples, modern sleek digital aesthetic, soft lighting, clean professional feel." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAlT4uECoaRPZPS5utUpYdT1I2KUEprMfOi1SzZoGtISikE6hGoBNRzmH10GU9DuIMIGr91EqLb7HpN8hFcD2pl5JeU-IX_1EUY8Yjs-aGdoS9a6C3NQcPN-iO_ZHwTZygvBbDGv1P5ELmhRDyFsAjfkb2NFhOFZPqACBQ-OITn77cwgnYdPKBb-eTJZBhKNgvIEixXHcx28K4AGotkb6fDxKPmTyzIUOpxDaouWlAcw8jy-a-u0AIT')"></div>
+<!-- Badges -->
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full text-primary text-[10px] font-bold tracking-wide flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px] fill">verified</span> Top Rated
+                        </span>
+</div>
+</div>
+<div class="p-component-padding pt-0 relative">
+<!-- Avatar overlapping -->
+<div class="relative w-20 h-20 -mt-10 mb-4 ml-1">
+<img alt="Worker Profile" class="w-full h-full rounded-full border-4 border-surface-container-lowest object-cover bg-surface-variant" data-alt="Portrait of a friendly male electrician in his 30s, wearing clean professional work attire. Bright, natural lighting, looking confidently at the camera." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDY0s9K7ibA2CNTZSPy7pPTbqFAwRYP6CG0OIyFufEDDltBdBiLMnr9R8aCZo2NxN0b9K9OhITE9ZpM3ix9VfRb0a88L6Vw_pbe1_CBuqevWCD55Ih_QB_w9LBzzXyy2tWLktRDpX0O-4NxB9HVHxENHWhXasX6HUslc3RZFLlD9GAO0yqZGS9gtl3H4BKRO8fqE14V-WnAbf8rt6HhI1ldtY6HWfzEi96rxqemqKf29sNjDmiebPMe"/>
+<div class="absolute bottom-1 right-1 w-4 h-4 bg-success-green border-2 border-surface-container-lowest rounded-full"></div>
+</div>
+<!-- Header -->
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text">David Chen</h3>
+<p class="text-slate-body text-body-md flex items-center gap-1">
+                                Master Electrician
+                            </p>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:bg-surface-variant/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+</div>
+<!-- Stats Row -->
+<div class="flex justify-between items-center py-4 border-y border-border-light mb-5">
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text flex items-center gap-1"><span class="material-symbols-outlined text-[20px] text-primary fill">star</span> 4.9</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rating</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">120+</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Jobs</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">$85/hr</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rate</div>
+</div>
+</div>
+<!-- Actions -->
+<div class="flex gap-3">
+<button class="flex-1 min-h-[52px] bg-primary text-on-primary rounded-full font-bold text-body-md hover:bg-primary/90 transition-colors active:scale-95">
+                            Contact Me
+                        </button>
+<button class="flex-1 min-h-[52px] bg-surface-container-low text-charcoal-text border border-border-light rounded-full font-bold text-body-md hover:bg-surface-variant/50 transition-colors">
+                            View Profile
+                        </button>
+</div>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-DEFAULT border border-border-light shadow-[0_4px_24px_rgba(0,7,103,0.04)] overflow-hidden relative group">
+<div class="h-32 w-full relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Minimalist abstract background, soft gray and silver tones, clean professional aesthetic, subtle lighting gradients." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCngtBwu88cFvTPfQh4qKGtsfsDa-RcYPWMHadMh-8tMwivmwAlQGP16TXa2YPT_icgBbsDpUfG8dpajKAMpQqZEHfr_Pa6BQ6r11wCefU-UrH-PtBL-OtzIgqmFwu9OVaHJ6bqaQGWOXgeaItSixVgjHcH3pH8ReqEjV1wT5Z44rZFnEH1PUoldiEVQocXjB9K98NHaGs9pTw8DUH1497SonhiqbKxNl0eFUmiuzUhm-OpVn-u4bMH')"></div>
+<div class="absolute top-4 left-4 flex gap-2">
+<span class="bg-surface/90 backdrop-blur-md px-3 py-1 rounded-full text-secondary text-[10px] font-bold tracking-wide flex items-center gap-1 shadow-sm">
+<span class="material-symbols-outlined text-[12px]">bolt</span> Fast Reply
+                        </span>
+</div>
+</div>
+<div class="p-component-padding pt-0 relative">
+<div class="relative w-20 h-20 -mt-10 mb-4 ml-1">
+<img alt="Worker Profile" class="w-full h-full rounded-full border-4 border-surface-container-lowest object-cover bg-surface-variant" data-alt="Portrait of a professional female electrician wearing a hard hat and safety glasses, smiling. Industrial modern background, bright lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBa6HDfjdu-rfxjnP2ynbmlxmI7yTGcxVxVT4mLZjWICoKxdHQSIS-WbGk1H4fuNPRxC2--OpY7P95-D4DQ_5MOEc6NHtFFKut3DGSJvjrr9My-DIEDirudKYcdT_zYkfDEijiU3UxxONC45Mgnmd58MOlUO3q13WT9ssbFmndQ7KC_fqvGs_v9MusP84J7Xh3nRYgMCiA7k2qdcHZ7epHKeW1WO-5Rgu59PsJgf73Dar_gUEiJge3q"/>
+<div class="absolute bottom-1 right-1 w-4 h-4 bg-outline-variant border-2 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text flex items-center gap-2">Sarah Jenkins <span class="material-symbols-outlined text-verified-blue text-[18px] fill" title="Verified Cooperative Member">verified</span></h3>
+<p class="text-slate-body text-body-md">Residential Specialist</p>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-primary bg-primary/10 transition-colors">
+<span class="material-symbols-outlined fill">favorite</span>
+</button>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-border-light mb-5">
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text flex items-center gap-1"><span class="material-symbols-outlined text-[20px] text-primary fill">star</span> 4.8</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rating</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">85+</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Jobs</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">$75/hr</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rate</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 min-h-[52px] bg-primary text-on-primary rounded-full font-bold text-body-md hover:bg-primary/90 transition-colors active:scale-95">
+                            Contact Me
+                        </button>
+<button class="flex-1 min-h-[52px] bg-surface-container-low text-charcoal-text border border-border-light rounded-full font-bold text-body-md hover:bg-surface-variant/50 transition-colors">
+                            View Profile
+                        </button>
+</div>
+</div>
+</article>
+<!-- Card 3 -->
+<article class="bg-surface-container-lowest rounded-DEFAULT border border-border-light shadow-[0_4px_24px_rgba(0,7,103,0.04)] overflow-hidden relative group hidden lg:block">
+<div class="h-32 w-full relative">
+<div class="w-full h-full bg-cover bg-center" data-alt="Abstract dark blue and gold textured background, elegant and premium feel, subtle gradients." style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA9dr2LmMUR4PpErVZZ2RurbntG4FP6-EhsUl72LM-QhGgT4eolbni70Z43dmK2hLKOpG71nQDs3shfN5Z12C4ewrRtjQacDPXF3XSWTGEqmB7kXJ8ABCd8dApeuk7YpuETVCTGtnHOJBYC89idUC9mwM7JvHr5jbNHawXFDPjXSG5n2_kn5YGT19ubiCDdTnXJA5NTI0dEUigBW9ya1yj91TObdNKsgbSFrePneUjtiyqb6UqjUcmh')"></div>
+</div>
+<div class="p-component-padding pt-0 relative">
+<div class="relative w-20 h-20 -mt-10 mb-4 ml-1">
+<img alt="Worker Profile" class="w-full h-full rounded-full border-4 border-surface-container-lowest object-cover bg-surface-variant" data-alt="Portrait of an experienced senior electrician in uniform, confident expression. Clean, well-lit workshop background, high contrast professional photography." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBlIj01F6VZrlCgrpdCxXYY6Zk12T0UKhjk0rb0SXLFB1M9D7s7lp_vWk4sMu4b0u8fP5Ly32fBiLZ3sOf0XH36J3bukcqWRW1fczxjFRFpilD24BsT68KbDNb1deDC5tON0DtZg8QLiHplI6pM6b-v7bjmjLkogBlzramVuQ9oRgUAsFP_NDy-dC1XX876El_gv8qrN-PLncE9MMVK4dRkcJU41bt2xQ1XVoJVCGh6ZrL32xHNSx4E"/>
+<div class="absolute bottom-1 right-1 w-4 h-4 bg-success-green border-2 border-surface-container-lowest rounded-full"></div>
+</div>
+<div class="flex justify-between items-start mb-4">
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text">Marcus Torres</h3>
+<p class="text-slate-body text-body-md">Commercial &amp; Smart Home</p>
+</div>
+<button class="w-10 h-10 rounded-full flex items-center justify-center text-outline hover:bg-surface-variant/50 hover:text-primary transition-colors">
+<span class="material-symbols-outlined">favorite_border</span>
+</button>
+</div>
+<div class="flex justify-between items-center py-4 border-y border-border-light mb-5">
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text flex items-center gap-1"><span class="material-symbols-outlined text-[20px] text-primary fill">star</span> 5.0</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rating</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">200+</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Jobs</div>
+</div>
+<div class="w-px h-8 bg-border-light"></div>
+<div class="text-center">
+<div class="text-stat-lg font-stat-lg text-charcoal-text">$95/hr</div>
+<div class="text-label-caps font-label-caps text-slate-body mt-1">Rate</div>
+</div>
+</div>
+<div class="flex gap-3">
+<button class="flex-1 min-h-[52px] bg-primary text-on-primary rounded-full font-bold text-body-md hover:bg-primary/90 transition-colors active:scale-95">
+                            Contact Me
+                        </button>
+<button class="flex-1 min-h-[52px] bg-surface-container-low text-charcoal-text border border-border-light rounded-full font-bold text-body-md hover:bg-surface-variant/50 transition-colors">
+                            View Profile
+                        </button>
+</div>
+</div>
+</article>
+</div>
+</main>
+<!-- Bottom Nav Bar (Mobile Only) -->
+<nav class="md:hidden bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-2xl text-primary dark:text-primary-fixed-dim fixed bottom-0 w-full z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,7,103,0.04)] flex justify-around items-center pt-3 pb-safe px-4 pb-6">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 duration-200">home</span>
+<span class="text-label-caps font-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-6 py-2 scale-90 duration-200" href="#">
+<span class="material-symbols-outlined fill">search</span>
+<span class="text-label-caps font-label-caps mt-1">Explore</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 duration-200">assignment</span>
+<span class="text-label-caps font-label-caps mt-1">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors group" href="#">
+<span class="material-symbols-outlined group-active:scale-90 duration-200">person</span>
+<span class="text-label-caps font-label-caps mt-1">Profile</span>
+</a>
+</nav>
+</body></html>

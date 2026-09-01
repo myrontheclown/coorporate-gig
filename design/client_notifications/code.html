@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Notifications</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700;800&amp;family=Inter:wght@400&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface-variant": "#454652",
+                      "on-primary": "#ffffff",
+                      "on-secondary-fixed-variant": "#005312",
+                      "surface": "#f8f9fa",
+                      "on-tertiary-fixed-variant": "#7b2e12",
+                      "outline": "#767683",
+                      "tertiary-fixed": "#ffdbd0",
+                      "primary": "#000666",
+                      "inverse-surface": "#2e3132",
+                      "on-tertiary": "#ffffff",
+                      "on-surface": "#191c1d",
+                      "surface-bright": "#f8f9fa",
+                      "surface-variant": "#e1e3e4",
+                      "on-primary-container": "#8690ee",
+                      "surface-tint": "#4c56af",
+                      "on-background": "#191c1d",
+                      "tertiary": "#380b00",
+                      "primary-fixed": "#e0e0ff",
+                      "on-secondary-fixed": "#002204",
+                      "surface-container-lowest": "#ffffff",
+                      "on-primary-fixed-variant": "#343d96",
+                      "background": "#f8f9fa",
+                      "tertiary-fixed-dim": "#ffb59d",
+                      "outline-variant": "#c6c5d4",
+                      "primary-fixed-dim": "#bdc2ff",
+                      "verified-blue": "#2D5BFF",
+                      "surface-dim": "#d9dadb",
+                      "on-secondary-container": "#217128",
+                      "on-tertiary-container": "#e17c5a",
+                      "border-light": "#E5E7EB",
+                      "on-error-container": "#93000a",
+                      "secondary-fixed": "#a3f69c",
+                      "surface-container-low": "#f3f4f5",
+                      "on-secondary": "#ffffff",
+                      "on-error": "#ffffff",
+                      "surface-container-highest": "#e1e3e4",
+                      "secondary-container": "#a0f399",
+                      "surface-container-high": "#e7e8e9",
+                      "slate-body": "#4B5563",
+                      "tertiary-container": "#5c1800",
+                      "inverse-primary": "#bdc2ff",
+                      "on-tertiary-fixed": "#390c00",
+                      "secondary": "#1b6d24",
+                      "on-primary-fixed": "#000767",
+                      "surface-container": "#edeeef",
+                      "success-green": "#2E7D32",
+                      "secondary-fixed-dim": "#88d982",
+                      "inverse-on-surface": "#f0f1f2",
+                      "error": "#ba1a1a",
+                      "charcoal-text": "#121212",
+                      "primary-container": "#1a237e",
+                      "error-container": "#ffdad6"
+              },
+              "borderRadius": {
+                      "DEFAULT": "1rem",
+                      "lg": "2rem",
+                      "xl": "3rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-desktop": "64px",
+                      "margin-mobile": "20px",
+                      "section-gap": "32px",
+                      "component-padding": "24px",
+                      "gutter": "16px"
+              },
+              "fontFamily": {
+                      "headline-lg-mobile": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "stat-lg": ["Hanken Grotesk"],
+                      "display-lg": ["Hanken Grotesk"],
+                      "label-caps": ["Hanken Grotesk"],
+                      "headline-lg": ["Hanken Grotesk"],
+                      "body-md": ["Inter"],
+                      "body-lg": ["Inter"]
+              },
+              "fontSize": {
+                      "headline-lg-mobile": ["24px", {"lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "headline-md": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+                      "stat-lg": ["22px", {"lineHeight": "28px", "fontWeight": "700"}],
+                      "display-lg": ["36px", {"lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800"}],
+                      "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700"}],
+                      "headline-lg": ["28px", {"lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                      "body-md": ["14px", {"lineHeight": "22px", "fontWeight": "400"}],
+                      "body-lg": ["16px", {"lineHeight": "26px", "fontWeight": "400"}]
+              }
+            },
+          },
+        }
+      </script>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface min-h-screen text-on-surface antialiased font-body-lg pt-14 pb-16">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface shadow-sm flex justify-between items-center px-container-padding h-14">
+<div class="flex items-center gap-4">
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-surface-container transition-colors p-2 rounded-full active:scale-95 duration-200">
+                arrow_back
+            </button>
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Notifications</h1>
+</div>
+<div class="flex items-center">
+<!-- Placeholder trailing action if needed, standard is clear all for notifications -->
+<button class="font-body-md text-body-md text-primary font-semibold hover:bg-surface-container px-3 py-1 rounded-full transition-colors active:scale-95 duration-200">
+                Clear
+            </button>
+</div>
+</header>
+<!-- Main Content -->
+<main class="px-margin-mobile md:px-margin-desktop py-section-gap max-w-[800px] mx-auto">
+<!-- Today Group -->
+<section class="mb-section-gap">
+<h2 class="font-label-caps text-label-caps text-slate-body mb-gutter uppercase tracking-wider">Today</h2>
+<div class="flex flex-col gap-4">
+<!-- Unread Notification 1 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 shadow-[0_4px_24px_rgba(0,6,102,0.04)] relative overflow-hidden">
+<!-- Unread Indicator Line -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-verified-blue rounded-l-[1rem]"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-success-green">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface">Booking Confirmed</h3>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">5:42 PM</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Rajesh Kumar accepted your Electrical Repair request.</p>
+</div>
+</div>
+<!-- Unread Notification 2 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 shadow-[0_4px_24px_rgba(0,6,102,0.04)] relative overflow-hidden">
+<!-- Unread Indicator Line -->
+<div class="absolute left-0 top-0 bottom-0 w-1 bg-verified-blue rounded-l-[1rem]"></div>
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-primary-fixed flex items-center justify-center text-primary">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">play_circle</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-bold text-on-surface">Service Started</h3>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">6:10 PM</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Your service with Rajesh Kumar has started.</p>
+</div>
+</div>
+<!-- Read Notification 3 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 opacity-75">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">task_alt</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Service Completed</h3>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">7:05 PM</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Your Electrical Repair service has been completed.</p>
+</div>
+</div>
+<!-- Read Notification 4 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 opacity-75">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Feedback Reminder</h3>
+</div>
+<p class="font-body-md text-body-md text-slate-body mb-2">How was your experience with Rajesh Kumar?</p>
+<button class="bg-surface-container-low text-primary font-body-md text-body-md font-semibold px-4 py-2 rounded-full border border-border-light w-fit">
+                            Rate your service
+                        </button>
+</div>
+</div>
+<!-- Read Notification 5 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 opacity-75">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">payments</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Payment</h3>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">7:06 PM</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Payment of ₹650 was successfully recorded.</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Earlier Group -->
+<section>
+<h2 class="font-label-caps text-label-caps text-slate-body mb-gutter uppercase tracking-wider">Earlier</h2>
+<div class="flex flex-col gap-4">
+<!-- Read Notification 6 -->
+<div class="bg-surface-container-lowest border border-border-light rounded-[1rem] p-4 flex gap-4 opacity-75">
+<div class="flex-shrink-0 w-12 h-12 rounded-full bg-surface-container-high flex items-center justify-center text-on-surface-variant">
+<span class="material-symbols-outlined">campaign</span>
+</div>
+<div class="flex-1">
+<div class="flex justify-between items-start mb-1">
+<h3 class="font-body-lg text-body-lg font-semibold text-on-surface">Platform Update</h3>
+<span class="font-body-md text-body-md text-on-surface-variant text-[12px]">Yesterday</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">New cooperative guidelines have been published. Please review them.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- BottomNavBar (Hidden on this screen as it's a sub-page, but requested to show if child of Home, keeping standard shell structure for context, though visually suppressed for focused task flow as per instruction, omitting it entirely is safer to follow "No bottom nav on this specific view") -->
+<!-- Nav omitted based on "No bottom nav on this specific view" -> "Task-Focused" rule -->
+</body></html>

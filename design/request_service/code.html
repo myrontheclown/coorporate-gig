@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Request Service</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #f8f9fa;
+            -webkit-font-smoothing: antialiased;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ambient-shadow {
+            box-shadow: 0 4px 24px rgba(0, 7, 103, 0.04);
+        }
+        .form-input-clean {
+            @apply w-full bg-surface-container-low text-on-surface border-none rounded-lg px-4 py-4 font-body-md focus:ring-1 focus:ring-primary focus:bg-surface-container-lowest transition-all;
+        }
+        .form-label {
+            @apply block text-on-surface-variant font-label-caps text-label-caps mb-2;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen pb-32 md:pb-16 flex justify-center">
+<div class="w-full max-w-[1200px] md:px-margin-desktop relative">
+<!-- TopAppBar (Transactional - Hidden Nav, Back Button present) -->
+<header class="bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-border-light dark:border-outline-variant docked full-width top-0 sticky flex justify-between items-center w-full px-margin-mobile h-16 z-40">
+<div class="flex items-center">
+<button class="p-2 -ml-2 text-primary dark:text-primary-fixed-dim hover:bg-surface-variant/50 dark:hover:bg-inverse-surface/50 rounded-full transition-colors flex items-center justify-center mr-2">
+<span class="material-symbols-outlined text-2xl">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed-dim font-bold">Request Service</h1>
+</div>
+<div class="w-10"></div> <!-- Spacer for centering if needed, or actions -->
+</header>
+<main class="px-margin-mobile pt-section-gap pb-section-gap md:max-w-2xl md:mx-auto">
+<!-- Selected Worker Preview Card -->
+<section class="mb-section-gap">
+<h2 class="form-label">Selected Professional</h2>
+<div class="bg-surface-container-lowest border border-border-light rounded-DEFAULT ambient-shadow p-component-padding flex items-center gap-4">
+<div class="relative w-16 h-16 shrink-0">
+<img class="w-full h-full object-cover rounded-full" data-alt="A professional headshot of a female UI/UX designer with long dark hair, wearing a stylish blazer, smiling confidently against a soft, light-colored background. The lighting is studio quality, bright and modern." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDP8hQfuGMznVbAuLJ52h9VI6QH2fAFiWN75L2wHn-HBa0m-XcObVHW2f0EvY61LM5d-ynRLbWOjIVA0S2iDP3dCHyMQjvSknmhHgUttZpbC8r5H9I2sC9b1osE4LTobB-kcNa2iUPdFyRcC3oVBiIe8kPUW7htWE-j4PexFWpi6qcd5sL7Cm150REbDflVBV9pim0-F0bwQdKeH5VBXENJ4pHlI8ZJRhxqTRr-lRDjrraeBNDpOT6S"/>
+<div class="absolute bottom-0 right-0 w-4 h-4 bg-success-green border-2 border-surface-container-lowest rounded-full"></div>
+</div>
+<div>
+<div class="flex items-center gap-2">
+<h3 class="font-headline-md text-headline-md text-on-surface">Alexa Martinez</h3>
+<span class="material-symbols-outlined text-verified-blue" style="font-variation-settings: 'FILL' 1; font-size: 18px;">verified</span>
+</div>
+<p class="font-body-md text-body-md text-slate-body">UX/UI Designer</p>
+</div>
+</div>
+</section>
+<form class="space-y-section-gap">
+<!-- Service Details -->
+<section>
+<h2 class="form-label">Service Details</h2>
+<div class="space-y-4">
+<div>
+<select class="form-input-clean appearance-none pr-10 cursor-pointer">
+<option disabled="" selected="" value="">Select a Service</option>
+<option value="ui_design">UI Design - Mobile App</option>
+<option value="ux_audit">UX Audit</option>
+<option value="web_design">Web Design</option>
+<option value="prototyping">Prototyping</option>
+</select>
+<div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-on-surface-variant relative -top-12 float-right h-0">
+<span class="material-symbols-outlined">expand_more</span>
+</div>
+</div>
+<div>
+<textarea class="form-input-clean min-h-[120px] resize-y" placeholder="Describe the project requirements, goals, and any specific deliverables expected..."></textarea>
+</div>
+</div>
+</section>
+<!-- Logistics -->
+<section>
+<h2 class="form-label">Logistics</h2>
+<div class="space-y-4">
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<input class="form-input-clean pl-12" placeholder="Location or Remote" type="text"/>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined">calendar_month</span>
+</div>
+<input class="form-input-clean pl-12" placeholder="Date" type="text"/>
+</div>
+<div class="relative">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-on-surface-variant">
+<span class="material-symbols-outlined">schedule</span>
+</div>
+<input class="form-input-clean pl-12" placeholder="Time" type="text"/>
+</div>
+</div>
+</div>
+</section>
+<!-- Estimated Cost -->
+<section class="bg-primary/5 rounded-DEFAULT p-component-padding border border-primary/10">
+<div class="flex justify-between items-center mb-2">
+<span class="font-label-caps text-label-caps text-on-surface-variant uppercase">Estimated Cost</span>
+<span class="material-symbols-outlined text-on-surface-variant text-sm">info</span>
+</div>
+<div class="font-stat-lg text-stat-lg text-on-surface flex items-baseline gap-2">
+                        ₹700 <span class="font-body-md text-body-md text-slate-body font-normal">–</span> ₹900
+                    </div>
+<p class="font-body-md text-body-md text-slate-body mt-2 text-sm">Final cost will be confirmed by the professional after reviewing the request.</p>
+</section>
+<!-- Action -->
+<div class="pt-4">
+<button class="w-full bg-primary text-on-primary font-headline-md text-headline-md h-[56px] rounded-full hover:bg-on-primary-fixed-variant transition-colors flex justify-center items-center gap-2 ambient-shadow" type="button">
+                        Request Service
+                        <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+</div>
+</form>
+</main>
+</div>
+</body></html>

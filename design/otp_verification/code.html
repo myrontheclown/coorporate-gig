@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Worker Arrived - OTP Verification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+        .soft-shadow {
+            box-shadow: 0 10px 40px -10px rgba(0, 7, 103, 0.08);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background antialiased min-h-screen flex flex-col items-center justify-center font-body-md">
+<!-- Transactional Screen: Navigation Shell Suppressed -->
+<main class="w-full max-w-md mx-auto px-margin-mobile flex-1 flex flex-col justify-center py-section-gap">
+<!-- Header Section -->
+<div class="text-center mb-8">
+<h1 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-primary mb-2">Worker Arrived</h1>
+<p class="text-body-md font-body-md text-slate-body">Ask the worker to enter the OTP displayed below to begin the service.</p>
+</div>
+<!-- Worker Profile Card -->
+<div class="bg-surface-container-lowest rounded-xl border border-border-light soft-shadow p-component-padding mb-8 flex flex-col items-center text-center relative overflow-hidden">
+<!-- Subtle decorative background element -->
+<div class="absolute top-0 left-0 w-full h-24 bg-gradient-to-b from-primary-fixed to-transparent opacity-50 z-0"></div>
+<div class="relative z-10">
+<div class="relative inline-block mb-4">
+<img class="w-24 h-24 rounded-full object-cover border-4 border-surface-container-lowest shadow-sm" data-alt="A highly professional portrait of a male service worker named Rajesh Kumar, wearing a clean, modern uniform. He has a warm, trustworthy expression. The lighting is bright and soft, set against a clean, light-mode background typical of a premium corporate service platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCFnIryAFj9R9nX4dB78yi5Tnf8YDVa_KifaMRpqfJPQTTbqn4Dmi0vJ6-hDpcsdCko5wxvJVdjIBf0k02C0vSxW2a8S90hY_dSawavzc59Mm9Dkz90OYAUTGI0x2OVo2r1Py6sxJS-z9oRaIXteIVquHUgNkpX-YPbnLekiQme4Px9w_jJa--D2sJymNsxnaITCC6cdxfaCb3rZZ7GlZOB9HqnukqW06zznCecS8uMecUORrgcG_kS"/>
+<span aria-label="Verified" class="absolute bottom-0 right-0 bg-success-green text-white p-1 rounded-full border-2 border-surface-container-lowest flex items-center justify-center">
+<span class="material-symbols-outlined text-[14px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">verified</span>
+</span>
+</div>
+<h2 class="text-headline-md font-headline-md text-charcoal-text">Rajesh Kumar</h2>
+<p class="text-label-caps font-label-caps text-slate-body uppercase mt-1">Plumbing Specialist</p>
+<div class="flex items-center justify-center gap-1 mt-2 text-surface-tint">
+<span class="material-symbols-outlined text-[16px]" data-weight="fill" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-body-md font-body-md font-semibold">4.9</span>
+<span class="text-body-md font-body-md text-outline ml-1">(120+ jobs)</span>
+</div>
+</div>
+</div>
+<!-- OTP Display Section -->
+<div class="bg-surface-container-lowest rounded-xl border border-border-light soft-shadow p-component-padding mb-8 text-center">
+<p class="text-label-caps font-label-caps text-slate-body uppercase mb-6 tracking-wider">Your Verification Code</p>
+<div class="flex justify-center gap-3 mb-6">
+<!-- OTP Digits -->
+<div class="w-14 h-16 rounded-xl bg-surface-container-low border border-border-light flex items-center justify-center text-display-lg font-display-lg text-primary">7</div>
+<div class="w-14 h-16 rounded-xl bg-surface-container-low border border-border-light flex items-center justify-center text-display-lg font-display-lg text-primary">4</div>
+<div class="w-14 h-16 rounded-xl bg-surface-container-low border border-border-light flex items-center justify-center text-display-lg font-display-lg text-primary">2</div>
+<div class="w-14 h-16 rounded-xl bg-surface-container-low border border-border-light flex items-center justify-center text-display-lg font-display-lg text-primary">9</div>
+</div>
+<!-- Security Notice -->
+<div class="flex items-start gap-2 bg-error-container/30 text-on-error-container p-3 rounded-lg text-left">
+<span class="material-symbols-outlined mt-0.5 text-[20px]">security</span>
+<p class="text-body-md font-body-md text-sm">Do not share this OTP until the worker has physically arrived at your location.</p>
+</div>
+</div>
+<!-- Primary Action -->
+<button class="w-full bg-primary text-on-primary py-4 rounded-full text-headline-md font-headline-md font-bold hover:bg-on-primary-fixed-variant transition-colors flex items-center justify-center gap-2 min-h-[52px]">
+            Verify &amp; Start Service
+            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<!-- Secondary Action (Cancel/Report) -->
+<button class="w-full mt-4 py-3 text-body-md font-body-md text-outline hover:text-charcoal-text transition-colors">
+            Worker hasn't arrived?
+        </button>
+</main>
+</body></html>

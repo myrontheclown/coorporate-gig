@@ -1,0 +1,126 @@
+import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
+import '../../models/worker.dart';
+import '../../navigation/nav.dart';
+import '../../theme/app_theme.dart';
+import 'active_service_screen.dart';
+
+class OtpVerificationScreen extends StatefulWidget {
+  final Worker worker;
+  const OtpVerificationScreen({super.key, required this.worker});
+
+  @override
+  State<OtpVerificationScreen> createState() => _OtpVerificationScreenState();
+}
+
+class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
+  final List<TextEditingController> _controllers =
+      List.generate(4, (_) => TextEditingController());
+  final List<FocusNode> _focusNodes = List.generate(4, (_) => FocusNode());
+
+  @override
+  void dispose() {
+    for (final c in _controllers) {
+      c.dispose();
+    }
+    for (final f in _focusNodes) {
+      f.dispose();
+    }
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Verify OTP')),
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(24),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(height: 10),
+            Center(
+              child: Container(
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: AppColors.primary.withValues(alpha: 0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.verified_user_outlined,
+                  color: AppColors.primary,
+                  size: 44,
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            const Text(
+              'Enter OTP',
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              'OTP sent to +91 98765 43210 to confirm booking with ${widget.worker.name}',
+              style: const TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
+                height: 1.4,
+              ),
+            ),
+            const SizedBox(height: 30),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: List.generate(4, (i) {
+                return SizedBox(
+                  width: 64,
+                  height: 64,
+                  child: TextField(
+                    controller: _controllers[i],
+                    focusNode: _focusNodes[i],
+                    keyboardType: TextInputType.number,
+                    textAlign: TextAlign.center,
+                    maxLength: 1,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.w700,
+                    ),
+                    decoration: const InputDecoration(
+                      counterText: '',
+                    ),
+                    onChanged: (v) {
+                      if (v.isNotEmpty && i < 3) {
+                        _focusNodes[i + 1].requestFocus();
+                      }
+                    },
+                  ),
+                );
+              }),
+            ),
+            const SizedBox(height: 20),
+            Center(
+              child: TextButton(
+                onPressed: () {},
+                child: const Text('Resend OTP (30s)'),
+              ),
+            ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {});
+                AppState.currentBookingStatus.value = 'active';
+                Nav.pushReplacement(
+                  context,
+                  ActiveServiceScreen(worker: widget.worker),
+                );
+              },
+              child: const Text('Verify OTP'),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

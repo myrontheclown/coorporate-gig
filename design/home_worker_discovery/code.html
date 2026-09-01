@@ -1,0 +1,295 @@
+<!DOCTYPE html><html lang="en"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Worker Discovery</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@100..900&amp;family=Inter:wght@100..900&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen pb-32 font-body-md antialiased selection:bg-primary-container selection:text-on-primary-container">
+<header class="bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl docked full-width top-0 sticky border-b border-border-light dark:border-outline-variant flat no shadows flex justify-between items-center w-full px-margin-mobile h-16 z-40">
+<div class="flex items-center gap-3">
+<div class="w-8 h-8 rounded-full overflow-hidden bg-surface-container-highest border border-border-light">
+<img class="w-full h-full object-cover" data-alt="A professional headshot of an Indian male user named Rahul in his 30s, smiling warmly. He has short dark hair and is wearing a neat, minimalist light grey button-down shirt. The background is a soft, out-of-focus modern office setting with bright natural daylight. The lighting is high-key and flattering, suitable for a corporate profile avatar." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC1jod1yXv7bcHVt5NIR3bMMYKVd3kHVNMh_5-X2Me40rKugOHYus--4UiQVzGVD5CXgkG65SVz_qvFGt9OblT-pGy25KGIM9zgvHza0RuuThWqCdGyPVJ_E8AmwVgup8pG7b0E-gEDBnAnCYK3L3Ldm2nA7QuXEv7OIp0MZQS3X5FY-Y0HLAfq71g9rip3kWxGS1DglkvWuwGK5dZhfbPCGOGJ2WSBZU16T61QoRGEu-IsPpSINDX_">
+</div>
+<div class="flex items-center gap-1 cursor-pointer">
+<h1 class="text-headline-md font-headline-md text-primary dark:text-primary-fixed-dim">Panaji, Goa</h1>
+<span class="material-symbols-outlined text-primary text-[20px]">keyboard_arrow_down</span>
+</div>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 dark:hover:bg-inverse-surface/50 text-primary dark:text-primary-fixed-dim transition-transform hover:scale-95">
+<span class="material-symbols-outlined">notifications</span>
+</button>
+</header>
+<main class="pt-6 px-margin-mobile max-w-7xl mx-auto">
+<section class="mb-section-gap">
+<h2 class="text-headline-lg-mobile font-headline-lg-mobile text-charcoal-text mb-1 tracking-tight">Good evening, Rahul</h2>
+<p class="text-body-md font-body-md text-slate-body">Find trusted professionals near you.</p>
+</section>
+<section class="mb-section-gap">
+<div class="relative group">
+<div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline">search</span>
+</div>
+<input class="w-full bg-surface-container-low text-on-surface rounded-full py-4 pl-12 pr-4 border-none focus:ring-1 focus:ring-primary shadow-sm hover:shadow-md transition-shadow text-body-lg font-body-lg placeholder:text-outline-variant outline-none" placeholder="Search workers, skills or services" type="text">
+</div>
+</section>
+<section class="mb-section-gap">
+<div class="flex gap-3 overflow-x-auto snap-x no-scrollbar pb-2">
+<button class="snap-start shrink-0 bg-primary text-on-primary rounded-full px-6 py-2.5 text-label-caps font-label-caps shadow-sm">Electrician</button>
+<button class="snap-start shrink-0 bg-surface-container-highest text-on-surface rounded-full px-6 py-2.5 text-label-caps font-label-caps hover:bg-surface-variant transition-colors">Plumber</button>
+<button class="snap-start shrink-0 bg-surface-container-highest text-on-surface rounded-full px-6 py-2.5 text-label-caps font-label-caps hover:bg-surface-variant transition-colors">Carpenter</button>
+<button class="snap-start shrink-0 bg-surface-container-highest text-on-surface rounded-full px-6 py-2.5 text-label-caps font-label-caps hover:bg-surface-variant transition-colors">Cleaning</button>
+<button class="snap-start shrink-0 bg-surface-container-highest text-on-surface rounded-full px-6 py-2.5 text-label-caps font-label-caps hover:bg-surface-variant transition-colors">Painter</button>
+<button class="snap-start shrink-0 bg-surface-container-highest text-on-surface rounded-full px-6 py-2.5 text-label-caps font-label-caps hover:bg-surface-variant transition-colors">AC Repair</button>
+</div>
+</section>
+<section class="mb-section-gap relative rounded-[24px] overflow-hidden shadow-[0_24px_48px_-12px_rgba(0,7,103,0.08)] bg-surface-container h-64 w-full">
+<div class="absolute inset-0 bg-cover bg-center" data-alt="A clean, highly detailed top-down street map view of Panaji, Goa in a modern, minimal light-mode style. The map uses a sophisticated palette of very soft off-whites for land, subtle pale blue for water bodies, and pristine white for roads. There are no distracting labels. The aesthetic is extremely premium, similar to a high-end corporate application interface." data-location="Panaji, Goa" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTI6M3B9oBipB3-7CRsfGBNUmG5ROcG87Tk--DWMaQzJHbbf-0XZNR5YLXRtGyj8TaxQkwhDsMDlQ9bFTlGPVkZlenfYDtM670zD-UGK2Vrbv3aQkRqAj2t20B7odWO2hkLxmhR5cp6gSZ0gFjibm2A5SxCBch29lnmQSf1FNEfP0Hfp0P_gmsP-ZykZcTCATC_ZQsU73gMjF5tvSihq0eLB0F019X2MhpPOZSeABgswEX804f9Adf')"></div>
+<div class="absolute top-1/4 left-1/3 w-12 h-12 rounded-full border-2 border-surface-container-lowest shadow-lg overflow-hidden z-10 animate-pulse" style="animation-duration: 3s;">
+<img class="w-full h-full object-cover" data-alt="A headshot of a middle-aged male Indian electrician wearing a professional navy blue collared shirt. He has a focused expression. The background is a clean, bright out-of-focus setting. High-quality lighting." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAM367vhQgxxIz3aKbQrUcqrLITZG9v-DRbM9iKxZ-vQiPJ72QQliLYHgZXnB7k-uUUm5_aW3B9rnundbZL22Ip_TDSF66ikDiAvNTLYgGRj02WGIcQ11a8AdU5KamFH9pLrBwLlfdID7JYeKpIFME6eabCY3K_KlKc_rfYIbZZkFJICvZkHbS7ubxJqI5JJh-sEsUU5UWnRZpbz415-MDY4Ujqxed00ObZ_jUWP9tg-D_4pAdvBL_X">
+</div>
+<div class="absolute bottom-1/3 right-1/4 w-10 h-10 rounded-full border-2 border-surface-container-lowest shadow-lg overflow-hidden z-10">
+<img class="w-full h-full object-cover" data-alt="A headshot of a young female Indian plumber wearing a neat grey uniform shirt. She looks confident and approachable. The background is soft and bright, creating a premium corporate feel." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD894PYZQHyzsunZAzVxwLKNr-QP_HLeKa4FTicqF6ROK9GysJt_IS2SRF-Af1lDxRCLcyp-XpI5ko75obfjnHsnaTgKCmpbTOaMFuhlhmbMUPsgFJtkeKBKJUmNTlXMo8IFGgmoTDyc-e4x7LBla2e1NaUWPVxjpLjBLW32RgYzxWHeoqZ64ppa4SjUgnTqgUstaSmgMxDIBY_KN_zuOS4KPg6uoL-YJaUeaYi_1Q3pVUsSzLRixFT">
+</div>
+<div class="absolute top-1/2 right-1/2 w-8 h-8 rounded-full border-2 border-surface-container-lowest shadow-lg overflow-hidden z-10 opacity-70">
+<img class="w-full h-full object-cover" data-alt="A headshot of an older male Indian carpenter with a warm smile, wearing a beige work shirt. Clean, high-key lighting suitable for a modern marketplace app." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD-lkvJMeczuxDZ61Goda0XTckZmBkpahDeLh1C-cvvZxt6ASaE8DO3FYy383J8Zt8CGKDzZmn8dP2ACG5xRAHIJjwdKOD4vvyAZZgdhUgPe6_yg5UFkm4eLA8sWSLLvC3ec_FsMC3pt7nXZqHQNGJkGOBJOKalRNm7oAHAIVPGgycTyjBvG8zlL_ac07paUHcnKrUtqLAUAFhVoZpdAhXkyw-b2ZZLA_b30Yeaug9mTJopGh052-3o">
+</div>
+
+<div class="absolute bottom-2 inset-x-2 bg-surface-container-lowest/90 backdrop-blur-xl rounded-2xl p-3 shadow-lg border border-border-light flex items-center gap-3 z-40 animate-pulse">
+    <div class="w-16 h-16 rounded-xl overflow-hidden shrink-0">
+        <img class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida-public/AB6AXuACzS80wwoSqup5FUcI-z2SrdXndBE8fTvZW2UEnzuyjhAJU990hfARjLLU8uNz3uECKxqckBti4Tlva13N6uvEKe1RhquQ--wvgUX48N2KwKdz0nglaToyLZiePvsmJJ17DT442ZggVPB8ZUIWdKczoaW7i3AruzrLH_PeCOz9nDL8y2_ljNf76z8MLoSHPIV2RQLGKpQpa4HR48CCC3QIThR9tSOjFHYfttKo7MfIr3r_r2a5qbtS" alt="Rajesh Kumar">
+    </div>
+    <div class="flex-1 min-w-0">
+        <div class="flex justify-between items-start">
+            <h4 class="text-body-lg font-bold text-charcoal-text truncate">Rajesh Kumar</h4>
+            <div class="flex items-center gap-0.5 bg-primary-container/10 px-1.5 py-0.5 rounded-full">
+                <span class="material-symbols-outlined text-primary text-[12px]" style="font-variation-settings: 'FILL' 1;">star</span>
+                <span class="text-[10px] font-bold text-primary">4.8</span>
+            </div>
+        </div>
+        <p class="text-[12px] text-slate-body">Electrician • 8 yrs exp</p>
+        <div class="flex items-center gap-1 mt-1">
+            <span class="material-symbols-outlined text-success-green text-[14px]">verified</span>
+            <span class="text-[10px] text-on-surface-variant truncate">Aadhaar &amp; Skill Verified</span>
+        </div>
+    </div>
+    <button class="bg-primary text-on-primary px-3 py-2 rounded-full text-[10px] font-bold shrink-0">View Profile</button>
+</div></section>
+<section>
+<div class="flex justify-between items-end mb-4">
+<h3 class="text-headline-md font-headline-md text-charcoal-text">Available near you</h3>
+<button class="text-label-caps font-label-caps text-primary hover:underline">See All</button>
+</div>
+<div class="flex flex-col gap-4">
+<div class="bg-surface-container-lowest rounded-[24px] border border-border-light shadow-[0_8px_24px_rgba(0,7,103,0.03)] overflow-hidden relative group hover:shadow-[0_12px_32px_rgba(0,7,103,0.06)] transition-shadow">
+<div class="absolute top-0 right-0 bg-secondary-container text-on-secondary-container text-label-caps font-label-caps px-4 py-1.5 rounded-bl-xl z-10 font-bold flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px] text-on-secondary-container" style="font-variation-settings: 'FILL' 1;">star</span>
+                        BEST MATCH
+                    </div>
+<div class="p-component-padding flex flex-col sm:flex-row gap-5 relative">
+<div class="w-24 h-24 rounded-2xl overflow-hidden shrink-0 border border-border-light/50 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A premium, well-lit studio portrait of Rajesh Kumar, an Indian male electrician in his 40s. He is wearing a dark navy blue corporate uniform shirt with a subtle, stylized lightning bolt logo. He has short neat hair, a well-groomed mustache, and is smiling confidently. The background is a pristine, soft light-grey seamless backdrop." src="https://lh3.googleusercontent.com/aida-public/AB6AXuACzS80wwoSqup5FUcI-z2SrdXndBE8fTvZW2UEnzuyjhAJU990hfARjLLU8uNz3uECKxqckBti4Tlva13N6uvEKe1RhquQ--wvgUX48N2KwKdz0nglaToyLZiePvsmJJ17DT442ZggVPB8ZUIWdKczoaW7i3AruzrLH_PeCOz9nDL8y2_ljNf76z8MLoSHPIV2RQLGKpQpa4HR48CCC3QIThR9tSOjFHYfttKo7MfIr3r_r2a5qbtS">
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<div>
+<h4 class="text-headline-md font-headline-md text-charcoal-text leading-tight">Rajesh Kumar</h4>
+<p class="text-body-md font-body-md text-slate-body">Master Electrician</p>
+</div>
+<div class="flex items-center bg-surface-container text-on-surface rounded-full px-2 py-1">
+<span class="material-symbols-outlined text-primary text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-caps font-label-caps ml-1">4.8</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-body-md font-body-md text-slate-body">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">work</span>
+<span class="">8 yrs exp</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">task_alt</span>
+<span class="">240 jobs</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">location_on</span>
+<span class="">1.2 km</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-border-light flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-primary-container flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-on-primary-container text-[12px]">verified</span>
+</div>
+<span class="text-label-caps font-label-caps text-on-surface-variant truncate max-w-[200px]">Goa Electrical Workers Cooperative</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-surface-container-lowest rounded-[24px] border border-border-light shadow-[0_4px_12px_rgba(0,7,103,0.02)] overflow-hidden relative group hover:shadow-[0_12px_32px_rgba(0,7,103,0.06)] transition-shadow">
+<div class="p-component-padding flex flex-col sm:flex-row gap-5 relative">
+<div class="w-24 h-24 rounded-2xl overflow-hidden shrink-0 border border-border-light/50 bg-surface-container-highest">
+<img class="w-full h-full object-cover" data-alt="A high-quality, professional headshot of Anil Desai, a young Indian male electrician in his late 20s. He is wearing a crisp, light blue collared work shirt. He has a clean-shaven face and a friendly, approachable expression. The lighting is soft and bright, against a minimalist white background, conveying trust and modern corporate standards." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDmNLdNWEovDxD-GTGEppUsqnJN4z1iEOKMAjX5huHDscZd5LC7f-RWyhdDLwof97sqOBeVPrR_bjaVCkb_TTXPY6QFTzs1mz2uEzK17V6HJzMS0vkFttqq9P59xg4nnG9aLbW1WDDZvCk-yLj249gmNauMuhmkZ6R5ZIQJGQB-ts_s-a70dU8LSGoAm77RKxsRpaUp9nUzvFVEof-bQn7pMnPzh7zE9sIOUv_uOiR-70i5f0mMG7VH">
+</div>
+<div class="flex-1 flex flex-col justify-center">
+<div class="flex justify-between items-start mb-1">
+<div>
+<h4 class="text-headline-md font-headline-md text-charcoal-text leading-tight">Anil Desai</h4>
+<p class="text-body-md font-body-md text-slate-body">Residential Electrician</p>
+</div>
+<div class="flex items-center bg-surface-container text-on-surface rounded-full px-2 py-1">
+<span class="material-symbols-outlined text-outline-variant text-[14px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-label-caps font-label-caps ml-1">4.5</span>
+</div>
+</div>
+<div class="flex flex-wrap items-center gap-x-4 gap-y-2 mt-3 text-body-md font-body-md text-slate-body">
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">work</span>
+<span class="">3 yrs exp</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">task_alt</span>
+<span class="">85 jobs</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<div class="flex items-center gap-1.5">
+<span class="material-symbols-outlined text-outline text-[16px]">location_on</span>
+<span class="">2.5 km</span>
+</div>
+</div>
+<div class="mt-4 pt-4 border-t border-border-light flex items-center justify-between">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded-full bg-surface-container-high border border-outline-variant flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined text-outline text-[12px]">shield_person</span>
+</div>
+<span class="text-label-caps font-label-caps text-on-surface-variant truncate max-w-[200px]">Independent Verified Professional</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<nav class="bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-2xl fixed bottom-0 w-full z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,7,103,0.04)] shadow-2xl flex justify-around items-center pt-3 pb-safe px-4 border-t-0 md:hidden">
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-6 py-2 transition-transform scale-95" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">home</span>
+<span class="text-label-caps font-label-caps mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="text-label-caps font-label-caps mt-1">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined">person</span>
+<span class="text-label-caps font-label-caps mt-1">Profile</span>
+</a>
+</nav>
+
+
+</body></html>
