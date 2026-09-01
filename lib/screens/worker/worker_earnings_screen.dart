@@ -109,6 +109,9 @@ class WorkerEarningsScreen extends StatelessWidget {
                       ),
                     ),
                     ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        minimumSize: const Size(96, 44),
+                      ),
                       onPressed: () {},
                       child: const Text('Withdraw'),
                     ),
@@ -129,28 +132,28 @@ class WorkerEarningsScreen extends StatelessWidget {
                     title: 'Plumbing - Priya M.',
                     amount: '+₹1,050',
                     date: '28 Aug',
-                    color: Colors.green,
+                    color: AppColors.success,
                   ),
                   const Divider(height: 1),
                   _Tx(
                     title: 'Pipe replacement - Sharma',
                     amount: '+₹900',
                     date: '29 Aug',
-                    color: Colors.green,
+                    color: AppColors.success,
                   ),
                   const Divider(height: 1),
                   _Tx(
                     title: 'Withdrawal to bank',
                     amount: '-₹5,000',
                     date: '27 Aug',
-                    color: Colors.red,
+                    color: AppColors.error,
                   ),
                   const Divider(height: 1),
                   _Tx(
                     title: 'Sink repair - Verma',
                     amount: '+₹750',
                     date: '25 Aug',
-                    color: Colors.green,
+                    color: AppColors.success,
                   ),
                 ],
               ),
@@ -215,7 +218,7 @@ class _Chart extends StatelessWidget {
                         height: 120 * h,
                         decoration: BoxDecoration(
                           color: i == 5
-                              ? AppColors.accent
+                              ? AppColors.chartAccent
                               : AppColors.primary.withValues(alpha: 0.6),
                           borderRadius: const BorderRadius.vertical(
                             top: Radius.circular(6),
@@ -242,7 +245,7 @@ class _Chart extends StatelessWidget {
           children: [
             _Legend(color: AppColors.primary.withValues(alpha: 0.6), label: 'Earned'),
             const SizedBox(width: 16),
-            _Legend(color: AppColors.accent, label: 'Best day'),
+            _Legend(color: AppColors.chartAccent, label: 'Best day'),
           ],
         ),
       ],

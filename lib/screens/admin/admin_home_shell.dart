@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'admin_dashboard_screen.dart';
+import 'admin_operations_screen.dart';
+import 'admin_profile_screen.dart';
 import 'admin_workers_screen.dart';
-import 'admin_jobs_screen.dart';
-import 'admin_ai_dashboard_screen.dart';
-import 'admin_federation_screen.dart';
 
 class AdminHomeShell extends StatefulWidget {
   const AdminHomeShell({super.key});
@@ -18,9 +17,8 @@ class _AdminHomeShellState extends State<AdminHomeShell> {
   final _screens = [
     const AdminDashboardScreen(),
     const AdminWorkersScreen(),
-    const AdminJobsScreen(),
-    const AdminAiDashboardScreen(),
-    const AdminFederationScreen(),
+    const AdminOperationsScreen(),
+    const AdminProfileScreen(),
   ];
 
   @override
@@ -34,7 +32,7 @@ class _AdminHomeShellState extends State<AdminHomeShell> {
           BottomNavigationBarItem(
             icon: Icon(Icons.dashboard_outlined),
             activeIcon: Icon(Icons.dashboard),
-            label: 'Overview',
+            label: 'Dashboard',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.groups_outlined),
@@ -42,19 +40,14 @@ class _AdminHomeShellState extends State<AdminHomeShell> {
             label: 'Workers',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.work_outline),
-            activeIcon: Icon(Icons.work),
-            label: 'Jobs',
+            icon: Icon(Icons.handyman_outlined),
+            activeIcon: Icon(Icons.handyman),
+            label: 'Operations',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.auto_awesome_outlined),
-            activeIcon: Icon(Icons.auto_awesome),
-            label: 'AI',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_outlined),
-            activeIcon: Icon(Icons.account_balance),
-            label: 'Federation',
+            icon: Icon(Icons.person_outline),
+            activeIcon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),

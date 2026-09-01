@@ -9,6 +9,9 @@ void main() {
     expect(find.text('Coorporate Gig'), findsOneWidget);
     expect(find.text('Client'), findsOneWidget);
     expect(find.text('Worker'), findsOneWidget);
-    expect(find.text('Cooperative Admin'), findsOneWidget);
+    expect(
+      find.text('Cooperative Admin', skipOffstage: false),
+      findsOneWidget,
+    );
   });
 }

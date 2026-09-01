@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../navigation/nav.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/buttons.dart';
 import '../../widgets/status_badge.dart';
-import 'admin_workers_screen.dart';
+import 'admin_ai_forecast_screen.dart';
+import 'admin_allocation_screen.dart';
 import 'admin_jobs_screen.dart';
-import 'admin_ai_dashboard_screen.dart';
+import 'admin_workers_screen.dart';
 
 class AdminDashboardScreen extends StatelessWidget {
   const AdminDashboardScreen({super.key});
@@ -18,7 +20,7 @@ class AdminDashboardScreen extends StatelessWidget {
           children: [
             Text('Cooperative Admin', style: TextStyle(fontSize: 18)),
             Text(
-              'Shram Shakti Cooperative, Mumbai',
+              'Goa Federation • Shram Shakti Coop',
               style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
             ),
           ],
@@ -30,104 +32,188 @@ class AdminDashboardScreen extends StatelessWidget {
           ),
         ],
       ),
-      body: SingleChildScrollView(
+      body: ListView(
         padding: const EdgeInsets.all(16),
+        children: [
+          // KPI row 1
+          Row(
+            children: [
+              KpiCard(
+                icon: Icons.groups,
+                value: '128',
+                label: 'Active Workers',
+                color: AppColors.primary,
+                onTap: () => Nav.push(context, const AdminWorkersScreen()),
+              ),
+              const SizedBox(width: 8),
+              KpiCard(
+                icon: Icons.work,
+                value: '42',
+                label: 'Active Jobs',
+                color: AppColors.chartAccent,
+                onTap: () => Nav.push(context, const AdminJobsScreen()),
+              ),
+              const SizedBox(width: 8),
+              KpiCard(
+                icon: Icons.pending_actions,
+                value: '18',
+                label: 'Pending Requests',
+                color: AppColors.warning,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Row(
+            children: [
+              KpiCard(
+                icon: Icons.check_circle,
+                value: '86',
+                label: 'Completed Jobs',
+                color: AppColors.success,
+              ),
+              const SizedBox(width: 8),
+              KpiCard(
+                icon: Icons.star,
+                value: '4.7',
+                label: 'Avg Rating',
+                color: AppColors.rating,
+              ),
+              const SizedBox(width: 8),
+              KpiCard(
+                icon: Icons.trending_up,
+                value: '134',
+                label: "Today's Demand",
+                color: AppColors.cooperative,
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          // AI Demand Forecast preview
+          const Text(
+            'AI Demand Forecast',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          _AiForecastPreview(
+            onOpen: () => Nav.push(context, const AdminAiForecastScreen()),
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            'Demand Overview',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Padding(
+              padding: const EdgeInsets.all(12),
+              child: _DemandChart(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              const Text(
+                'Demand Hotspots',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.textPrimary,
+                ),
+              ),
+              TextButton(
+                onPressed: () => Nav.push(context, const AdminAllocationScreen()),
+                child: const Text('Allocate'),
+              ),
+            ],
+          ),
+          const SizedBox(height: 4),
+          _Hotspot(name: 'Grant Road', jobs: 18, demand: 0.92),
+          _Hotspot(name: 'Dadar', jobs: 14, demand: 0.78),
+          _Hotspot(name: 'Andheri West', jobs: 11, demand: 0.65),
+          const SizedBox(height: 20),
+          const Text(
+            'Active Services',
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+          ),
+          const SizedBox(height: 8),
+          Card(
+            child: Column(
+              children: [
+                _ServiceRow(name: 'Plumbing', active: 9, total: 14),
+                const Divider(height: 1),
+                _ServiceRow(name: 'Housekeeping', active: 8, total: 22),
+                const Divider(height: 1),
+                _ServiceRow(name: 'Electrician', active: 5, total: 9),
+              ],
+            ),
+          ),
+          const SizedBox(height: 24),
+        ],
+      ),
+    );
+  }
+}
+
+class _AiForecastPreview extends StatelessWidget {
+  final VoidCallback onOpen;
+  const _AiForecastPreview({required this.onOpen});
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      color: AppColors.primary.withValues(alpha: 0.04),
+      child: Padding(
+        padding: const EdgeInsets.all(14),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                _StatTile(
-                  icon: Icons.groups,
-                  value: '128',
-                  label: 'Workers',
-                  color: AppColors.primary,
-                  onTap: () => Nav.push(context, const AdminWorkersScreen()),
-                ),
+                const Icon(Icons.auto_awesome, color: AppColors.primary),
                 const SizedBox(width: 8),
-                _StatTile(
-                  icon: Icons.work,
-                  value: '42',
-                  label: 'Active Jobs',
-                  color: Colors.blue,
-                  onTap: () => Nav.push(context, const AdminJobsScreen()),
-                ),
-                const SizedBox(width: 8),
-                _StatTile(
-                  icon: Icons.payments_outlined,
-                  value: '₹1.2L',
-                  label: 'Monthly GMV',
-                  color: Colors.green,
-                ),
-              ],
-            ),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                _StatTile(
-                  icon: Icons.trending_up,
-                  value: '18%',
-                  label: 'Demand Growth',
-                  color: Colors.amber.shade800,
-                  onTap: () => Nav.push(context, const AdminAiDashboardScreen()),
-                ),
-                const SizedBox(width: 8),
-                _StatTile(
-                  icon: Icons.star,
-                  value: '4.7',
-                  label: 'Avg Rating',
-                  color: Colors.purple,
-                ),
-                const SizedBox(width: 8),
-                _StatTile(
-                  icon: Icons.person_off,
-                  value: '12',
-                  label: 'Skill Gaps',
-                  color: Colors.red,
-                  onTap: () => Nav.push(context, const AdminAiDashboardScreen()),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const _Heading('Demand Overview'),
-            const SizedBox(height: 8),
-            Card(
-              child: Padding(
-                padding: const EdgeInsets.all(12),
-                child: _DemandChart(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                const _Heading('Demand Hotspots'),
-                TextButton(
-                  onPressed: () => Nav.push(
-                    context,
-                    const AdminAiDashboardScreen(),
+                const Expanded(
+                  child: Text(
+                    'Electrician demand rising',
+                    style: TextStyle(fontWeight: FontWeight.w700, fontSize: 15),
                   ),
-                  child: const Text('View AI'),
+                ),
+                const StatusBadge(
+                  label: 'AI',
+                  color: AppColors.primary,
+                  icon: Icons.auto_awesome,
                 ),
               ],
             ),
-            const SizedBox(height: 4),
-            _Hotspot(name: 'Grant Road', jobs: 18, demand: 0.92),
-            _Hotspot(name: 'Dadar', jobs: 14, demand: 0.78),
-            _Hotspot(name: 'Andheri West', jobs: 11, demand: 0.65),
-            const SizedBox(height: 20),
-            const _Heading('Active Services'),
-            const SizedBox(height: 8),
-            Card(
-              child: Column(
-                children: [
-                  _ServiceRow(name: 'Plumbing', active: 9, total: 14, color: AppColors.info),
-                  const Divider(height: 1),
-                  _ServiceRow(name: 'Housekeeping', active: 8, total: 22, color: AppColors.success),
-                  const Divider(height: 1),
-                  _ServiceRow(name: 'Electrician', active: 5, total: 9, color: const Color(0xFFF59E0B)),
-                ],
-              ),
+            const SizedBox(height: 12),
+            Row(
+              children: const [
+                _MiniStat(label: 'Today', value: '32 jobs'),
+                _MiniStat(label: 'Forecast', value: '41 jobs'),
+                _MiniStat(label: 'Change', value: '+28%'),
+              ],
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              'Panaji requires 3 additional electricians tomorrow.',
+              style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              width: double.infinity,
+              child: PrimaryButton(label: 'View Full Forecast', onPressed: onOpen),
             ),
           ],
         ),
@@ -136,67 +222,31 @@ class AdminDashboardScreen extends StatelessWidget {
   }
 }
 
-class _StatTile extends StatelessWidget {
-  final IconData icon;
-  final String value;
+class _MiniStat extends StatelessWidget {
   final String label;
-  final Color color;
-  final VoidCallback? onTap;
-
-  const _StatTile({
-    required this.icon,
-    required this.value,
-    required this.label,
-    required this.color,
-    this.onTap,
-  });
+  final String value;
+  const _MiniStat({required this.label, required this.value});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Card(
-        margin: EdgeInsets.zero,
-        child: InkWell(
-          onTap: onTap,
-          borderRadius: BorderRadius.circular(16),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 14),
-            child: Column(
-              children: [
-                Icon(icon, color: color, size: 24),
-                const SizedBox(height: 4),
-                Text(
-                  value,
-                  style: const TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Text(
-                  label,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 10,
-                    color: AppColors.textSecondary,
-                  ),
-                ),
-              ],
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: const TextStyle(fontSize: 10, color: AppColors.textMuted),
+          ),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w800,
+              color: AppColors.textPrimary,
             ),
           ),
-        ),
+        ],
       ),
-    );
-  }
-}
-
-class _Heading extends StatelessWidget {
-  final String text;
-  const _Heading(this.text);
-  @override
-  Widget build(BuildContext context) {
-    return Text(
-      text,
-      style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
     );
   }
 }
@@ -205,7 +255,6 @@ class _DemandChart extends StatelessWidget {
   final List<double> demand = [0.4, 0.7, 0.5, 0.9, 0.6, 1.0, 0.8, 0.3];
   final List<String> months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug'];
   final List<double> supply = [0.3, 0.5, 0.4, 0.6, 0.5, 0.7, 0.6, 0.55];
-
   @override
   Widget build(BuildContext context) {
     final high = demand.asMap().entries.fold(0, (acc, e) => e.value > demand[acc] ? e.key : acc);
@@ -231,7 +280,7 @@ class _DemandChart extends StatelessWidget {
                             height: 140 * demand[i],
                             decoration: BoxDecoration(
                               color: i == high
-                                  ? AppColors.accent
+                                  ? AppColors.chartAccent
                                   : AppColors.primary.withValues(alpha: 0.7),
                               borderRadius: BorderRadius.circular(4),
                             ),
@@ -306,7 +355,7 @@ class _Hotspot extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Row(
           children: [
-            const Icon(Icons.location_on, color: Colors.red),
+            const Icon(Icons.location_on, color: AppColors.chartAccent),
             const SizedBox(width: 10),
             Expanded(
               child: Column(
@@ -319,7 +368,7 @@ class _Hotspot extends StatelessWidget {
                     minHeight: 6,
                     borderRadius: BorderRadius.circular(6),
                     backgroundColor: AppColors.divider,
-                    color: demand > 0.8 ? AppColors.accent : AppColors.primary,
+                    color: demand > 0.8 ? AppColors.chartAccent : AppColors.primary,
                   ),
                 ],
               ),
@@ -343,13 +392,7 @@ class _ServiceRow extends StatelessWidget {
   final String name;
   final int active;
   final int total;
-  final Color color;
-  const _ServiceRow({
-    required this.name,
-    required this.active,
-    required this.total,
-    required this.color,
-  });
+  const _ServiceRow({required this.name, required this.active, required this.total});
 
   @override
   Widget build(BuildContext context) {
@@ -357,16 +400,16 @@ class _ServiceRow extends StatelessWidget {
       leading: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: AppColors.primary.withValues(alpha: 0.1),
           borderRadius: BorderRadius.circular(8),
         ),
-        child: Icon(Icons.build, color: color, size: 20),
+        child: const Icon(Icons.build, color: AppColors.primary, size: 20),
       ),
       title: Text(name, style: const TextStyle(fontWeight: FontWeight.w600)),
       subtitle: Text('$active active • $total total'),
       trailing: StatusBadge(
         label: active > 5 ? 'Busy' : 'Normal',
-        color: active > 5 ? Colors.orange : Colors.green,
+        color: active > 5 ? AppColors.warning : AppColors.success,
       ),
     );
   }

@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'bookings_history_screen.dart';
 import 'client_profile_screen.dart';
 import 'my_requests_screen.dart';
-import 'notification_screen.dart';
 import 'worker_discovery_screen.dart';
 
 class ClientHomeShell extends StatefulWidget {
@@ -18,8 +16,6 @@ class _ClientHomeShellState extends State<ClientHomeShell> {
   final _screens = [
     const WorkerDiscoveryScreen(),
     const MyRequestsScreen(),
-    const BookingsHistoryScreen(),
-    const NotificationListScreen(),
     const ClientProfileScreen(),
   ];
 
@@ -40,16 +36,6 @@ class _ClientHomeShellState extends State<ClientHomeShell> {
             icon: Icon(Icons.assignment_outlined),
             activeIcon: Icon(Icons.assignment),
             label: 'Requests',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.calendar_today_outlined),
-            activeIcon: Icon(Icons.calendar_today),
-            label: 'Bookings',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.notifications_none),
-            activeIcon: Icon(Icons.notifications),
-            label: 'Alerts',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),

@@ -129,7 +129,7 @@ class _NotificationTile extends StatelessWidget {
       case 'rating':
         return Colors.amber;
       default:
-        return AppColors.info;
+        return AppColors.primary;
     }
   }
 

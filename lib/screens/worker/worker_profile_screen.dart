@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/verification_badge.dart';
 
 class WorkerProfileScreen extends StatelessWidget {
   const WorkerProfileScreen({super.key});
@@ -87,14 +88,67 @@ class WorkerProfileScreen extends StatelessWidget {
             const SizedBox(height: 16),
             Row(
               children: [
-                _Stat2(value: '4.8★', label: 'Rating', color: Colors.amber.shade700),
+                _Stat2(value: '4.8★', label: 'Rating', color: AppColors.rating),
                 const SizedBox(width: 8),
                 _Stat2(value: '48', label: 'Jobs Done', color: AppColors.primary),
                 const SizedBox(width: 8),
-                _Stat2(value: '100%', label: 'On-time', color: Colors.green),
+                _Stat2(value: '100%', label: 'On-time', color: AppColors.success),
                 const SizedBox(width: 8),
-                _Stat2(value: '₹0', label: 'Cancels', color: AppColors.danger),
+                _Stat2(value: '₹0', label: 'Cancels', color: AppColors.error),
               ],
+            ),
+            const SizedBox(height: 20),
+            Wrap(
+              spacing: 8,
+              runSpacing: 8,
+              children: const [
+                VerificationBadge(label: 'Aadhaar Verified', emphasized: true),
+                VerificationBadge(label: 'Skill Verified'),
+                VerificationBadge(label: 'Background Checked'),
+              ],
+            ),
+            const SizedBox(height: 16),
+            Card(
+              color: AppColors.cooperative.withValues(alpha: 0.06),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.account_balance,
+                      color: AppColors.cooperative,
+                      size: 22,
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Mumbai Workers Cooperative',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.cooperative,
+                            ),
+                          ),
+                          Text(
+                            'Member since 2019',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.cooperative,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const Icon(
+                      Icons.verified_user,
+                      color: AppColors.cooperative,
+                      size: 20,
+                    ),
+                  ],
+                ),
+              ),
             ),
             const SizedBox(height: 20),
             const _Heading('My Skills'),
@@ -137,6 +191,79 @@ class WorkerProfileScreen extends StatelessWidget {
                     subtitle: Text('Inactive • ₹300/hr'),
                     trailing: Icon(Icons.chevron_right),
                   ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const _Heading('Earnings & Transactions'),
+            const SizedBox(height: 8),
+            Card(
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.account_balance_wallet,
+                      color: AppColors.primary,
+                      size: 32,
+                    ),
+                    const SizedBox(width: 12),
+                    const Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '₹12,500',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
+                          Text(
+                            'Available in Gig Wallet',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: AppColors.textSecondary,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '₹0 pending',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: AppColors.success,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            const SizedBox(height: 8),
+            Card(
+              child: Column(
+                children: const [
+                  _TxRow(title: 'Plumbing - Priya M.', amount: '+₹1,050'),
+                  Divider(height: 1),
+                  _TxRow(title: 'Pipe replacement - Sharma', amount: '+₹900'),
+                  Divider(height: 1),
+                  _TxRow(title: 'Withdrawal to bank', amount: '-₹5,000'),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            const _Heading('Job History'),
+            const SizedBox(height: 8),
+            Card(
+              child: Column(
+                children: const [
+                  _JobRow(title: 'Kitchen plumbing - Priya M.', date: '28 Aug', status: 'Completed'),
+                  Divider(height: 1),
+                  _JobRow(title: 'Pipe replacement - Sharma', date: '25 Aug', status: 'Completed'),
+                  Divider(height: 1),
+                  _JobRow(title: 'Geyser checkup - Anita', date: '22 Aug', status: 'Completed'),
                 ],
               ),
             ),
@@ -250,6 +377,52 @@ class _ReviewRow extends StatelessWidget {
         const SizedBox(height: 4),
         Text(date, style: const TextStyle(color: AppColors.textMuted, fontSize: 11)),
       ],
+    );
+  }
+}
+
+class _TxRow extends StatelessWidget {
+  final String title;
+  final String amount;
+  const _TxRow({required this.title, required this.amount});
+
+  @override
+  Widget build(BuildContext context) {
+    final isCredit = amount.startsWith('+');
+    return ListTile(
+      dense: true,
+      title: Text(title, style: const TextStyle(fontSize: 14)),
+      trailing: Text(
+        amount,
+        style: TextStyle(
+          fontWeight: FontWeight.w800,
+          color: isCredit ? AppColors.success : AppColors.error,
+        ),
+      ),
+    );
+  }
+}
+
+class _JobRow extends StatelessWidget {
+  final String title;
+  final String date;
+  final String status;
+  const _JobRow({required this.title, required this.date, required this.status});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      dense: true,
+      title: Text(title, style: const TextStyle(fontSize: 14)),
+      subtitle: Text(date, style: const TextStyle(fontSize: 12)),
+      trailing: Text(
+        status,
+        style: const TextStyle(
+          color: AppColors.success,
+          fontWeight: FontWeight.w600,
+          fontSize: 12,
+        ),
+      ),
     );
   }
 }

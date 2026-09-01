@@ -1,20 +1,12 @@
 import 'package:flutter/material.dart';
+import '../../models/worker.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
 import '../../widgets/status_badge.dart';
 
 class AdminWorkerDetailScreen extends StatelessWidget {
-  final String name;
-  final String prof;
-  final String initials;
-  final Color color;
-  const AdminWorkerDetailScreen({
-    super.key,
-    required this.name,
-    required this.prof,
-    required this.initials,
-    required this.color,
-  });
+  final Worker worker;
+  const AdminWorkerDetailScreen({super.key, required this.worker});
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +23,10 @@ class AdminWorkerDetailScreen extends StatelessWidget {
                 child: Row(
                   children: [
                     CircleAvatarImage(
-                      initials: initials,
-                      color: color,
+                      initials: worker.avatarInitials,
+                      color: worker.color,
                       size: 64,
-                      online: true,
+                      online: worker.available,
                     ),
                     const SizedBox(width: 16),
                     Expanded(
@@ -45,32 +37,42 @@ class AdminWorkerDetailScreen extends StatelessWidget {
                             children: [
                               Flexible(
                                 child: Text(
-                                  name,
+                                  worker.name,
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.w800,
                                   ),
                                 ),
                               ),
-                              const SizedBox(width: 6),
-                              const Icon(
-                                Icons.verified,
-                                color: AppColors.primary,
-                                size: 18,
-                              ),
+                              if (worker.verified) ...[
+                                const SizedBox(width: 6),
+                                const Icon(
+                                  Icons.verified,
+                                  color: AppColors.success,
+                                  size: 18,
+                                ),
+                              ],
                             ],
                           ),
                           Text(
-                            prof,
+                            worker.profession,
                             style: const TextStyle(
                               color: AppColors.textSecondary,
                             ),
                           ),
                           const SizedBox(height: 6),
-                          const StatusBadge(
-                            label: 'On Duty',
-                            color: Colors.green,
-                            icon: Icons.check_circle,
+                          StatusBadge(
+                            label: worker.available
+                                ? worker.bestMatch
+                                    ? 'On Duty'
+                                    : 'Available'
+                                : 'Inactive',
+                            color: worker.available
+                                ? AppColors.success
+                                : AppColors.textMuted,
+                            icon: worker.available
+                                ? Icons.check_circle
+                                : Icons.pause_circle,
                           ),
                         ],
                       ),
@@ -85,42 +87,76 @@ class AdminWorkerDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12),
                 child: Row(
                   children: [
-                    _S(value: '4.8★', label: 'Rating'),
-                    _S(value: '48', label: 'Jobs Done'),
-                    _S(value: '8 yrs', label: 'Exp'),
-                    _S(value: '₹8,450', label: 'This Month'),
+                    _S(value: '${worker.ratingLabel}★', label: 'Rating'),
+                    _S(value: worker.jobsCompleted.toString(), label: 'Jobs Done'),
+                    _S(value: worker.experience, label: 'Exp'),
+                    _S(
+                      value: '₹${worker.pricePerHour.toInt()}',
+                      label: '/hr',
+                    ),
                   ],
                 ),
               ),
             ),
             const SizedBox(height: 16),
-            const _Heading('Availability'),
+            const _Heading('Verification'),
             const SizedBox(height: 8),
             Card(
               child: Column(
                 children: [
                   SwitchListTile(
-                    title: const Text('On Duty'),
-                    subtitle: const Text('Receiving job requests'),
-                    value: true,
-                    activeTrackColor: AppColors.primary.withValues(alpha: 0.4),
+                    title: const Text('Aadhaar Verified'),
+                    subtitle: const Text('Identity verified'),
+                    value: worker.verified,
+                    activeTrackColor: AppColors.success.withValues(alpha: 0.4),
                     onChanged: (_) {},
                   ),
                   const Divider(height: 1),
                   SwitchListTile(
-                    title: const Text('Available for travel'),
-                    subtitle: const Text('Up to 10 km radius'),
-                    value: true,
-                    activeTrackColor: AppColors.primary,
+                    title: const Text('Skill Verified'),
+                    subtitle: const Text('Practical assessment passed'),
+                    value: worker.skillVerified,
+                    activeTrackColor: AppColors.success.withValues(alpha: 0.4),
                     onChanged: (_) {},
                   ),
                   const Divider(height: 1),
-                  const ListTile(
-                    leading: Icon(Icons.location_on_outlined, color: AppColors.primary),
-                    title: Text('Service Area'),
-                    subtitle: Text('Grant Road, Mumbai'),
+                  SwitchListTile(
+                    title: const Text('On Duty'),
+                    subtitle: const Text('Receiving job requests'),
+                    value: worker.available,
+                    activeTrackColor: AppColors.primary.withValues(alpha: 0.4),
+                    onChanged: (_) {},
                   ),
                 ],
+              ),
+            ),
+            const SizedBox(height: 16),
+            const _Heading('Cooperative'),
+            const SizedBox(height: 8),
+            Card(
+              color: AppColors.cooperative.withValues(alpha: 0.06),
+              child: Padding(
+                padding: const EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    const Icon(
+                      Icons.account_balance,
+                      color: AppColors.cooperative,
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Text(
+                        worker.cooperative.isEmpty
+                            ? 'Not affiliated'
+                            : worker.cooperative,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.cooperative,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
             const SizedBox(height: 16),
@@ -129,31 +165,17 @@ class AdminWorkerDetailScreen extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: [
-                'Pipe fitting', 'Drainage', 'Leak repair', 'Bathroom fitting',
-              ].map((s) => Chip(
-                    label: Text(s),
-                    backgroundColor: AppColors.primary.withValues(alpha: 0.1),
-                    side: BorderSide.none,
-                    labelStyle: const TextStyle(
-                      color: AppColors.primary,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  )).toList(),
-            ),
-            const SizedBox(height: 16),
-            const _Heading('Recent Jobs'),
-            const SizedBox(height: 8),
-            Card(
-              child: Column(
-                children: [
-                  _Job(i: 'Plumbing - Priya M.', a: '₹1,050', d: 'Completed', color: Colors.green),
-                  const Divider(height: 1),
-                  _Job(i: 'Pipe replacement - Sharma', a: '₹900', d: 'Completed', color: Colors.green),
-                  const Divider(height: 1),
-                  _Job(i: 'Geyser checkup - Anita', a: '₹500', d: 'In Progress', color: Colors.blue),
-                ],
-              ),
+              children: worker.skills.map((s) {
+                return Chip(
+                  label: Text(s),
+                  backgroundColor: AppColors.primary.withValues(alpha: 0.1),
+                  side: BorderSide.none,
+                  labelStyle: const TextStyle(
+                    color: AppColors.primary,
+                    fontWeight: FontWeight.w600,
+                  ),
+                );
+              }).toList(),
             ),
             const SizedBox(height: 16),
             const _Heading('Performance'),
@@ -170,6 +192,15 @@ class AdminWorkerDetailScreen extends StatelessWidget {
                     _Bar(label: 'Response rate', value: 0.88),
                   ],
                 ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.handyman_outlined),
+                onPressed: () {},
+                label: const Text('Assign to Job'),
               ),
             ),
           ],
@@ -218,23 +249,6 @@ class _Heading extends StatelessWidget {
     return Text(
       text,
       style: const TextStyle(fontSize: 17, fontWeight: FontWeight.w700),
-    );
-  }
-}
-
-class _Job extends StatelessWidget {
-  final String i;
-  final String a;
-  final String d;
-  final Color color;
-  const _Job({required this.i, required this.a, required this.d, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(i, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-      subtitle: Text(a, style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.w700)),
-      trailing: StatusBadge(label: d, color: color),
     );
   }
 }

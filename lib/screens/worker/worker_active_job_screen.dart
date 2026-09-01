@@ -31,7 +31,7 @@ class _WorkerActiveJobScreenState extends State<WorkerActiveJobScreen> {
                   children: [
                     const CircleAvatar(
                       radius: 26,
-                      backgroundColor: Color(0xFF1B5E20),
+                      backgroundColor: AppColors.primary,
                       child: Text(
                         'PM',
                         style: TextStyle(
@@ -62,12 +62,12 @@ class _WorkerActiveJobScreenState extends State<WorkerActiveJobScreen> {
                     _stage == 'in_progress'
                         ? const StatusBadge(
                             label: 'In Progress',
-                            color: Colors.green,
+                            color: AppColors.success,
                             icon: Icons.build,
                           )
                         : const StatusBadge(
                             label: 'Confirmed',
-                            color: Colors.blue,
+                            color: AppColors.primary,
                             icon: Icons.check_circle,
                           ),
                   ],
@@ -101,7 +101,7 @@ class _WorkerActiveJobScreenState extends State<WorkerActiveJobScreen> {
                   children: [
                     const Icon(
                       Icons.check_circle,
-                      color: Colors.green,
+                      color: AppColors.success,
                       size: 64,
                     ),
                     const SizedBox(height: 12),

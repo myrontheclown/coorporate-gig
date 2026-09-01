@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
 import '../../data/mock_data.dart';
+import '../../models/worker.dart';
 import '../../navigation/nav.dart';
 import '../../theme/app_theme.dart';
+import '../../widgets/map_card.dart';
+import '../../widgets/search_bar.dart';
+import '../../widgets/section_header.dart';
+import '../../widgets/service_chip.dart';
 import '../../widgets/worker_card.dart';
 import 'notification_screen.dart';
 import 'search_results_screen.dart';
@@ -17,230 +22,106 @@ class WorkerDiscoveryScreen extends StatefulWidget {
 
 class _WorkerDiscoveryScreenState extends State<WorkerDiscoveryScreen> {
   String _selectedService = 'All';
+  Worker? _selectedMapWorker;
 
   @override
   Widget build(BuildContext context) {
-    final topWorkers = MockData.workersByRating.take(4).toList();
-    final filtered = _selectedService == 'All'
-        ? MockData.workers
-        : MockData.workersByService(_selectedService);
+    final nearby = MockData.workersByRating.take(6).toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 16),
           children: [
-            Text('Coorporate Gig', style: TextStyle(fontSize: 18)),
-            Text(
-              'Good morning, Priya 👋',
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.w400),
-            ),
-          ],
-        ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.location_on_outlined),
-            onPressed: () {},
-          ),
-          IconButton(
-            icon: const Icon(Icons.notifications_outlined),
-            onPressed: () => Nav.push(context, const NotificationListScreen()),
-          ),
-        ],
-      ),
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: InkWell(
-                onTap: () => Nav.push(context, const SearchResultsScreen()),
-                borderRadius: BorderRadius.circular(12),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 14,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.divider),
-                  ),
-                  child: const Row(
-                    children: [
-                      Icon(Icons.search, color: AppColors.textMuted),
-                      SizedBox(width: 10),
-                      Text(
-                        'Search workers or services...',
-                        style: TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 15,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
+            const SizedBox(height: 8),
+            _HomeHeader(onNotifications: () {
+              Nav.push(context, const NotificationListScreen());
+            }),
+            const SizedBox(height: 20),
+            // Greeting
+            const Text(
+              'Good evening, Rahul',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.w700,
+                color: AppColors.textPrimary,
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Row(
-                children: [
-                  const Text(
-                    'Popular Services',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  const Spacer(),
-                  TextButton(
-                    onPressed: () => Nav.push(
-                      context,
-                      const SearchResultsScreen(),
-                    ),
-                    child: const Text('See all'),
-                  ),
-                ],
+            const SizedBox(height: 4),
+            const Text(
+              'Find trusted professionals near you.',
+              style: TextStyle(
+                fontSize: 14,
+                color: AppColors.textSecondary,
               ),
             ),
+            const SizedBox(height: 16),
+            // Search
+            GigSearchBar(
+              onTap: () => Nav.push(context, const SearchResultsScreen()),
+              trailing: const Icon(
+                Icons.tune,
+                color: AppColors.textMuted,
+              ),
+            ),
+            const SizedBox(height: 16),
+            // Service chips
             SizedBox(
-              height: 120,
-              child: ListView.builder(
+              height: 44,
+              child: ListView.separated(
                 scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 16),
-                itemCount: MockData.services.length,
+                itemCount: MockData.services.length + 1,
+                separatorBuilder: (_, __) => const SizedBox(width: 8),
                 itemBuilder: (context, i) {
-                  final s = MockData.services[i];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 12),
-                    child: _ServicePill(
-                      service: s,
-                      selected: _selectedService == s.name,
-                      onTap: () => setState(() => _selectedService = s.name),
-                    ),
+                  if (i == 0) {
+                    return ServiceChip(
+                      label: 'All',
+                      selected: _selectedService == 'All',
+                      onTap: () => setState(() => _selectedService = 'All'),
+                    );
+                  }
+                  final s = MockData.services[i - 1];
+                  return ServiceChip(
+                    label: s.name,
+                    icon: _iconFor(s.icon),
+                    selected: _selectedService == s.name,
+                    onTap: () => setState(() => _selectedService = s.name),
                   );
                 },
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.fromLTRB(16, 12, 16, 8),
-              child: Row(
-                children: [
-                  Text(
-                    'Top Rated Workers',
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      color: AppColors.textPrimary,
-                    ),
-                  ),
-                  Spacer(),
-                  Text(
-                    'Verified',
-                    style: TextStyle(
-                      fontSize: 13,
-                      color: AppColors.success,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                ],
-              ),
+            const SizedBox(height: 20),
+            // Map section
+            MapCard(
+              workers: nearby,
+              selectedWorker: _selectedMapWorker,
+              onViewProfile: _selectedMapWorker == null
+                  ? null
+                  : () {
+                      AppState.activeWorker = _selectedMapWorker;
+                      Nav.push(
+                        context,
+                        WorkerProfileScreen(worker: _selectedMapWorker!),
+                      );
+                    },
             ),
-            ...topWorkers.map(
-              (w) => WorkerCard(
+            const SizedBox(height: 20),
+            // Available near you
+            SectionHeader(
+              title: 'Available near you',
+              actionLabel: 'See All',
+              onAction: () => Nav.push(context, const SearchResultsScreen()),
+            ),
+            const SizedBox(height: 4),
+            for (final w in nearby)
+              WorkerCard(
                 worker: w,
                 onTap: () {
                   AppState.activeWorker = w;
                   Nav.push(context, WorkerProfileScreen(worker: w));
                 },
               ),
-            ),
-            if (_selectedService != 'All') ...[
-              const Padding(
-                padding: EdgeInsets.fromLTRB(16, 16, 16, 8),
-                child: Text(
-                  'More Results',
-                  style: TextStyle(
-                    fontSize: 18,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-              ...filtered.map(
-                (w) => WorkerCard(
-                  worker: w,
-                  onTap: () {
-                    AppState.activeWorker = w;
-                    Nav.push(context, WorkerProfileScreen(worker: w));
-                  },
-                ),
-              ),
-            ] else
-              Padding(
-                padding: const EdgeInsets.fromLTRB(16, 20, 16, 8),
-                child: _PromoBanner(
-                  onTap: () => Nav.push(context, const SearchResultsScreen()),
-                ),
-              ),
-            const SizedBox(height: 20),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ServicePill extends StatelessWidget {
-  final dynamic service;
-  final bool selected;
-  final VoidCallback onTap;
-
-  const _ServicePill({
-    required this.service,
-    required this.selected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(14),
-      child: Container(
-        width: 90,
-        padding: const EdgeInsets.symmetric(vertical: 10),
-        decoration: BoxDecoration(
-          color: selected ? AppColors.primary : Colors.white,
-          borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: selected ? AppColors.primary : AppColors.divider,
-          ),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              _iconFor(service.icon),
-              color: selected ? Colors.white : const Color(0xFF6B7280),
-              size: 26,
-            ),
-            const SizedBox(height: 6),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 6),
-              child: Text(
-                service.name,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.w600,
-                  color: selected ? Colors.white : AppColors.textSecondary,
-                ),
-              ),
-            ),
+            const SizedBox(height: 24),
           ],
         ),
       ),
@@ -275,57 +156,61 @@ class _ServicePill extends StatelessWidget {
   }
 }
 
-class _PromoBanner extends StatelessWidget {
-  final VoidCallback onTap;
-
-  const _PromoBanner({required this.onTap});
+class _HomeHeader extends StatelessWidget {
+  final VoidCallback onNotifications;
+  const _HomeHeader({required this.onNotifications});
 
   @override
   Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(16),
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          gradient: const LinearGradient(
-            colors: [Color(0xFF1B5E20), Color(0xFF2E7D32)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-          borderRadius: BorderRadius.circular(16),
+    return Row(
+      children: [
+        const CircleAvatar(
+          radius: 22,
+          backgroundColor: AppColors.primaryLight,
+          child: Icon(Icons.person, color: AppColors.primary),
         ),
-        child: const Row(
-          children: [
-            Icon(Icons.verified_user, color: Colors.white, size: 40),
-            SizedBox(width: 14),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'Verified Professionals',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w700,
-                    ),
+        const SizedBox(width: 10),
+        Expanded(
+          child: InkWell(
+            onTap: () {},
+            borderRadius: BorderRadius.circular(8),
+            child: Row(
+              children: [
+                const Icon(
+                  Icons.location_on_outlined,
+                  size: 16,
+                  color: AppColors.textSecondary,
+                ),
+                const SizedBox(width: 2),
+                const Text(
+                  'Grant Road, Mumbai',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.textPrimary,
                   ),
-                  SizedBox(height: 3),
-                  Text(
-                    'All workers background-verified by cooperatives',
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 12,
-                    ),
-                  ),
-                ],
-              ),
+                ),
+                const SizedBox(width: 2),
+                const Icon(
+                  Icons.keyboard_arrow_down,
+                  size: 16,
+                  color: AppColors.textMuted,
+                ),
+              ],
             ),
-            Icon(Icons.arrow_forward_ios, color: Colors.white, size: 16),
-          ],
+          ),
         ),
-      ),
+        IconButton(
+          onPressed: onNotifications,
+          icon: const Badge(
+            label: Text('2'),
+            child: Icon(
+              Icons.notifications_outlined,
+              color: AppColors.textPrimary,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

@@ -5,7 +5,7 @@ import '../../models/worker.dart';
 import '../../navigation/nav.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
-import '../../widgets/status_badge.dart';
+import '../../widgets/verification_badge.dart';
 import 'request_service_screen.dart';
 
 class WorkerProfileScreen extends StatelessWidget {
@@ -26,90 +26,105 @@ class WorkerProfileScreen extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.only(bottom: 100),
         children: [
-          Container(
-            color: AppColors.primary,
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 40),
-            child: Column(
-              children: [
-                CircleAvatarImage(
-                  initials: worker.avatarInitials,
-                  color: worker.color,
-                  size: 84,
-                  online: worker.available,
-                ),
-                const SizedBox(height: 12),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+          // Profile header — clean light surface (avoid giant color blocks)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
                   children: [
-                    Text(
-                      worker.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 22,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    CircleAvatarImage(
+                      initials: worker.avatarInitials,
+                      color: worker.color,
+                      size: 84,
+                      online: worker.available,
                     ),
-                    if (worker.verified)
-                      const Padding(
-                        padding: EdgeInsets.only(left: 6),
-                        child: Icon(
-                          Icons.verified,
-                          color: AppColors.accentLight,
-                          size: 20,
-                        ),
-                      ),
-                  ],
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  worker.profession,
-                  style: const TextStyle(
-                    color: Colors.white70,
-                    fontSize: 15,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.star, color: Colors.amber, size: 20),
-                    const SizedBox(width: 4),
-                    Text(
-                      '${worker.ratingLabel} (${worker.reviews} reviews)',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                    const SizedBox(width: 16),
+                    const SizedBox(height: 12),
                     Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const Icon(
-                          Icons.location_on_outlined,
-                          color: Colors.white70,
-                          size: 18,
+                        Flexible(
+                          child: Text(
+                            worker.name,
+                            style: const TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w800,
+                            ),
+                          ),
                         ),
+                        if (worker.verified) ...[
+                          const SizedBox(width: 6),
+                          const Icon(
+                            Icons.verified,
+                            color: AppColors.success,
+                            size: 20,
+                          ),
+                        ],
+                      ],
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      worker.profession,
+                      style: const TextStyle(
+                        color: AppColors.textSecondary,
+                        fontSize: 15,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.star, color: AppColors.rating, size: 18),
+                        const SizedBox(width: 4),
                         Text(
-                          worker.locality,
-                          style: const TextStyle(color: Colors.white70),
+                          '${worker.ratingLabel} (${worker.reviews} reviews)',
+                          style: const TextStyle(
+                            color: AppColors.textPrimary,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
+                        const SizedBox(width: 16),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.location_on_outlined,
+                              color: AppColors.textSecondary,
+                              size: 18,
+                            ),
+                            Text(
+                              worker.locality,
+                              style: const TextStyle(color: AppColors.textSecondary),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 12),
+                    Wrap(
+                      spacing: 8,
+                      children: [
+                        if (worker.verified)
+                          const VerificationBadge(
+                            label: 'Aadhaar Verified',
+                            emphasized: true,
+                          ),
+                        if (worker.skillVerified)
+                          const VerificationBadge(label: 'Skill Verified'),
+                        if (worker.cooperative.isNotEmpty)
+                          VerificationBadge(label: 'Cooperative Verified'),
                       ],
                     ),
                   ],
                 ),
-                const SizedBox(height: 10),
-                const StatusBadge(
-                  label: 'Background Verified',
-                  color: Colors.white,
-                  icon: Icons.shield_outlined,
-                ),
-              ],
+              ),
             ),
           ),
           Transform.translate(
-            offset: const Offset(0, -20),
+            offset: const Offset(0, 0),
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
+              padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
               child: Card(
                 child: Padding(
                   padding: const EdgeInsets.all(16),
@@ -117,11 +132,11 @@ class WorkerProfileScreen extends StatelessWidget {
                     children: [
                       _Stat(value: worker.experience, label: 'Experience'),
                       _Stat(value: '${worker.reviews}', label: 'Reviews'),
+                      _Stat(value: '${worker.jobsCompleted}', label: 'Jobs Done'),
                       _Stat(
                         value: '${worker.pricePerHour.toInt()}',
                         label: '₹/hour',
                       ),
-                      _Stat(value: '100%', label: 'On-time'),
                     ],
                   ),
                 ),
@@ -143,6 +158,51 @@ class WorkerProfileScreen extends StatelessWidget {
                     color: AppColors.textSecondary,
                   ),
                 ),
+                if (worker.cooperative.isNotEmpty) ...[
+                  const SizedBox(height: 12),
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: AppColors.cooperative.withValues(alpha: 0.06),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: AppColors.cooperative.withValues(alpha: 0.2),
+                      ),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(
+                          Icons.account_balance,
+                          color: AppColors.cooperative,
+                          size: 18,
+                        ),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                worker.cooperative,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.cooperative,
+                                ),
+                              ),
+                              const Text(
+                                'Cooperative member',
+                                style: TextStyle(
+                                  fontSize: 11,
+                                  color: AppColors.cooperative,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 20),
                 const _SectionTitle('Skills'),
                 const SizedBox(height: 8),
@@ -202,17 +262,17 @@ class WorkerProfileScreen extends StatelessWidget {
                   border: Border.all(color: AppColors.divider),
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: const Column(
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Text(
-                      '₹350',
-                      style: TextStyle(
+                      '₹${worker.pricePerHour.toInt()}',
+                      style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
                       ),
                     ),
-                    Text(
+                    const Text(
                       '/hour',
                       style: TextStyle(
                         fontSize: 11,

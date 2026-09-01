@@ -121,7 +121,7 @@ class _AdminJobsScreenState extends State<AdminJobsScreen> {
                                 backgroundColor:
                                     (j['assignee'] ?? '').isEmpty
                                         ? null
-                                        : Color(0xFF1B5E20),
+                                        : AppColors.primary,
                                 child: (j['assignee'] ?? '').isEmpty
                                     ? null
                                     : Text(

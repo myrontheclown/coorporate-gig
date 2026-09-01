@@ -32,7 +32,7 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                   children: [
                     const CircleAvatar(
                       radius: 26,
-                      backgroundColor: Color(0xFF1B5E20),
+                      backgroundColor: AppColors.primary,
                       child: Text(
                         'PM',
                         style: TextStyle(
@@ -70,10 +70,10 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                               ? 'Declined'
                               : 'New Request',
                       color: _status == 'accepted'
-                          ? Colors.green
+                          ? AppColors.success
                           : _status == 'declined'
-                              ? Colors.red
-                              : Colors.orange,
+                              ? AppColors.error
+                              : AppColors.warning,
                     ),
                   ],
                 ),
@@ -157,6 +157,43 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                 ),
               ),
             ),
+            const SizedBox(height: 16),
+            // Attached photos
+            const _Heading('Attached Photos'),
+            const SizedBox(height: 8),
+            Row(
+              children: [
+                _PhotoTile(icon: Icons.photo_camera_outlined, label: 'Sink photo'),
+                const SizedBox(width: 8),
+                _PhotoTile(icon: Icons.photo_camera_outlined, label: 'Pipes'),
+                const SizedBox(width: 8),
+                _PhotoTile(icon: Icons.add_a_photo_outlined, label: 'Add more'),
+              ],
+            ),
+            const SizedBox(height: 16),
+            // OTP handoff process
+            Card(
+              color: AppColors.primary.withValues(alpha: 0.06),
+              child: const Padding(
+                padding: EdgeInsets.all(14),
+                child: Row(
+                  children: [
+                    Icon(Icons.shield_outlined, color: AppColors.primary),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        'On arrival, ask the client to share the OTP to securely start the service.',
+                        style: TextStyle(
+                          fontSize: 13,
+                          color: AppColors.primaryDark,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
             const SizedBox(height: 24),
             if (_status == 'new')
               Row(
@@ -164,8 +201,8 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                   Expanded(
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: Colors.red,
-                        side: const BorderSide(color: Colors.red),
+                        foregroundColor: AppColors.error,
+                        side: const BorderSide(color: AppColors.error),
                       ),
                       onPressed: () => setState(() => _status = 'declined'),
                       child: const Text('Decline'),
@@ -207,7 +244,7 @@ class _WorkerJobDetailsScreenState extends State<WorkerJobDetailsScreen> {
                   children: [
                     const Text(
                       'You declined this job',
-                      style: TextStyle(color: Colors.red),
+                      style: TextStyle(color: AppColors.error),
                     ),
                     const SizedBox(height: 8),
                     TextButton(
@@ -261,6 +298,52 @@ class _Detail extends StatelessWidget {
           ),
         ),
       ],
+    );
+  }
+}
+
+class _Heading extends StatelessWidget {
+  final String text;
+  const _Heading(this.text);
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      text,
+      style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w700),
+    );
+  }
+}
+
+class _PhotoTile extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  const _PhotoTile({required this.icon, required this.label});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        height: 72,
+        decoration: BoxDecoration(
+          color: AppColors.background,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: AppColors.divider),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icon, color: AppColors.primary, size: 22),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 10,
+                color: AppColors.textSecondary,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
