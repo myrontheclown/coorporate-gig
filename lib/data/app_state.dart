@@ -35,13 +35,22 @@ class AppState {
     selectedWorker.value = w;
   }
 
-  static void reset() {
+  /// Resets temporary booking, request, and service workflow state
+  /// without clearing the authenticated user profile or role.
+  static void resetWorkflowState() {
+    _activeWorker = null;
     selectedWorker.value = null;
     currentService.value = null;
     currentBookingStatus.value = 'none';
     serviceCompleted.value = false;
     paymentMade.value = false;
     workerOnDuty.value = false;
+  }
+
+  /// Full reset: clears temporary workflow state AND authentication state.
+  /// Called on user logout or invalid session.
+  static void reset() {
+    resetWorkflowState();
     currentUserProfile.value = null;
     currentWorkerProfile.value = null;
     currentRole.value = 'customer';

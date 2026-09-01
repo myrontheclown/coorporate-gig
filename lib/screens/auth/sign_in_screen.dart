@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
 import '../../navigation/nav.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
@@ -81,7 +82,12 @@ class _SignInScreenState extends State<SignInScreen> {
       if (!mounted) return;
 
       if (result.success) {
-        Nav.navigateAfterAuth(context, widget.role);
+        // Use the role resolved from user_profile (the database source of truth)
+        if (result.profile != null) {
+          AppState.currentUserProfile.value = result.profile;
+          AppState.currentRole.value = result.role;
+        }
+        Nav.navigateAfterAuth(context, result.role);
       } else {
         setState(() {
           _errorMessage = result.error ?? 'Sign in failed. Please try again.';

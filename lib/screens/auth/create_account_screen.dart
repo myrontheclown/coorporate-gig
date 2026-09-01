@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../../data/app_state.dart';
 import '../../navigation/nav.dart';
 import '../../services/auth_service.dart';
 import '../../theme/app_theme.dart';
@@ -138,6 +139,53 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
     return null;
   }
 
+  void _showEmailConfirmationDialog() {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        icon: const Icon(
+          Icons.mark_email_read_outlined,
+          color: AppColors.success,
+          size: 40,
+        ),
+        title: const Text(
+          'Verify your email',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.w700,
+            color: AppColors.textPrimary,
+          ),
+        ),
+        content: Text(
+          'We sent a confirmation link to ${_emailController.text.trim()}.\n\nPlease check your inbox and verify your email before signing in.',
+          textAlign: TextAlign.center,
+          style: const TextStyle(
+            color: AppColors.textSecondary,
+            fontSize: 14,
+            height: 1.5,
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                Navigator.of(ctx).pop();
+                Nav.pop(context); // Back to sign-in
+              },
+              child: const Text('Go to Sign In'),
+            ),
+          ),
+          const SizedBox(height: 4),
+        ],
+      ),
+    );
+  }
+
   Future<void> _handleCreateAccount() async {
     if (!_formKey.currentState!.validate()) return;
 
@@ -158,7 +206,17 @@ class _CreateAccountScreenState extends State<CreateAccountScreen> {
       if (!mounted) return;
 
       if (result.success) {
-        Nav.navigateAfterAuth(context, widget.role);
+        if (result.error == 'email_confirmation_required') {
+          // Email confirmation is enabled on this Supabase project.
+          // Show a confirmation message instead of navigating in.
+          _showEmailConfirmationDialog();
+        } else {
+          if (result.profile != null) {
+            AppState.currentUserProfile.value = result.profile;
+            AppState.currentRole.value = result.role;
+          }
+          Nav.navigateAfterAuth(context, result.role);
+        }
       } else {
         setState(() {
           _errorMessage = result.error ?? 'Account creation failed.';

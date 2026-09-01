@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/role_selection/role_selection_screen.dart';
+import 'screens/auth/session_restore_screen.dart';
 import 'services/supabase_service.dart';
 import 'theme/app_theme.dart';
 
@@ -18,7 +18,7 @@ class CoorporateGigApp extends StatelessWidget {
       title: 'Coorporate Gig',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.light,
-      home: const RoleSelectionScreen(),
+      home: const SessionRestoreScreen(),
     );
   }
 }

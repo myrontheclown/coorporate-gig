@@ -64,21 +64,21 @@ class Nav {
   }
 
   static void toClient(BuildContext context) {
-    AppState.reset();
+    AppState.resetWorkflowState();
     AppState.currentRole.value = 'customer';
     _loadProfileIfAvailable('customer');
     clearAll(context, const ClientHomeShell());
   }
 
   static void toWorker(BuildContext context) {
-    AppState.reset();
+    AppState.resetWorkflowState();
     AppState.currentRole.value = 'worker';
     _loadProfileIfAvailable('worker');
     clearAll(context, const WorkerHomeShell());
   }
 
   static void toAdmin(BuildContext context) {
-    AppState.reset();
+    AppState.resetWorkflowState();
     AppState.currentRole.value = 'cooperative_admin';
     _loadProfileIfAvailable('cooperative_admin');
     clearAll(context, const AdminHomeShell());
@@ -121,14 +121,23 @@ class Nav {
   static void _loadProfileIfAvailable(String role) async {
     final uid = AuthService.currentUserId;
     if (uid != null && uid.isNotEmpty) {
-      final profile = await AuthService.fetchCurrentUserProfile();
-      if (profile != null) {
-        AppState.currentUserProfile.value = profile;
-        if (role == 'worker') {
-          final worker = await WorkerProfileService.getWorkerByUserId(uid);
-          if (worker != null) {
-            AppState.currentWorkerProfile.value = worker;
-          }
+      // If profile is not already populated or doesn't match the current user, fetch it
+      if (AppState.currentUserProfile.value == null ||
+          AppState.currentUserProfile.value!.id != uid) {
+        final profile = await AuthService.fetchCurrentUserProfile();
+        if (profile != null) {
+          AppState.currentUserProfile.value = profile;
+          // Always use the role stored in user_profile as source of truth
+          AppState.currentRole.value = profile.role;
+        }
+      }
+
+      // If worker and worker profile not yet in AppState, load it
+      if (AppState.currentRole.value == 'worker' &&
+          AppState.currentWorkerProfile.value == null) {
+        final worker = await WorkerProfileService.getWorkerByUserId(uid);
+        if (worker != null) {
+          AppState.currentWorkerProfile.value = worker;
         }
       }
     }
