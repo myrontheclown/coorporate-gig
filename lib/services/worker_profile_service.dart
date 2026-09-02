@@ -48,14 +48,32 @@ class WorkerProfileService {
           .eq('id', workerId)
           .maybeSingle();
 
-      if (response == null) return null;
-      return WorkerProfile.fromJson(response);
-    } catch (e, stack) {
-      if (kDebugMode) {
-        print('⚠️ [WorkerProfileService.getWorkerById] Error: $e\n$stack');
+      if (response != null) {
+        return WorkerProfile.fromJson(response);
       }
-      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ [WorkerProfileService.getWorkerById] Primary query error: $e');
+      }
     }
+
+    try {
+      final fallbackResponse = await SupabaseService.client!
+          .from(_tableName)
+          .select()
+          .eq('id', workerId)
+          .maybeSingle();
+
+      if (fallbackResponse != null) {
+        return WorkerProfile.fromJson(fallbackResponse);
+      }
+    } catch (e2) {
+      if (kDebugMode) {
+        print('⚠️ [WorkerProfileService.getWorkerById] Fallback query error: $e2');
+      }
+    }
+
+    return null;
   }
 
   /// Retrieves a worker profile by user_id.
@@ -69,14 +87,32 @@ class WorkerProfileService {
           .eq('user_id', userId)
           .maybeSingle();
 
-      if (response == null) return null;
-      return WorkerProfile.fromJson(response);
-    } catch (e, stack) {
-      if (kDebugMode) {
-        print('⚠️ [WorkerProfileService.getWorkerByUserId] Error: $e\n$stack');
+      if (response != null) {
+        return WorkerProfile.fromJson(response);
       }
-      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print('⚠️ [WorkerProfileService.getWorkerByUserId] Primary query error: $e');
+      }
     }
+
+    try {
+      final fallbackResponse = await SupabaseService.client!
+          .from(_tableName)
+          .select()
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (fallbackResponse != null) {
+        return WorkerProfile.fromJson(fallbackResponse);
+      }
+    } catch (e2) {
+      if (kDebugMode) {
+        print('⚠️ [WorkerProfileService.getWorkerByUserId] Fallback query error: $e2');
+      }
+    }
+
+    return null;
   }
 
   /// Updates worker availability status ('available', 'on_duty', 'off_duty', 'busy').

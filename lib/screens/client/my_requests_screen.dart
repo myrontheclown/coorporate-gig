@@ -4,6 +4,7 @@ import '../../data/mock_models.dart';
 import '../../data/user_data.dart';
 import '../../services/auth_service.dart';
 import '../../services/job_service.dart';
+import '../../services/supabase_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/status_badge.dart';
 
@@ -17,30 +18,58 @@ class MyRequestsScreen extends StatefulWidget {
 class _MyRequestsScreenState extends State<MyRequestsScreen> {
   List<UserRequest> _supabaseRequests = [];
   bool _isLoading = false;
+  bool _hasFetched = false;
 
   @override
   void initState() {
     super.initState();
+    AppState.currentUserProfile.addListener(_onProfileChanged);
     _loadRequests();
   }
 
-  Future<void> _loadRequests() async {
-    final customerId = AuthService.currentUserId ??
-        AppState.currentUserProfile.value?.id ??
-        '';
+  @override
+  void dispose() {
+    AppState.currentUserProfile.removeListener(_onProfileChanged);
+    super.dispose();
+  }
 
-    if (customerId.isEmpty) return;
+  void _onProfileChanged() {
+    if (mounted) {
+      _loadRequests();
+    }
+  }
+
+  Future<void> _loadRequests() async {
+    final isAuthenticated =
+        SupabaseService.isReady && AuthService.currentUser != null;
+
+    if (!isAuthenticated) {
+      if (mounted) {
+        setState(() {
+          _hasFetched = true;
+          _supabaseRequests = UserData.requests;
+        });
+      }
+      return;
+    }
+
+    final customerId = AuthService.currentUser!.id;
 
     setState(() => _isLoading = true);
     try {
       final jobs = await JobService.getJobsForCustomer(customerId);
-      if (jobs.isNotEmpty && mounted) {
+      if (mounted) {
         setState(() {
+          _hasFetched = true;
           _supabaseRequests = jobs.map((j) => j.toUserRequest()).toList();
         });
       }
     } catch (_) {
-      // Fallback seamlessly
+      if (mounted) {
+        setState(() {
+          _hasFetched = true;
+        });
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
@@ -48,31 +77,74 @@ class _MyRequestsScreenState extends State<MyRequestsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final requests = _supabaseRequests.isNotEmpty
+    final isAuthenticated =
+        SupabaseService.isReady && AuthService.currentUser != null;
+    final requests = isAuthenticated
         ? _supabaseRequests
-        : UserData.requests;
+        : (_supabaseRequests.isNotEmpty
+            ? _supabaseRequests
+            : UserData.requests);
 
     return Scaffold(
       appBar: AppBar(
         title: const Text('My Requests'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.add_circle_outline),
-            onPressed: () => ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('New request flow coming from Home')),
-            ),
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _loadRequests,
           ),
         ],
       ),
-      body: requests.isEmpty && _isLoading
+      body: _isLoading && !_hasFetched
           ? const Center(child: CircularProgressIndicator())
-          : ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: requests.length,
-              itemBuilder: (context, i) {
-                final r = requests[i];
-                return _RequestCard(request: r);
-              },
+          : RefreshIndicator(
+              onRefresh: _loadRequests,
+              child: requests.isEmpty
+                  ? ListView(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      children: const [
+                        SizedBox(height: 120),
+                        Center(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.assignment_outlined,
+                                size: 56,
+                                color: AppColors.textMuted,
+                              ),
+                              SizedBox(height: 16),
+                              Text(
+                                'No service requests yet',
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w700,
+                                  color: AppColors.textPrimary,
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                'Requests you post will appear here.',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color: AppColors.textSecondary,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    )
+                  : ListView.builder(
+                      physics: const AlwaysScrollableScrollPhysics(),
+                      padding: const EdgeInsets.all(16),
+                      itemCount: requests.length,
+                      itemBuilder: (context, i) {
+                        final r = requests[i];
+                        return _RequestCard(request: r);
+                      },
+                    ),
             ),
     );
   }
