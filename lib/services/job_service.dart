@@ -1,4 +1,6 @@
 import 'package:flutter/foundation.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart' show FileOptions;
 import '../models/job.dart';
 import 'supabase_service.dart';
 
@@ -155,5 +157,72 @@ class JobService {
       }
       return false;
     }
+  }
+
+  /// Uploads a list of photos (XFile – works on mobile & web) to Supabase Storage
+  /// under the 'job-photos' bucket and returns the comma-joined public URLs.
+  static Future<String> uploadJobPhotos(List<XFile> photos, String jobId) async {
+    if (!SupabaseService.isReady || photos.isEmpty) return '';
+
+    final urls = <String>[];
+    for (int i = 0; i < photos.length; i++) {
+      try {
+        final xfile = photos[i];
+        final bytes = await xfile.readAsBytes();
+        final ext = xfile.name.split('.').last;
+        final path = 'jobs/$jobId/photo_$i.$ext';
+
+        // uploadBinary works on both mobile and web
+        await SupabaseService.client!
+            .storage
+            .from('job-photos')
+            .uploadBinary(path, bytes,
+                fileOptions: const FileOptions(upsert: true));
+
+        final publicUrl = SupabaseService.client!
+            .storage
+            .from('job-photos')
+            .getPublicUrl(path);
+        urls.add(publicUrl);
+      } catch (e, stack) {
+        if (kDebugMode) {
+          print('⚠️ [JobService.uploadJobPhotos] Error uploading photo $i: $e\n$stack');
+        }
+      }
+    }
+    return urls.join(',');
+  }
+
+  /// Convenience: uploads photos, then creates (or updates) the job with image_url.
+  static Future<Job?> createJobWithPhotos({
+    required Job job,
+    required List<XFile> photos,
+  }) async {
+    // 1. Create the job first (without image_url) so we have a stable id.
+    final created = await createJob(job);
+    if (created == null) return null;
+
+    // 2. Upload photos.
+    String imageUrl = '';
+    if (photos.isNotEmpty) {
+      imageUrl = await uploadJobPhotos(photos, created.id);
+    }
+
+    // 3. Patch the image_url if photos were uploaded.
+    if (imageUrl.isNotEmpty) {
+      try {
+        await SupabaseService.client!
+            .from(_tableName)
+            .update({'image_url': imageUrl})
+            .eq('id', created.id);
+      } catch (e, stack) {
+        if (kDebugMode) {
+          print('⚠️ [JobService.createJobWithPhotos] Failed to set image_url: $e\n$stack');
+        }
+      }
+      return created.copyWith(imageUrl: imageUrl);
+    }
+
+    return created;
   }
 }

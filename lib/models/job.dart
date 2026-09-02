@@ -15,6 +15,7 @@ class Job {
   final DateTime? completedAt;
   final double amount;
   final DateTime? createdAt;
+  final String imageUrl; // comma-separated photo URLs
 
   // Joined relations
   final WorkerProfile? workerProfile;
@@ -31,6 +32,7 @@ class Job {
     this.completedAt,
     this.amount = 0.0,
     this.createdAt,
+    this.imageUrl = '',
     this.workerProfile,
     this.customerProfile,
   });
@@ -69,6 +71,7 @@ class Job {
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,
+      imageUrl: json['image_url'] as String? ?? '',
       workerProfile: worker,
       customerProfile: customer,
     );
@@ -86,6 +89,7 @@ class Job {
       if (completedAt != null) 'completed_at': completedAt!.toIso8601String(),
       'amount': amount,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
+      'image_url': imageUrl,
     };
   }
 
@@ -100,6 +104,7 @@ class Job {
     DateTime? completedAt,
     double? amount,
     DateTime? createdAt,
+    String? imageUrl,
     WorkerProfile? workerProfile,
     UserProfile? customerProfile,
   }) {
@@ -114,6 +119,7 @@ class Job {
       completedAt: completedAt ?? this.completedAt,
       amount: amount ?? this.amount,
       createdAt: createdAt ?? this.createdAt,
+      imageUrl: imageUrl ?? this.imageUrl,
       workerProfile: workerProfile ?? this.workerProfile,
       customerProfile: customerProfile ?? this.customerProfile,
     );

@@ -28,6 +28,12 @@ class AppState {
   static final ValueNotifier<String> currentRole =
       ValueNotifier('customer');
 
+  // Request-service form state (shared between RequestServiceScreen → PhotosScreen)
+  static String pendingServiceType = 'Repair';
+  static String pendingDescription = '';
+  static String pendingAddress = '';
+  static String pendingUrgency = 'Normal';
+
   static Worker? _activeWorker;
   static Worker? get activeWorker => _activeWorker;
   static set activeWorker(Worker? w) {
@@ -45,6 +51,10 @@ class AppState {
     serviceCompleted.value = false;
     paymentMade.value = false;
     workerOnDuty.value = false;
+    pendingServiceType = 'Repair';
+    pendingDescription = '';
+    pendingAddress = '';
+    pendingUrgency = 'Normal';
   }
 
   /// Full reset: clears temporary workflow state AND authentication state.
