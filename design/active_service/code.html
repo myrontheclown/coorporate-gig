@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" name="viewport"/>
+<title>Active Service</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .ambient-shadow {
+            box-shadow: 0 4px 24px rgba(0, 7, 103, 0.04);
+        }
+        .map-gradient {
+            background: linear-gradient(180deg, rgba(248,249,250,0) 0%, rgba(248,249,250,1) 90%);
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-surface font-body-md antialiased min-h-screen flex flex-col relative overflow-x-hidden">
+<!-- Transactional TopAppBar (No Navigation Shell as per rules for transactional/focused tasks) -->
+<header class="bg-surface/80 backdrop-blur-xl border-b border-border-light docked full-width top-0 sticky z-50 flex justify-between items-center w-full px-margin-mobile h-16">
+<button aria-label="Go back" class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-extrabold text-primary">Active Service</h1>
+<div class="w-10 h-10"></div> <!-- Spacer for centering -->
+</header>
+<main class="flex-grow flex flex-col relative">
+<!-- Live Tracking Map Section (Simulated) -->
+<section class="relative h-64 md:h-96 w-full bg-surface-container-low shrink-0">
+<div class="absolute inset-0 bg-cover bg-center w-full h-full" data-alt="A bright, minimalist digital map interface showing a city layout with clean white and light gray roads, subtle blue water features, and soft drop shadows indicating elevation. The aesthetic is corporate and modern, light mode." data-location="Panaji, Goa" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBTI6M3B9oBipB3-7CRsfGBNUmG5ROcG87Tk--DWMaQzJHbbf-0XZNR5YLXRtGyj8TaxQkwhDsMDlQ9bFTlGPVkZlenfYDtM670zD-UGK2Vrbv3aQkRqAj2t20B7odWO2hkLxmhR5cp6gSZ0gFjibm2A5SxCBch29lnmQSf1FNEfP0Hfp0P_gmsP-ZykZcTCATC_ZQsU73gMjF5tvSihq0eLB0F019X2MhpPOZSeABgswEX804f9Adf')"></div>
+<!-- Map Overlay Gradient to blend with content below -->
+<div class="absolute bottom-0 w-full h-24 map-gradient pointer-events-none"></div>
+<!-- Tracking Markers -->
+<div class="absolute top-1/2 left-1/3 transform -translate-x-1/2 -translate-y-1/2 flex flex-col items-center">
+<div class="w-12 h-12 bg-surface rounded-full shadow-lg flex items-center justify-center border-2 border-primary z-10">
+<img class="w-10 h-10 rounded-full object-cover" data-alt="A professional headshot of a service worker in a clean, bright setting, looking confident and reliable. Light mode corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCgTTt61ZdMG8khUCn3YDATOyuI_vqnXZKR67tgzLPQPTnA1WMwtSDe-FUvnQ7TgSo_fgwmHK35B2k1alnl4XtdbWakjb-soUowNubwLr22pHTz2ksp3NQctZiNPVVvSS-VaJHQw0y8T7Z3vconncRaaSKQHJlGXhDbTAOs_CPW95kNqZVJeWf4kI0wP1PMvyoWnAfN7vry1YrQ4ntMgGitJaqjFfrNz45m9HLG151vcpAnSolVmIG4"/>
+</div>
+<div class="bg-surface px-3 py-1 rounded-full text-label-caps font-label-caps text-primary mt-2 shadow-sm">Provider</div>
+</div>
+<div class="absolute top-1/3 right-1/4 transform translate-x-1/2 -translate-y-1/2">
+<div class="w-8 h-8 bg-verified-blue rounded-full shadow-lg flex items-center justify-center border-2 border-surface z-10 animate-pulse">
+<div class="w-3 h-3 bg-surface rounded-full"></div>
+</div>
+<div class="bg-surface px-3 py-1 rounded-full text-label-caps font-label-caps text-on-surface mt-2 shadow-sm text-center">You</div>
+</div>
+<!-- Route Line (Decorative SVG) -->
+<svg class="absolute inset-0 w-full h-full pointer-events-none" style="z-index: 1;">
+<path class="opacity-60" d="M 33% 50% Q 50% 30% 75% 33%" fill="transparent" stroke="#2D5BFF" stroke-dasharray="8 8" stroke-width="4"></path>
+</svg>
+</section>
+<!-- Service Details Container -->
+<section class="flex-grow bg-background -mt-6 z-20 rounded-t-xl px-margin-mobile pt-6 pb-24 md:pb-margin-desktop md:max-w-[800px] md:mx-auto md:w-full">
+<!-- Status Indicator -->
+<div class="flex items-center gap-3 mb-section-gap bg-surface-container-low px-4 py-3 rounded-lg border border-border-light">
+<span class="material-symbols-outlined text-success-green" style="font-variation-settings: 'FILL' 1;">build_circle</span>
+<div>
+<h2 class="text-headline-md font-headline-md text-charcoal-text">Service in progress</h2>
+<p class="text-body-md font-body-md text-slate-body">Started at 6:12 PM</p>
+</div>
+<div class="ml-auto">
+<span class="relative flex h-3 w-3">
+<span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-success-green opacity-75"></span>
+<span class="relative inline-flex rounded-full h-3 w-3 bg-success-green"></span>
+</span>
+</div>
+</div>
+<!-- Worker Profile Card -->
+<div class="bg-surface rounded-xl border border-border-light ambient-shadow p-component-padding mb-section-gap flex flex-col sm:flex-row items-center sm:items-start gap-4">
+<div class="relative shrink-0">
+<img class="w-20 h-20 sm:w-24 sm:h-24 rounded-full object-cover border-2 border-surface shadow-sm" data-alt="A professional headshot of a skilled electrician wearing a clean uniform, smiling slightly, set against a bright, minimalist background. Corporate aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDwsrPKftiGh6MJLYtRsD86gRrE7s2W1pO_oXjLh-CRUq3_l3Dotwapt-D_s1ddkNHwAcI87noG21Jgt-eKJP26O8JkO5_7xRWNOMM1fSiovSKBOtVvJ91J_9_KoqniXAUOddwoS3AkgH1tKuZFOXB_WySY-PJL3u6GksO92hVMljUor1EoAFW1PysJazXbCS1qlQkAhNbdS4BZ2k8fvKBqgm-9emZz-H78RVyackHTjxEkYQwxa8j8"/>
+<div class="absolute bottom-0 right-0 w-6 h-6 bg-verified-blue rounded-full border-2 border-surface flex items-center justify-center">
+<span class="material-symbols-outlined text-[12px] text-surface" style="font-variation-settings: 'FILL' 1;">verified</span>
+</div>
+</div>
+<div class="flex-grow text-center sm:text-left">
+<h3 class="text-headline-md font-headline-md text-charcoal-text mb-1">Marcus Thorne</h3>
+<p class="text-body-md font-body-md text-slate-body mb-3">Master Electrician</p>
+<div class="flex items-center justify-center sm:justify-start gap-4">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[#F59E0B] text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="text-stat-lg font-stat-lg text-charcoal-text">4.9</span>
+<span class="text-label-caps font-label-caps text-slate-body ml-1">(128)</span>
+</div>
+<div class="w-1 h-1 bg-border-light rounded-full"></div>
+<div class="text-label-caps font-label-caps text-slate-body">5 YRS EXP</div>
+</div>
+</div>
+<div class="flex gap-2 sm:ml-auto w-full sm:w-auto mt-4 sm:mt-0">
+<button class="flex-1 sm:flex-none h-12 px-6 rounded-full bg-surface-container-low text-primary border border-border-light hover:bg-surface-variant transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">call</span>
+</button>
+<button class="flex-1 sm:flex-none h-12 px-6 rounded-full bg-primary text-on-primary hover:bg-primary/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">chat</span>
+<span class="text-label-caps font-label-caps">Message</span>
+</button>
+</div>
+</div>
+<!-- Job Details -->
+<div class="bg-surface rounded-xl border border-border-light ambient-shadow overflow-hidden mb-section-gap">
+<div class="p-component-padding border-b border-border-light">
+<h4 class="text-label-caps font-label-caps text-slate-body mb-2 uppercase tracking-wider">Job Details</h4>
+<p class="text-headline-md font-headline-md text-charcoal-text">Electrical Repair &amp; Inspection</p>
+</div>
+<div class="p-component-padding grid grid-cols-2 gap-4">
+<div>
+<p class="text-label-caps font-label-caps text-slate-body mb-1">RATE</p>
+<p class="text-stat-lg font-stat-lg text-charcoal-text">$85/hr</p>
+</div>
+<div>
+<p class="text-label-caps font-label-caps text-slate-body mb-1">EST. DURATION</p>
+<p class="text-stat-lg font-stat-lg text-charcoal-text">1.5 hrs</p>
+</div>
+</div>
+</div>
+<!-- Quick Actions -->
+<div class="flex flex-col gap-3">
+<button class="w-full h-14 bg-surface border border-border-light rounded-xl flex items-center px-4 hover:bg-surface-variant/50 transition-colors group">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center mr-4 group-hover:bg-surface-variant transition-colors">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+</div>
+<span class="text-body-lg font-body-lg text-charcoal-text font-medium">View Estimate</span>
+<span class="material-symbols-outlined text-outline ml-auto">chevron_right</span>
+</button>
+<button class="w-full h-14 bg-surface border border-border-light rounded-xl flex items-center px-4 hover:bg-error-container/50 transition-colors group">
+<div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center mr-4 group-hover:bg-error-container transition-colors">
+<span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">report_problem</span>
+</div>
+<span class="text-body-lg font-body-lg text-error font-medium">Report an Issue</span>
+<span class="material-symbols-outlined text-outline ml-auto">chevron_right</span>
+</button>
+</div>
+</section>
+</main>
+<!-- Suppressed navigation shell because this is a focused, transactional view (Tracking a live service) -->
+</body></html>

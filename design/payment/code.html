@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Payment</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { font-family: 'Inter', sans-serif; background-color: #f8f9fa; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Hanken Grotesk', sans-serif; }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background text-on-background min-h-screen flex flex-col md:max-w-screen-md md:mx-auto">
+<!-- Header (Transactional - No Navigation Shell per mandate) -->
+<header class="flex justify-between items-center w-full px-margin-mobile h-16 bg-surface/80 backdrop-blur-xl sticky top-0 z-50">
+<button class="text-primary p-2 -ml-2 rounded-full hover:bg-surface-variant/50 transition-colors">
+<span class="material-symbols-outlined">arrow_back</span>
+</button>
+<h1 class="text-headline-md font-headline-md font-bold text-primary">Payment</h1>
+<div class="w-10"></div> <!-- Placeholder for balance -->
+</header>
+<main class="flex-grow px-margin-mobile pt-6 pb-32">
+<!-- Summary Card -->
+<section class="bg-surface-container-lowest rounded-lg border border-border-light shadow-[0_24px_48px_-12px_rgba(0,6,102,0.04)] p-component-padding mb-section-gap relative overflow-hidden">
+<div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+<span class="material-symbols-outlined text-9xl">receipt_long</span>
+</div>
+<div class="flex items-center gap-4 mb-6 relative z-10">
+<img class="w-16 h-16 rounded-full object-cover shadow-md border-2 border-white" data-alt="A professional headshot of a confident interior designer wearing a smart casual blazer, warm studio lighting, modern minimalist aesthetic, light clean background." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAgxqOPGqGjaQCpATfjQA4qeAv3dRwI2RFz65lkP-BnAYQIy6khGF0PxMMLQdwe3tX0rJZ6up7JKQJgKdMmqmQasTOs-pkXDEuA6gUcuOQ7jOz3oiBXZpv8iHP7tJtD7_epkjyChIFBtW9na1_wp9J-RCBbJD9qnER14S-k62bXD5j0W8QqD5HDw6aEXJDtJh7VzWYQSkjNm2JH7eXIdFnAOjbey31UVkH1k931mTJGiYEhsEZ5uPnz"/>
+<div>
+<h2 class="text-headline-md font-headline-md text-charcoal-text">Alexa Martinez</h2>
+<p class="text-body-md font-body-md text-slate-body">UX/UI Designer • Design Consultation</p>
+</div>
+</div>
+<div class="space-y-4 relative z-10">
+<div class="flex justify-between items-center pb-4 border-b border-border-light/50">
+<span class="text-body-lg font-body-lg text-slate-body">Service Charge</span>
+<span class="text-body-lg font-body-lg font-medium text-charcoal-text">₹800</span>
+</div>
+<div class="flex justify-between items-center pb-4 border-b border-border-light/50">
+<span class="text-body-lg font-body-lg text-slate-body flex items-center gap-1">
+                        Platform Fee
+                        <span class="material-symbols-outlined text-[16px] text-outline" title="Helps us keep the platform running">info</span>
+</span>
+<span class="text-body-lg font-body-lg font-medium text-charcoal-text">₹20</span>
+</div>
+<div class="flex justify-between items-center pb-4 border-b border-border-light/50">
+<span class="text-body-lg font-body-lg text-slate-body flex items-center gap-1">
+                        Cooperative Share
+                        <span class="material-symbols-outlined text-[16px] text-verified-blue">verified</span>
+</span>
+<span class="text-body-lg font-body-lg font-medium text-charcoal-text">₹50</span>
+</div>
+<div class="flex justify-between items-center pt-2">
+<span class="text-headline-md font-headline-md font-bold text-charcoal-text">Total</span>
+<span class="text-display-lg font-display-lg font-extrabold text-primary">₹870</span>
+</div>
+</div>
+</section>
+<!-- Payment Methods -->
+<section class="mb-section-gap">
+<h3 class="text-headline-md font-headline-md font-semibold text-charcoal-text mb-4 px-2">Payment Method</h3>
+<div class="space-y-3">
+<!-- UPI Option (Selected) -->
+<label class="flex items-center p-4 bg-surface-container-lowest border-2 border-primary rounded-lg shadow-sm cursor-pointer transition-all hover:shadow-md relative overflow-hidden group">
+<div class="absolute inset-0 bg-primary/5 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="mr-4">
+<div class="w-6 h-6 rounded-full border-2 border-primary flex items-center justify-center">
+<div class="w-3 h-3 rounded-full bg-primary"></div>
+</div>
+<input checked="" class="hidden" name="payment_method" type="radio" value="upi"/>
+</div>
+<div class="flex-grow">
+<span class="block text-body-lg font-body-lg font-medium text-charcoal-text">UPI / QR Code</span>
+<span class="block text-body-md font-body-md text-slate-body">Google Pay, PhonePe, Paytm</span>
+</div>
+<span class="material-symbols-outlined text-primary text-2xl">qr_code_scanner</span>
+</label>
+<!-- Card Option -->
+<label class="flex items-center p-4 bg-surface-container-lowest border border-border-light rounded-lg shadow-sm cursor-pointer transition-all hover:shadow-md hover:border-primary/50 relative overflow-hidden group">
+<div class="absolute inset-0 bg-surface-variant/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="mr-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center">
+<!-- Unselected state inner circle hidden -->
+</div>
+<input class="hidden" name="payment_method" type="radio" value="card"/>
+</div>
+<div class="flex-grow">
+<span class="block text-body-lg font-body-lg font-medium text-charcoal-text">Credit / Debit Card</span>
+<span class="block text-body-md font-body-md text-slate-body">Visa, Mastercard, RuPay</span>
+</div>
+<span class="material-symbols-outlined text-outline text-2xl">credit_card</span>
+</label>
+<!-- Cash Option -->
+<label class="flex items-center p-4 bg-surface-container-lowest border border-border-light rounded-lg shadow-sm cursor-pointer transition-all hover:shadow-md hover:border-primary/50 relative overflow-hidden group">
+<div class="absolute inset-0 bg-surface-variant/20 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+<div class="mr-4">
+<div class="w-6 h-6 rounded-full border-2 border-outline flex items-center justify-center">
+</div>
+<input class="hidden" name="payment_method" type="radio" value="cash"/>
+</div>
+<div class="flex-grow">
+<span class="block text-body-lg font-body-lg font-medium text-charcoal-text">Cash on Completion</span>
+<span class="block text-body-md font-body-md text-slate-body">Pay directly to professional</span>
+</div>
+<span class="material-symbols-outlined text-outline text-2xl">payments</span>
+</label>
+</div>
+</section>
+</main>
+<!-- Sticky Bottom CTA -->
+<div class="fixed bottom-0 w-full md:max-w-screen-md md:mx-auto bg-surface-container-lowest/90 backdrop-blur-xl border-t border-border-light p-4 pb-safe shadow-[0_-8px_32px_rgba(0,0,0,0.05)] z-40">
+<button class="w-full bg-primary text-on-primary text-headline-md font-headline-md font-bold py-4 rounded-full shadow-lg hover:bg-primary-container hover:text-on-primary-container transition-all flex items-center justify-center gap-2 active:scale-95 duration-200">
+            Pay ₹870
+            <span class="material-symbols-outlined">arrow_forward</span>
+</button>
+<p class="text-center mt-3 text-label-caps font-label-caps text-slate-body flex items-center justify-center gap-1 opacity-70">
+<span class="material-symbols-outlined text-[14px]">lock</span>
+            SECURE ENCRYPTED PAYMENT
+        </p>
+</div>
+<script>
+        // Simple script to handle radio button visual selection state
+        document.querySelectorAll('input[type="radio"][name="payment_method"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                // Reset all labels
+                document.querySelectorAll('label').forEach(label => {
+                    label.classList.remove('border-primary', 'border-2');
+                    label.classList.add('border-border-light', 'border');
+                    const indicator = label.querySelector('.w-6.h-6');
+                    if(indicator) {
+                        indicator.classList.remove('border-primary');
+                        indicator.classList.add('border-outline');
+                        indicator.innerHTML = ''; // Remove inner dot
+                    }
+                    const icon = label.querySelector('.material-symbols-outlined:last-child');
+                    if(icon) {
+                        icon.classList.remove('text-primary');
+                        icon.classList.add('text-outline');
+                    }
+                });
+
+                // Set active state
+                if (this.checked) {
+                    const activeLabel = this.closest('label');
+                    activeLabel.classList.remove('border-border-light', 'border');
+                    activeLabel.classList.add('border-primary', 'border-2');
+                    
+                    const activeIndicator = activeLabel.querySelector('.w-6.h-6');
+                    activeIndicator.classList.remove('border-outline');
+                    activeIndicator.classList.add('border-primary');
+                    activeIndicator.innerHTML = '<div class="w-3 h-3 rounded-full bg-primary"></div>';
+
+                     const activeIcon = activeLabel.querySelector('.material-symbols-outlined:last-child');
+                    if(activeIcon) {
+                        activeIcon.classList.remove('text-outline');
+                        activeIcon.classList.add('text-primary');
+                    }
+                }
+            });
+        });
+    </script>
+</body></html>

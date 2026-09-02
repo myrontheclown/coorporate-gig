@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Profile - Rahul D'Cruz</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#ffdbd0",
+                        "on-surface": "#191c1d",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "primary-container": "#1a237e",
+                        "on-secondary-fixed-variant": "#005312",
+                        "secondary-container": "#a0f399",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "tertiary-container": "#5c1800",
+                        "background": "#f8f9fa",
+                        "success-green": "#2E7D32",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "surface-container-high": "#e7e8e9",
+                        "on-primary-fixed": "#000767",
+                        "on-primary": "#ffffff",
+                        "outline-variant": "#c6c5d4",
+                        "surface-bright": "#f8f9fa",
+                        "charcoal-text": "#121212",
+                        "on-tertiary-fixed": "#390c00",
+                        "surface-tint": "#4c56af",
+                        "surface-variant": "#e1e3e4",
+                        "outline": "#767683",
+                        "tertiary": "#380b00",
+                        "error": "#ba1a1a",
+                        "on-tertiary": "#ffffff",
+                        "secondary-fixed": "#a3f69c",
+                        "inverse-primary": "#bdc2ff",
+                        "primary-fixed": "#e0e0ff",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-container": "#e17c5a",
+                        "inverse-surface": "#2e3132",
+                        "verified-blue": "#2D5BFF",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#217128",
+                        "on-error-container": "#93000a",
+                        "secondary": "#1b6d24",
+                        "border-light": "#E5E7EB",
+                        "on-primary-fixed-variant": "#343d96",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-secondary": "#ffffff",
+                        "secondary-fixed-dim": "#88d982",
+                        "surface-dim": "#d9dadb",
+                        "surface": "#f8f9fa",
+                        "on-background": "#191c1d",
+                        "on-primary-container": "#8690ee",
+                        "surface-container": "#edeeef",
+                        "slate-body": "#4B5563",
+                        "error-container": "#ffdad6",
+                        "on-surface-variant": "#454652",
+                        "primary": "#000666",
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "gutter": "16px",
+                        "component-padding": "24px",
+                        "section-gap": "32px",
+                        "margin-mobile": "20px",
+                        "margin-desktop": "64px"
+                    },
+                    "fontFamily": {
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Inter"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); color: theme('colors.on-surface'); }
+        .glass-header { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+        .ambient-shadow { box-shadow: 0px 12px 24px rgba(0, 7, 103, 0.04); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="antialiased min-h-screen pb-24 md:pb-0">
+<!-- Top App Bar -->
+<header class="glass-header bg-surface/80 dark:bg-surface-container/80 docked full-width top-0 sticky z-40 border-b border-border-light dark:border-outline-variant flex justify-between items-center w-full px-margin-mobile h-16 md:hidden">
+<div class="flex items-center gap-3">
+<!-- Empty leading space to match JSON avatar logic structurally if missing avatar url -->
+<div class="w-8 h-8 rounded-full bg-surface-container-high animate-pulse"></div>
+<h1 class="text-headline-md font-headline-md font-extrabold text-primary dark:text-primary-fixed-dim">Rahul D'Cruz</h1>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-variant/50 transition-colors text-primary dark:text-primary-fixed-dim">
+<span aria-label="Notifications" class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="max-w-3xl mx-auto md:pt-12">
+<!-- Profile Header Section -->
+<section class="relative bg-surface rounded-b-xl md:rounded-xl ambient-shadow border border-border-light overflow-hidden mb-section-gap">
+<!-- Cover Image (Gradient placeholder for elegant look) -->
+<div class="h-32 md:h-48 bg-gradient-to-r from-primary-container to-surface-tint w-full relative">
+<div class="absolute inset-0 opacity-20 mix-blend-overlay bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjEiIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC41Ii8+PC9zdmc+')]"></div>
+</div>
+<div class="px-margin-mobile pb-component-padding relative">
+<!-- Avatar -->
+<div class="relative -mt-12 md:-mt-16 mb-4 inline-block">
+<img alt="Rahul D'Cruz Profile Picture" class="w-24 h-24 md:w-32 md:h-32 rounded-full border-4 border-surface object-cover shadow-sm bg-surface-container-highest" data-alt="A professional headshot of an Indian man, Rahul D'Cruz, in his early 30s. He has a neat haircut, a warm smile, and is wearing a modern, tailored navy blazer over a crisp white shirt. The background is a soft, out-of-focus bright modern office interior. High-end lighting, clean aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDGW7jZMiogp-iaNSAHFZH33mmMxYD6G3-3Hpth8WwXeoSnn1-CdlMtDZL2D92gEkwZoFQmvW18te9GceRuAkTRA62Vm0Tlk5S_zRdYJMdhKEEzuCpvjVkcYzjR51S0WMJqzD3Z0SdgrC72pq7YVCX0MGVsVF-4nlZEP-g7MGufpGudalAKoRilfj_nk1XfnDXEKCDn47fzaoHfqUR8BDqN8Nr0RnNdKCaeeHjp83qCknPBEWA9ahD8"/>
+<div class="absolute bottom-1 right-1 w-6 h-6 bg-success-green rounded-full border-2 border-surface flex items-center justify-center" title="Verified">
+<span class="material-symbols-outlined text-[14px] text-white" style="font-variation-settings: 'FILL' 1;">check</span>
+</div>
+</div>
+<!-- Info -->
+<div class="flex flex-col md:flex-row md:items-end justify-between gap-4">
+<div>
+<h2 class="text-headline-lg-mobile md:text-headline-lg font-headline-lg-mobile md:font-headline-lg text-charcoal-text mb-1">Rahul D'Cruz</h2>
+<div class="flex items-center text-slate-body text-body-md font-body-md gap-2">
+<span class="material-symbols-outlined text-[18px]">phone_iphone</span>
+<span>+91 98765 43210</span>
+</div>
+</div>
+<button class="bg-surface-container-low hover:bg-surface-container px-6 py-2 rounded-full text-primary font-label-caps text-label-caps border border-border-light transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[18px]">edit</span> Edit Profile
+                    </button>
+</div>
+</div>
+</section>
+<!-- Menu Grid -->
+<section class="px-margin-mobile md:px-0 grid grid-cols-1 md:grid-cols-2 gap-4">
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">location_on</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Saved Addresses</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Manage home &amp; work</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">credit_card</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Payment Methods</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Cards &amp; wallets</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">history</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Service History</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Past requests &amp; receipts</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">star</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">My Reviews</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Feedback given</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">notifications_active</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Notifications</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Alert preferences</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">shield</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Privacy &amp; Security</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">Passwords &amp; data</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">support_agent</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-charcoal-text text-base">Help &amp; Support</h3>
+<p class="text-body-md font-body-md text-slate-body text-sm mt-0.5">FAQs &amp; Contact</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">chevron_right</span>
+</a>
+<a class="group flex items-center justify-between p-component-padding bg-surface rounded-DEFAULT border border-border-light ambient-shadow hover:shadow-lg transition-all duration-300 md:col-span-2 mt-4 md:mt-0" href="#">
+<div class="flex items-center gap-4">
+<div class="w-12 h-12 rounded-full bg-error-container/20 flex items-center justify-center text-error group-hover:bg-error group-hover:text-white transition-colors">
+<span class="material-symbols-outlined">logout</span>
+</div>
+<div>
+<h3 class="text-headline-md font-headline-md text-error text-base">Log Out</h3>
+</div>
+</div>
+</a>
+</section>
+</main>
+<!-- Bottom Navigation Bar (Mobile Only) -->
+<nav class="md:hidden bg-surface/90 dark:bg-surface-container-highest/90 backdrop-blur-2xl text-primary dark:text-primary-fixed-dim fixed bottom-0 w-full z-50 rounded-t-lg shadow-[0_-4px_24px_rgba(0,7,103,0.04)] shadow-2xl flex justify-around items-center pt-3 pb-safe px-4" style="padding-bottom: env(safe-area-inset-bottom);">
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="home">home</span>
+<span class="text-label-caps font-label-caps">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant dark:text-outline px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="assignment">assignment</span>
+<span class="text-label-caps font-label-caps">Requests</span>
+</a>
+<a class="flex flex-col items-center justify-center bg-primary-container dark:bg-primary text-on-primary-container dark:text-on-primary rounded-xl px-6 py-2 hover:text-primary dark:hover:text-primary-fixed-dim transition-colors scale-95 duration-200" href="#">
+<span class="material-symbols-outlined mb-1" data-icon="person">person</span>
+<span class="text-label-caps font-label-caps">Profile</span>
+</a>
+</nav>
+</body></html>

@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+
+<html lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>My Workers</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;600;700;800&amp;family=Inter:wght@400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#454652",
+                        "on-primary": "#ffffff",
+                        "on-secondary-fixed-variant": "#005312",
+                        "surface": "#f8f9fa",
+                        "on-tertiary-fixed-variant": "#7b2e12",
+                        "outline": "#767683",
+                        "tertiary-fixed": "#ffdbd0",
+                        "primary": "#000666",
+                        "inverse-surface": "#2e3132",
+                        "on-tertiary": "#ffffff",
+                        "on-surface": "#191c1d",
+                        "surface-bright": "#f8f9fa",
+                        "surface-variant": "#e1e3e4",
+                        "on-primary-container": "#8690ee",
+                        "surface-tint": "#4c56af",
+                        "on-background": "#191c1d",
+                        "tertiary": "#380b00",
+                        "primary-fixed": "#e0e0ff",
+                        "on-secondary-fixed": "#002204",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed-variant": "#343d96",
+                        "background": "#f8f9fa",
+                        "tertiary-fixed-dim": "#ffb59d",
+                        "outline-variant": "#c6c5d4",
+                        "primary-fixed-dim": "#bdc2ff",
+                        "verified-blue": "#2D5BFF",
+                        "surface-dim": "#d9dadb",
+                        "on-secondary-container": "#217128",
+                        "on-tertiary-container": "#e17c5a",
+                        "border-light": "#E5E7EB",
+                        "on-error-container": "#93000a",
+                        "secondary-fixed": "#a3f69c",
+                        "surface-container-low": "#f3f4f5",
+                        "on-secondary": "#ffffff",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#e1e3e4",
+                        "secondary-container": "#a0f399",
+                        "surface-container-high": "#e7e8e9",
+                        "slate-body": "#4B5563",
+                        "tertiary-container": "#5c1800",
+                        "inverse-primary": "#bdc2ff",
+                        "on-tertiary-fixed": "#390c00",
+                        "secondary": "#1b6d24",
+                        "on-primary-fixed": "#000767",
+                        "surface-container": "#edeeef",
+                        "success-green": "#2E7D32",
+                        "secondary-fixed-dim": "#88d982",
+                        "inverse-on-surface": "#f0f1f2",
+                        "error": "#ba1a1a",
+                        "charcoal-text": "#121212",
+                        "primary-container": "#1a237e",
+                        "error-container": "#ffdad6"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "1rem",
+                        "lg": "2rem",
+                        "xl": "3rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "margin-desktop": "64px",
+                        "margin-mobile": "20px",
+                        "section-gap": "32px",
+                        "component-padding": "24px",
+                        "gutter": "16px"
+                    },
+                    "fontFamily": {
+                        "headline-lg-mobile": ["Hanken Grotesk"],
+                        "headline-md": ["Hanken Grotesk"],
+                        "stat-lg": ["Hanken Grotesk"],
+                        "display-lg": ["Hanken Grotesk"],
+                        "label-caps": ["Hanken Grotesk"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-md": ["Inter"],
+                        "body-lg": ["Inter"]
+                    },
+                    "fontSize": {
+                        "headline-lg-mobile": ["24px", { "lineHeight": "30px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "fontWeight": "600" }],
+                        "stat-lg": ["22px", { "lineHeight": "28px", "fontWeight": "700" }],
+                        "display-lg": ["36px", { "lineHeight": "44px", "letterSpacing": "-0.03em", "fontWeight": "800" }],
+                        "label-caps": ["12px", { "lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "700" }],
+                        "headline-lg": ["28px", { "lineHeight": "34px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "body-md": ["14px", { "lineHeight": "22px", "fontWeight": "400" }],
+                        "body-lg": ["16px", { "lineHeight": "26px", "fontWeight": "400" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body { background-color: theme('colors.background'); }
+        .ambient-shadow { box-shadow: 0px 8px 24px rgba(0, 6, 102, 0.04); }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-surface text-on-surface antialiased flex flex-col min-h-screen">
+<!-- Top App Bar -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-sm flex justify-between items-center px-container-padding h-14 w-full">
+<div class="flex items-center gap-3">
+<img class="w-8 h-8 rounded-full object-cover" data-alt="A small, circular avatar portrait of a user. The lighting is soft and studio-quality, emphasizing a professional yet approachable demeanor. The background is a clean, neutral gray to ensure the face stands out clearly. The image conveys trust and reliability in a high-end service platform context." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC-Ep4xn9vlr5hDdjkdH3AwByZ6V4sbSROj7UohW8yh2otDQOnz_MLCN-sYp_i6n4fgrsgjliq8yDZlGf4SMe3ZqWKr5hF2wycakoj7ExSKudKIQh1kSXmOKT1D4qBi5ti6SpalFJGzO_LhPTCdEXV3shf7ol7zxqAQcJwmFmfkcjNJkLryez_9KIOQYlGt_nlO3oG-3p189nKpyLQlBJ2pT_YknPhuJc4_VorkB7aPkZfP_XEimjmB"/>
+<span class="font-headline-md text-headline-md font-bold text-primary">Bharat Seva</span>
+</div>
+<button class="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container transition-colors active:scale-95 transition-transform duration-200 text-primary">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</header>
+<!-- Main Content -->
+<main class="flex-1 pt-24 pb-24 px-margin-mobile flex flex-col gap-section-gap w-full max-w-md mx-auto">
+<!-- Header Section -->
+<section class="flex flex-col gap-2">
+<h1 class="font-headline-lg-mobile text-headline-lg-mobile text-on-surface">My Workers</h1>
+<p class="font-body-md text-body-md text-slate-body">Professionals you've worked with</p>
+</section>
+<!-- Worker List -->
+<section class="flex flex-col gap-gutter">
+<!-- Card 1 -->
+<article class="bg-surface-container-lowest rounded-[24px] border border-border-light p-component-padding flex flex-col gap-4 ambient-shadow relative overflow-hidden">
+<div class="flex items-start gap-4">
+<img class="w-16 h-16 rounded-full object-cover shrink-0" data-alt="A professional headshot of an Indian male electrician in his mid-30s. He is wearing a clean, dark navy uniform shirt. The lighting is bright and even, highlighting his confident and experienced expression. The background is a subtle gradient of light gray, ensuring the focus remains entirely on the subject, projecting competence and trustworthiness." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBYjfrVmAFN_8Q1o4yFnrlT_750tW4C8c-jfUaLUoXJBlXVKDxw_h_aKdRNGIxIfPAmjEMiIkZcwqAlte3fxcVO8uQGDVIrZp6LoVA5ApveWW2kwm9HD9H8J70EbTMu0jQ2u6AuUkIqc4F1c__9J_kWb-Q80QVHajNmk7PI0tMSWIQdDLHdYHEtAOC1vS1Y84L1vt4F2Vrff-A-A0GS4AgENZJjuCgcnsmyZgTN9WdfZFpQjbDXRPfr"/>
+<div class="flex-1 min-w-0 flex flex-col gap-1">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-on-surface truncate">Rajesh Kumar</h2>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-caps text-label-caps text-on-surface">4.8</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Electrician</p>
+<p class="font-body-md text-body-md text-slate-body text-sm">Goa Electrical Workers Cooperative</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-2">
+<div class="flex items-center gap-1.5 bg-surface-container py-1.5 px-3 rounded-full">
+<span class="material-symbols-outlined text-verified-blue text-[14px]">verified</span>
+<span class="font-body-md text-[12px] text-charcoal-text font-medium">Aadhaar Verified</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container py-1.5 px-3 rounded-full">
+<span class="material-symbols-outlined text-success-green text-[14px]">workspace_premium</span>
+<span class="font-body-md text-[12px] text-charcoal-text font-medium">Skill Verified</span>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-border-light/50">
+<div class="flex-1 flex flex-col">
+<span class="font-label-caps text-label-caps text-slate-body uppercase">Jobs Completed</span>
+<span class="font-stat-lg text-stat-lg text-on-surface">47</span>
+</div>
+<div class="w-[1px] h-8 bg-border-light"></div>
+<div class="flex-1 flex flex-col">
+<span class="font-label-caps text-label-caps text-slate-body uppercase">Last Hired</span>
+<span class="font-stat-lg text-stat-lg text-on-surface">28 Aug</span>
+</div>
+</div>
+<div class="flex gap-3 pt-2">
+<button class="flex-1 h-[52px] rounded-full border border-border-light text-on-surface font-body-md font-semibold hover:bg-surface-container-low transition-colors">
+                        View Profile
+                    </button>
+<button class="flex-1 h-[52px] rounded-full bg-primary text-on-primary font-body-md font-semibold hover:bg-primary/90 transition-colors">
+                        Rebook
+                    </button>
+</div>
+</article>
+<!-- Card 2 -->
+<article class="bg-surface-container-lowest rounded-[24px] border border-border-light p-component-padding flex flex-col gap-4 ambient-shadow relative overflow-hidden">
+<div class="flex items-start gap-4">
+<img class="w-16 h-16 rounded-full object-cover shrink-0" data-alt="A professional headshot of an Indian male plumber in his early 40s. He wears a neat, dark blue polo shirt. The studio lighting is crisp, emphasizing a dependable and approachable demeanor. The background is a clean, minimalistic off-white, aligning with a premium corporate aesthetic that highlights individual expertise." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDFAxnc8MJaQGIGHAtoxnLzRkOQeun6b614VJFvSe6cwiWoIPm7QF041v4UocPqqobRpUf2xuMQjjrpztfv5lOf5X4uRGJugSKQ3CBCMkLGprFBVerkzhEzj9sDr631NL26UXShjPcP7XZszAk_637q1CZf7FqUWIBBBEt-VDHMFtmW_4FkIBNmn4Xs0VdKSxZ_sXJZ5I3JeDTYZ65CEBeg7BdJuwWpUGw0ATn3QWvHt_IndjIMRK2S"/>
+<div class="flex-1 min-w-0 flex flex-col gap-1">
+<div class="flex justify-between items-start">
+<h2 class="font-headline-md text-headline-md text-on-surface truncate">Amit Sharma</h2>
+<div class="flex items-center gap-1 bg-surface-container-low px-2 py-1 rounded-lg">
+<span class="material-symbols-outlined text-primary text-[16px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-label-caps text-label-caps text-on-surface">4.7</span>
+</div>
+</div>
+<p class="font-body-md text-body-md text-slate-body">Plumber</p>
+<p class="font-body-md text-body-md text-slate-body text-sm">Goa Plumbing Workers Cooperative</p>
+</div>
+</div>
+<div class="flex flex-wrap gap-2 pt-2">
+<div class="flex items-center gap-1.5 bg-surface-container py-1.5 px-3 rounded-full">
+<span class="material-symbols-outlined text-verified-blue text-[14px]">verified</span>
+<span class="font-body-md text-[12px] text-charcoal-text font-medium">Aadhaar Verified</span>
+</div>
+<div class="flex items-center gap-1.5 bg-surface-container py-1.5 px-3 rounded-full">
+<span class="material-symbols-outlined text-success-green text-[14px]">workspace_premium</span>
+<span class="font-body-md text-[12px] text-charcoal-text font-medium">Skill Verified</span>
+</div>
+</div>
+<div class="flex items-center gap-4 py-2 border-y border-border-light/50">
+<div class="flex-1 flex flex-col">
+<span class="font-label-caps text-label-caps text-slate-body uppercase">Jobs Completed</span>
+<span class="font-stat-lg text-stat-lg text-on-surface">32</span>
+</div>
+<div class="w-[1px] h-8 bg-border-light"></div>
+<div class="flex-1 flex flex-col">
+<span class="font-label-caps text-label-caps text-slate-body uppercase">Last Hired</span>
+<span class="font-stat-lg text-stat-lg text-on-surface">21 Aug</span>
+</div>
+</div>
+<div class="flex gap-3 pt-2">
+<button class="flex-1 h-[52px] rounded-full border border-border-light text-on-surface font-body-md font-semibold hover:bg-surface-container-low transition-colors">
+                        View Profile
+                    </button>
+<button class="flex-1 h-[52px] rounded-full bg-primary text-on-primary font-body-md font-semibold hover:bg-primary/90 transition-colors">
+                        Rebook
+                    </button>
+</div>
+</article>
+<!-- Empty State (Hidden by default, shown for example structure) -->
+<!--
+            <div class="flex flex-col items-center justify-center py-16 px-4 text-center gap-4 bg-surface-container-lowest rounded-[24px] border border-border-light border-dashed">
+                <span class="material-symbols-outlined text-[48px] text-surface-variant mb-2">person_off</span>
+                <h3 class="font-headline-md text-headline-md text-on-surface">No previous workers yet</h3>
+                <p class="font-body-md text-body-md text-slate-body mb-4">Workers you hire will appear here for faster future bookings.</p>
+                <button class="h-[52px] px-8 rounded-full bg-primary text-on-primary font-body-md font-semibold hover:bg-primary/90 transition-colors">
+                    Find a Worker
+                </button>
+            </div>
+            -->
+</section>
+</main>
+<!-- Bottom Nav Bar -->
+<nav class="fixed bottom-0 w-full z-50 bg-surface/90 backdrop-blur-md shadow-[0px_-4px_12px_rgba(0,0,0,0.05)] flex justify-around items-center h-16 pb-safe w-full md:hidden border-t border-border-light/20">
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="home">home</span>
+<span class="font-label-caps text-[10px] mt-1">Home</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="assignment">assignment</span>
+<span class="font-label-caps text-[10px] mt-1">Bookings</span>
+</a>
+<a class="flex flex-col items-center justify-center text-primary w-full h-full active:scale-95 transition-transform duration-200" href="#">
+<div class="bg-primary-container/20 px-4 py-1 rounded-full mb-1">
+<span class="material-symbols-outlined text-primary" data-icon="recent_actors" style="font-variation-settings: 'FILL' 1;">recent_actors</span>
+</div>
+<span class="font-label-caps text-[10px] text-primary">My Workers</span>
+</a>
+<a class="flex flex-col items-center justify-center text-on-surface-variant hover:bg-surface-container-low w-full h-full active:scale-95 transition-transform duration-200" href="#">
+<span class="material-symbols-outlined" data-icon="person">person</span>
+<span class="font-label-caps text-[10px] mt-1">Profile</span>
+</a>
+</nav>
+</body></html>
