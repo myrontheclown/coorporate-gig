@@ -23,26 +23,23 @@ class WorkerCatalogLoad {
 /// user_profile.id`. Cooperative name lives in `public.cooperative_profile`
 /// via `worker_profile.cooperative_id`.
 ///
-/// All client modules (home map/list, search, discovery, admin, and any
-/// modules merged later) should go through this service so fetching stays
+/// All client modules (home map/list, search, discovery, admin, worker, and
+/// any modules merged later) should go through this service so fetching stays
 /// consistent.
 ///
 /// Robustness guarantees:
 ///  - Fetches rows with a plain `select('*')` — never relies on a fragile
 ///    nested FK join whose failure would hide real workers.
-///  - Names/profile image/cooperative are enriched in batched best-effort
+///  - Names / profile image / cooperative are enriched in batched best-effort
 ///    queries. A failing enrichment NEVER drops a worker; it only leaves the
 ///    worker with a safe fallback label ("Worker").
 class WorkerProfileService {
   static const String _tableName = 'worker_profile';
   static const String _skillsTableName = 'worker_skills';
-
-  static const String _selectQuery =
-      '*, user_profile:user_id(*), cooperative_profile:cooperative_id(*)';
-
-  /// Retrieves list of workers with user and cooperative profiles joined.
   static const String _userTable = 'user_profile';
   static const String _cooperativeTable = 'cooperative_profile';
+
+  // ── READ ──────────────────────────────────────────────────────────────
 
   /// Fetch worker rows and enrich them with their linked user_profile
   /// (full_name, profile_image) and cooperative_profile (name, logo_url).
@@ -51,8 +48,6 @@ class WorkerProfileService {
   ///  - [availabilityStatus]: 'available', 'on_duty', ... or null for all.
   ///  - [verificationStatus]: 'verified', 'pending', ... or null for all.
   ///  - [requiredCoordinates]: only rows with non-null latitude/longitude.
-  ///
-  /// Does not throw. Returns an empty list on failure/offline.
   static Future<List<WorkerProfile>> getWorkers({
     String? availabilityStatus,
     String? verificationStatus,
@@ -81,8 +76,6 @@ class WorkerProfileService {
     }
 
     try {
-      var query =
-          SupabaseService.client!.from(_tableName).select(_selectQuery);
       var query = SupabaseService.client!.from(_tableName).select('*');
 
       if (availabilityStatus != null &&
@@ -92,21 +85,8 @@ class WorkerProfileService {
           'availability_status',
           availabilityStatus.toLowerCase(),
         );
-      if (availabilityStatus != null &&
-          availabilityStatus.isNotEmpty &&
-          availabilityStatus != 'All') {
-        query = query.eq(
-          'availability_status',
-          availabilityStatus.toLowerCase(),
-        );
       }
 
-      if (verificationStatus != null &&
-          verificationStatus.isNotEmpty) {
-        query = query.eq(
-          'verification_status',
-          verificationStatus.toLowerCase(),
-        );
       if (verificationStatus != null && verificationStatus.isNotEmpty) {
         query = query.eq(
           'verification_status',
@@ -115,18 +95,13 @@ class WorkerProfileService {
       }
 
       if (requiredCoordinates) {
-        query = query.not('latitude', 'is', null).not('longitude', 'is', null);
+        query = query
+            .not('latitude', 'is', null)
+            .not('longitude', 'is', null);
       }
 
-      final response =
-          await query.order('created_at', ascending: false);
+      final response = await query.order('created_at', ascending: false);
 
-      return (response as List)
-          .map(
-            (json) => WorkerProfile.fromJson(
-              json as Map<String, dynamic>,
-            ),
-          )
       final rows = (response as List)
           .map((json) => WorkerProfile.fromJson(json as Map<String, dynamic>))
           .toList();
@@ -141,16 +116,15 @@ class WorkerProfileService {
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.getWorkers] Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.loadWorkers] Error: $e\n$stack',
         );
       }
       return const WorkerCatalogLoad([], failed: true);
     }
   }
 
-  /// Reusable UI catalog: real verified + available workers as [Worker]
-  /// models, ready to render in any list/grid. Falls back to nothing on
-  /// failure (caller decides its own empty/offline state).
+  /// Reusable UI catalog: real workers as [Worker] models, ready to render
+  /// in any list/grid. Falls back to nothing on failure.
   static Future<List<Worker>> workerCatalog({
     bool verifiedOnly = false,
     bool availableOnly = false,
@@ -163,9 +137,7 @@ class WorkerProfileService {
   }
 
   /// Retrieves a single worker by worker_profile id.
-  static Future<WorkerProfile?> getWorkerById(
-    String workerId,
-  ) async {
+  static Future<WorkerProfile?> getWorkerById(String workerId) async {
     if (!SupabaseService.isReady || workerId.isEmpty) return null;
 
     try {
@@ -177,47 +149,21 @@ class WorkerProfileService {
 
       if (response == null) return null;
 
-      return WorkerProfile.fromJson(response);
+      final worker = WorkerProfile.fromJson(response);
+      await _enrich([worker]);
+      return worker;
     } catch (e, stack) {
-      if (response != null) {
-        return WorkerProfile.fromJson(response);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(
-          '⚠️ [WorkerProfileService.getWorkerById] Primary query error: $e',
-        );
-      }
-    }
-
-    try {
-      final fallbackResponse = await SupabaseService.client!
-          .from(_tableName)
-          .select()
-          .eq('id', workerId)
-          .maybeSingle();
-
-      if (fallbackResponse != null) {
-        return WorkerProfile.fromJson(fallbackResponse);
-      }
-    } catch (e2) {
       if (kDebugMode) {
         print(
           '⚠️ [WorkerProfileService.getWorkerById] Error: $e\n$stack',
         );
-        print(
-          '⚠️ [WorkerProfileService.getWorkerById] Fallback query error: $e2',
-        );
       }
+      return null;
     }
-
-    return null;
   }
 
   /// Retrieves a worker profile by user_id.
-  static Future<WorkerProfile?> getWorkerByUserId(
-    String userId,
-  ) async {
+  static Future<WorkerProfile?> getWorkerByUserId(String userId) async {
     if (!SupabaseService.isReady || userId.isEmpty) return null;
 
     try {
@@ -229,54 +175,22 @@ class WorkerProfileService {
 
       if (response == null) return null;
 
-      return WorkerProfile.fromJson(response);
+      final worker = WorkerProfile.fromJson(response);
+      await _enrich([worker]);
+      return worker;
     } catch (e, stack) {
-      if (response != null) {
-        return WorkerProfile.fromJson(response);
-      }
-    } catch (e) {
-      if (kDebugMode) {
-        print(
-          '⚠️ [WorkerProfileService.getWorkerByUserId] Primary query error: $e',
-        );
-      }
-    }
-
-    try {
-      final fallbackResponse = await SupabaseService.client!
-          .from(_tableName)
-          .select()
-          .eq('user_id', userId)
-          .maybeSingle();
-
-      if (fallbackResponse != null) {
-        return WorkerProfile.fromJson(fallbackResponse);
-      }
-    } catch (e2) {
       if (kDebugMode) {
         print(
           '⚠️ [WorkerProfileService.getWorkerByUserId] Error: $e\n$stack',
         );
-        print(
-          '⚠️ [WorkerProfileService.getWorkerByUserId] Fallback query error: $e2',
-        );
       }
+      return null;
     }
-
-    return null;
   }
 
-  // ============================================================
-  // UPDATE WORKER PROFILE
-  // ============================================================
+  // ── UPDATE WORKER PROFILE ─────────────────────────────────────────────
 
-  /// Updates worker-specific information.
-  ///
-  /// This updates:
-  /// - Emergency contact name
-  /// - Emergency contact phone
-  /// - Service area
-  /// - Working area
+  /// Updates worker-specific information (emergency contact, service area).
   static Future<bool> updateWorkerDetails({
     required String workerId,
     required String emergencyContactName,
@@ -284,9 +198,7 @@ class WorkerProfileService {
     required String serviceArea,
     required String workingArea,
   }) async {
-    if (!SupabaseService.isReady || workerId.isEmpty) {
-      return false;
-    }
+    if (!SupabaseService.isReady || workerId.isEmpty) return false;
 
     try {
       await SupabaseService.client!
@@ -303,26 +215,18 @@ class WorkerProfileService {
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.updateWorkerDetails] '
-          'Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.updateWorkerDetails] Error: $e\n$stack',
         );
       }
-
       return false;
     }
   }
 
-  // ============================================================
-  // WORKER SKILLS
-  // ============================================================
+  // ── WORKER SKILLS ─────────────────────────────────────────────────────
 
   /// Gets all skills belonging to a worker.
-  static Future<List<String>> getWorkerSkills(
-    String workerId,
-  ) async {
-    if (!SupabaseService.isReady || workerId.isEmpty) {
-      return [];
-    }
+  static Future<List<String>> getWorkerSkills(String workerId) async {
+    if (!SupabaseService.isReady || workerId.isEmpty) return [];
 
     try {
       final response = await SupabaseService.client!
@@ -332,19 +236,15 @@ class WorkerProfileService {
           .order('created_at', ascending: true);
 
       return (response as List)
-          .map(
-            (item) => item['skill_name']?.toString() ?? '',
-          )
+          .map((item) => item['skill_name']?.toString() ?? '')
           .where((skill) => skill.isNotEmpty)
           .toList();
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.getWorkerSkills] '
-          'Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.getWorkerSkills] Error: $e\n$stack',
         );
       }
-
       return [];
     }
   }
@@ -354,9 +254,7 @@ class WorkerProfileService {
     required String workerId,
     required List<String> skills,
   }) async {
-    if (!SupabaseService.isReady || workerId.isEmpty) {
-      return false;
-    }
+    if (!SupabaseService.isReady || workerId.isEmpty) return false;
 
     try {
       final client = SupabaseService.client!;
@@ -374,19 +272,14 @@ class WorkerProfileService {
           .toSet()
           .toList();
 
-      // If there are no skills, we are done.
-      if (cleanedSkills.isEmpty) {
-        return true;
-      }
+      if (cleanedSkills.isEmpty) return true;
 
       // Insert the new skills.
       final rows = cleanedSkills
-          .map(
-            (skill) => {
-              'worker_id': workerId,
-              'skill_name': skill,
-            },
-          )
+          .map((skill) => {
+                'worker_id': workerId,
+                'skill_name': skill,
+              })
           .toList();
 
       await client.from(_skillsTableName).insert(rows);
@@ -395,82 +288,66 @@ class WorkerProfileService {
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.updateWorkerSkills] '
-          'Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.updateWorkerSkills] Error: $e\n$stack',
         );
       }
-
       return false;
     }
   }
 
-  // ============================================================
-  // AVAILABILITY
-  // ============================================================
+  // ── AVAILABILITY ──────────────────────────────────────────────────────
 
-  /// Updates worker availability status.
+  /// Updates worker availability status ('available', 'on_duty', 'off_duty', 'busy').
   static Future<bool> updateAvailability(
     String workerId,
     String status,
   ) async {
-    if (!SupabaseService.isReady || workerId.isEmpty) {
-      return false;
-    }
+    if (!SupabaseService.isReady || workerId.isEmpty) return false;
 
     try {
       await SupabaseService.client!
           .from(_tableName)
-          .update({
-            'availability_status': status,
-          })
+          .update({'availability_status': status})
           .eq('id', workerId);
 
       return true;
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.updateAvailability] '
-          'Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.updateAvailability] Error: $e\n$stack',
         );
       }
-
       return false;
     }
   }
 
-  // ============================================================
-  // VERIFICATION
-  // ============================================================
+  // ── VERIFICATION ──────────────────────────────────────────────────────
 
-  /// Updates worker verification status.
+  /// Updates worker verification status ('verified', 'pending', 'rejected').
   static Future<bool> updateVerification(
     String workerId,
     String status,
   ) async {
-    if (!SupabaseService.isReady || workerId.isEmpty) {
-      return false;
-    }
+    if (!SupabaseService.isReady || workerId.isEmpty) return false;
 
     try {
       await SupabaseService.client!
           .from(_tableName)
-          .update({
-            'verification_status': status,
-          })
+          .update({'verification_status': status})
           .eq('id', workerId);
 
       return true;
     } catch (e, stack) {
       if (kDebugMode) {
         print(
-          '⚠️ [WorkerProfileService.updateVerification] '
-          'Error: $e\n$stack',
+          '⚠️ [WorkerProfileService.updateVerification] Error: $e\n$stack',
         );
       }
-
       return false;
     }
   }
+
+  // ── ENRICHMENT (internal) ─────────────────────────────────────────────
 
   /// Best-effort: attach real names/images/cooperative from the linked
   /// profiles. Uses one batched query per related table. Never throws and
