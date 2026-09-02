@@ -131,6 +131,11 @@ class JobService {
   }
 
   /// Creates a new job record.
+  ///
+  /// The insert acknowledges the row with a plain `select('*')` (no nested
+  /// joins). This keeps creation decoupled from the fragile joined select used
+  /// for display: if the joined tables are unreadable, the job is STILL
+  /// created and acknowledged instead of being misreported as failed.
   static Future<Job?> createJob(Job job) async {
     if (!SupabaseService.isReady) return null;
 
@@ -143,7 +148,7 @@ class JobService {
       final response = await SupabaseService.client!
           .from(_tableName)
           .insert(data)
-          .select(_selectQuery)
+          .select('*')
           .single();
 
       return Job.fromJson(response);
