@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../models/cooperative_profile.dart';
 import '../models/user_profile.dart';
 import '../models/worker.dart';
@@ -93,9 +94,7 @@ class WorkerProfileService {
       }
 
       if (requiredCoordinates) {
-        query = query
-            .not('latitude', 'is', null)
-            .not('longitude', 'is', null);
+        query = query.not('latitude', 'is', null).not('longitude', 'is', null);
       }
 
       final response = await query.order('created_at', ascending: false);
@@ -144,16 +143,36 @@ class WorkerProfileService {
           .eq('id', workerId)
           .maybeSingle();
 
-      if (response == null) return null;
-      final worker = WorkerProfile.fromJson(response);
-      await _enrich([worker]);
-      return worker;
-    } catch (e, stack) {
-      if (kDebugMode) {
-        print('⚠️ [WorkerProfileService.getWorkerById] Error: $e\n$stack');
+      if (response != null) {
+        return WorkerProfile.fromJson(response);
       }
-      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          '⚠️ [WorkerProfileService.getWorkerById] Primary query error: $e',
+        );
+      }
     }
+
+    try {
+      final fallbackResponse = await SupabaseService.client!
+          .from(_tableName)
+          .select()
+          .eq('id', workerId)
+          .maybeSingle();
+
+      if (fallbackResponse != null) {
+        return WorkerProfile.fromJson(fallbackResponse);
+      }
+    } catch (e2) {
+      if (kDebugMode) {
+        print(
+          '⚠️ [WorkerProfileService.getWorkerById] Fallback query error: $e2',
+        );
+      }
+    }
+
+    return null;
   }
 
   /// Retrieves a worker profile by user_id.
@@ -167,16 +186,36 @@ class WorkerProfileService {
           .eq('user_id', userId)
           .maybeSingle();
 
-      if (response == null) return null;
-      final worker = WorkerProfile.fromJson(response);
-      await _enrich([worker]);
-      return worker;
-    } catch (e, stack) {
-      if (kDebugMode) {
-        print('⚠️ [WorkerProfileService.getWorkerByUserId] Error: $e\n$stack');
+      if (response != null) {
+        return WorkerProfile.fromJson(response);
       }
-      return null;
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+          '⚠️ [WorkerProfileService.getWorkerByUserId] Primary query error: $e',
+        );
+      }
     }
+
+    try {
+      final fallbackResponse = await SupabaseService.client!
+          .from(_tableName)
+          .select()
+          .eq('user_id', userId)
+          .maybeSingle();
+
+      if (fallbackResponse != null) {
+        return WorkerProfile.fromJson(fallbackResponse);
+      }
+    } catch (e2) {
+      if (kDebugMode) {
+        print(
+          '⚠️ [WorkerProfileService.getWorkerByUserId] Fallback query error: $e2',
+        );
+      }
+    }
+
+    return null;
   }
 
   /// Updates worker availability status ('available', 'on_duty', 'off_duty', 'busy').
@@ -247,8 +286,10 @@ class WorkerProfileService {
         }
       } catch (e, stack) {
         if (kDebugMode) {
-          print('⚠️ [WorkerProfileService] user_profile enrichment failed '
-              '(workers still returned): $e\n$stack');
+          print(
+            '⚠️ [WorkerProfileService] user_profile enrichment failed '
+            '(workers still returned): $e\n$stack',
+          );
         }
       }
     }
@@ -267,8 +308,10 @@ class WorkerProfileService {
         }
       } catch (e, stack) {
         if (kDebugMode) {
-          print('⚠️ [WorkerProfileService] cooperative_profile enrichment '
-              'failed (workers still returned): $e\n$stack');
+          print(
+            '⚠️ [WorkerProfileService] cooperative_profile enrichment '
+            'failed (workers still returned): $e\n$stack',
+          );
         }
       }
     }

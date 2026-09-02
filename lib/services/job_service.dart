@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import '../models/job.dart';
 import 'supabase_service.dart';
+import 'worker_profile_service.dart';
 
 class JobService {
   static const String _tableName = 'jobs';
@@ -18,14 +19,58 @@ class JobService {
           .eq('customer_id', customerId)
           .order('created_at', ascending: false);
 
-      return (response as List)
+      final jobs = (response as List)
           .map((json) => Job.fromJson(json as Map<String, dynamic>))
           .toList();
-    } catch (e, stack) {
-      if (kDebugMode) {
-        print('⚠️ [JobService.getJobsForCustomer] Error: $e\n$stack');
+
+      for (var i = 0; i < jobs.length; i++) {
+        if (jobs[i].workerId != null &&
+            jobs[i].workerId!.isNotEmpty &&
+            (jobs[i].workerProfile == null ||
+                jobs[i].workerProfile!.userProfile == null)) {
+          final wp =
+              await WorkerProfileService.getWorkerById(jobs[i].workerId!);
+          if (wp != null) {
+            jobs[i] = jobs[i].copyWith(workerProfile: wp);
+          }
+        }
       }
-      return [];
+
+      return jobs;
+    } catch (e) {
+      if (kDebugMode) {
+        print(
+            '⚠️ [JobService.getJobsForCustomer] Primary query failed: $e. Trying fallback query...');
+      }
+      try {
+        final response = await SupabaseService.client!
+            .from(_tableName)
+            .select()
+            .eq('customer_id', customerId)
+            .order('created_at', ascending: false);
+
+        final jobs = (response as List)
+            .map((json) => Job.fromJson(json as Map<String, dynamic>))
+            .toList();
+
+        for (var i = 0; i < jobs.length; i++) {
+          if (jobs[i].workerId != null && jobs[i].workerId!.isNotEmpty) {
+            final wp =
+                await WorkerProfileService.getWorkerById(jobs[i].workerId!);
+            if (wp != null) {
+              jobs[i] = jobs[i].copyWith(workerProfile: wp);
+            }
+          }
+        }
+
+        return jobs;
+      } catch (e2, stack2) {
+        if (kDebugMode) {
+          print(
+              '⚠️ [JobService.getJobsForCustomer] Fallback query error: $e2\n$stack2');
+        }
+        return [];
+      }
     }
   }
 

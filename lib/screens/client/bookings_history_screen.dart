@@ -3,6 +3,7 @@ import '../../data/app_state.dart';
 import '../../data/mock_models.dart';
 import '../../services/auth_service.dart';
 import '../../services/job_service.dart';
+import '../../services/supabase_service.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
 import '../../widgets/status_badge.dart';
@@ -18,49 +19,105 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
   int _tab = 0;
   List<Booking> _supabaseBookings = [];
   bool _isLoading = false;
+  bool _hasFetched = false;
 
   @override
   void initState() {
     super.initState();
+    AppState.currentUserProfile.addListener(_onProfileChanged);
     _loadBookings();
   }
 
-  Future<void> _loadBookings() async {
-    final customerId = AuthService.currentUserId ??
-        AppState.currentUserProfile.value?.id ??
-        '';
+  @override
+  void dispose() {
+    AppState.currentUserProfile.removeListener(_onProfileChanged);
+    super.dispose();
+  }
 
-    if (customerId.isEmpty) return;
+  void _onProfileChanged() {
+    if (mounted) {
+      _loadBookings();
+    }
+  }
+
+  Future<void> _loadBookings() async {
+    final isAuthenticated =
+        SupabaseService.isReady && AuthService.currentUser != null;
+
+    if (!isAuthenticated) {
+      if (mounted) {
+        setState(() {
+          _hasFetched = true;
+          _supabaseBookings = MockModels.bookings;
+        });
+      }
+      return;
+    }
+
+    final customerId = AuthService.currentUser!.id;
 
     setState(() => _isLoading = true);
     try {
       final jobs = await JobService.getJobsForCustomer(customerId);
-      if (jobs.isNotEmpty && mounted) {
+      if (mounted) {
         setState(() {
+          _hasFetched = true;
           _supabaseBookings = jobs.map((j) => j.toBooking()).toList();
         });
       }
     } catch (_) {
-      // Fallback seamlessly
+      if (mounted) {
+        setState(() {
+          _hasFetched = true;
+        });
+      }
     } finally {
       if (mounted) setState(() => _isLoading = false);
     }
   }
 
   List<Booking> get _currentList {
-    final all = _supabaseBookings.isNotEmpty
+    final isAuthenticated =
+        SupabaseService.isReady && AuthService.currentUser != null;
+    final all = isAuthenticated
         ? _supabaseBookings
-        : MockModels.bookings;
+        : (_supabaseBookings.isNotEmpty
+            ? _supabaseBookings
+            : MockModels.bookings);
 
     switch (_tab) {
       case 0:
-        return all.where((b) => b.status == 'active').toList();
-      case 1:
+        // Active tab: shows active, pending, and in-progress jobs given by client
         return all
-            .where((b) => b.status == 'confirmed' || b.status == 'pending')
+            .where((b) =>
+                b.status == 'active' ||
+                b.status == 'pending' ||
+                b.status == 'in_progress')
+            .toList();
+      case 1:
+        // Upcoming tab: confirmed / accepted scheduled jobs
+        return all
+            .where((b) =>
+                b.status == 'confirmed' ||
+                b.status == 'accepted')
             .toList();
       default:
-        return all.where((b) => b.status == 'completed').toList();
+        // History tab: completed and cancelled jobs
+        return all
+            .where((b) =>
+                b.status == 'completed' || b.status == 'cancelled')
+            .toList();
+    }
+  }
+
+  String get _emptyMessage {
+    switch (_tab) {
+      case 0:
+        return 'No active or pending bookings';
+      case 1:
+        return 'No upcoming bookings';
+      default:
+        return 'No completed booking history';
     }
   }
 
@@ -72,6 +129,11 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
       appBar: AppBar(
         title: const Text('My Bookings'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            tooltip: 'Refresh',
+            onPressed: _loadBookings,
+          ),
           IconButton(
             icon: const Icon(Icons.picture_as_pdf_outlined),
             tooltip: 'Export invoices',
@@ -92,22 +154,47 @@ class _BookingsHistoryScreenState extends State<BookingsHistoryScreen> {
             ),
           ),
           Expanded(
-            child: list.isEmpty && _isLoading
+            child: _isLoading && !_hasFetched
                 ? const Center(child: CircularProgressIndicator())
-                : list.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No bookings here',
-                          style: TextStyle(color: AppColors.textMuted),
-                        ),
-                      )
-                    : ListView.builder(
-                        padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
-                        itemCount: list.length,
-                        itemBuilder: (context, i) {
-                          return _BookingCard(booking: list[i]);
-                        },
-                      ),
+                : RefreshIndicator(
+                    onRefresh: _loadBookings,
+                    child: list.isEmpty
+                        ? ListView(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            children: [
+                              const SizedBox(height: 100),
+                              Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(
+                                      Icons.calendar_month_outlined,
+                                      size: 52,
+                                      color: AppColors.textMuted,
+                                    ),
+                                    const SizedBox(height: 14),
+                                    Text(
+                                      _emptyMessage,
+                                      style: const TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textSecondary,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          )
+                        : ListView.builder(
+                            physics: const AlwaysScrollableScrollPhysics(),
+                            padding: const EdgeInsets.fromLTRB(16, 4, 16, 20),
+                            itemCount: list.length,
+                            itemBuilder: (context, i) {
+                              return _BookingCard(booking: list[i]);
+                            },
+                          ),
+                  ),
           ),
         ],
       ),
