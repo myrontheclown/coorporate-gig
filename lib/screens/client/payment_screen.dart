@@ -290,9 +290,12 @@ class _PaymentSuccess extends StatelessWidget {
             style: TextStyle(color: AppColors.textSecondary),
           ),
           const SizedBox(height: 24),
-          ElevatedButton(
-            onPressed: onDone,
-            child: const Text('Done'),
+          const Text(
+            'Redirecting to feedback...',
+            style: TextStyle(
+              fontSize: 12,
+              color: AppColors.textMuted,
+            ),
           ),
         ],
       ),
