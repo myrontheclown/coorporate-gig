@@ -177,26 +177,14 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () => Nav.push(
-                      context,
-                      RequestServicePhotosScreen(worker: widget.worker),
-                    ),
+                    onPressed: () => _navigateToPhotos(context),
                     child: const Text('Add Photos'),
                   ),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: ElevatedButton(
-                    onPressed: () {
-                      AppState.currentBookingStatus.value = 'awaiting_otp';
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) =>
-                              RequestServicePhotosScreen(worker: widget.worker),
-                        ),
-                      );
-                    },
+                    onPressed: () => _navigateToPhotos(context),
                     child: const Text('Continue'),
                   ),
                 ),
@@ -205,6 +193,20 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _navigateToPhotos(BuildContext context) {
+    // Persist form values so PhotosScreen / job creation can read them.
+    AppState.pendingServiceType = _serviceType;
+    AppState.pendingDescription = _descController.text.trim();
+    AppState.pendingAddress = _addressController.text.trim();
+    AppState.pendingUrgency = _urgency;
+    AppState.currentService.value = widget.worker.profession;
+
+    Nav.push(
+      context,
+      RequestServicePhotosScreen(worker: widget.worker),
     );
   }
 }
