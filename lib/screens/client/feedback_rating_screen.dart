@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
+import '../../models/review.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
+import '../../services/auth_service.dart';
+import '../../services/review_service.dart';
+import '../../services/worker_profile_service.dart';
 import '../../theme/app_theme.dart';
 
 class FeedbackRatingScreen extends StatefulWidget {
@@ -17,11 +21,77 @@ class _FeedbackRatingScreenState extends State<FeedbackRatingScreen> {
   final _comment = TextEditingController();
   bool _submitted = false;
   bool _tipWorker = false;
+  bool _submitting = false;
 
   @override
   void dispose() {
     _comment.dispose();
     super.dispose();
+  }
+
+  Future<void> _submitReview() async {
+    if (_submitting || _rating == 0) return;
+
+    final customerId = AuthService.currentUserId ??
+        AppState.currentUserProfile.value?.id ??
+        '';
+
+    if (customerId.isEmpty) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please log in to submit a review.')),
+      );
+      return;
+    }
+
+    setState(() => _submitting = true);
+
+    // Look up the real worker_profile UUID from Supabase.
+    // Mock workers have short IDs like 'w1'; real workers have 36-char UUIDs.
+    String? resolvedWorkerId;
+    if (widget.worker.id.length == 36) {
+      resolvedWorkerId = widget.worker.id;
+    } else {
+      try {
+        final profiles = await WorkerProfileService.getWorkers();
+        for (final p in profiles) {
+          if (p.userProfile?.fullName == widget.worker.name) {
+            resolvedWorkerId = p.id;
+            break;
+          }
+        }
+      } catch (_) {
+        // Ignore lookup errors — review will be created without worker_id
+      }
+    }
+
+    final review = Review(
+      id: '',
+      customerId: customerId,
+      workerId: resolvedWorkerId,
+      rating: _rating,
+      comment: _comment.text.trim(),
+      tipWorker: _tipWorker,
+    );
+
+    final created = await ReviewService.createReview(review);
+
+    if (!mounted) return;
+
+    setState(() {
+      _submitting = false;
+      _submitted = created != null;
+    });
+
+    AppState.serviceCompleted.value = true;
+
+    if (created == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to submit review. Please try again.'),
+        ),
+      );
+    }
   }
 
   @override
@@ -134,15 +204,18 @@ class _FeedbackRatingScreenState extends State<FeedbackRatingScreen> {
                     ),
                   ),
                   const SizedBox(height: 24),
-                  ElevatedButton(
-                    onPressed: _rating == 0
-                        ? null
-                        : () {
-                            setState(() => _submitted = true);
-                            AppState.serviceCompleted.value = true;
-                          },
-                    child: const Text('Submit Review'),
-                  ),
+                  if (_submitting)
+                    const Center(
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child: CircularProgressIndicator(),
+                      ),
+                    )
+                  else
+                    ElevatedButton(
+                      onPressed: _rating == 0 ? null : _submitReview,
+                      child: const Text('Submit Review'),
+                    ),
                 ],
               ),
             ),
