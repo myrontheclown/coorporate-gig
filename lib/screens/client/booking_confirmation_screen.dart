@@ -106,7 +106,8 @@ class BookingConfirmationScreen extends StatelessWidget {
                     _DetailRow(
                       icon: Icons.location_on_outlined,
                       label: 'Address',
-                      value: 'Flat 402, Royal Residency, Grant Road, Mumbai',
+                      value: AppState.selectedLocation.value?.address ??
+                          'Flat 402, Royal Residency, Grant Road, Mumbai',
                     ),
                   ],
                 ),

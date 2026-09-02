@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import '../../data/app_state.dart';
+import '../../models/selected_location.dart';
 import '../../models/worker.dart';
 import '../../navigation/nav.dart';
 import '../../theme/app_theme.dart';
 import '../../widgets/circle_avatar.dart';
 import '../../widgets/status_badge.dart';
+import 'location_picker_screen.dart';
 import 'request_service_photos_screen.dart';
 
 class RequestServiceScreen extends StatefulWidget {
@@ -19,8 +21,35 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
   String _urgency = 'Normal';
   String _serviceType = 'Repair';
   final _descController = TextEditingController();
-  final _addressController =
-      TextEditingController(text: 'Flat 402, Royal Residency, Grant Road, Mumbai');
+  late final TextEditingController _addressController;
+
+  @override
+  void initState() {
+    super.initState();
+    _addressController = TextEditingController(
+      text: AppState.selectedLocation.value?.address ??
+          'Flat 402, Royal Residency, Grant Road, Mumbai',
+    );
+  }
+
+  @override
+  void dispose() {
+    _descController.dispose();
+    _addressController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _openLocationPicker() async {
+    final result = await Nav.pushForResult<SelectedLocation>(
+      context,
+      LocationPickerScreen(initialLocation: AppState.selectedLocation.value),
+    );
+    if (result == null || !mounted) return;
+    setState(() {
+      AppState.selectedLocation.value = result;
+      _addressController.text = result.address;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -104,9 +133,17 @@ class _RequestServiceScreenState extends State<RequestServiceScreen> {
             const SizedBox(height: 8),
             TextField(
               controller: _addressController,
+              readOnly: true,
+              onTap: _openLocationPicker,
               decoration: const InputDecoration(
                 prefixIcon: Icon(Icons.location_on_outlined),
+                suffixIcon: Icon(Icons.map_outlined),
               ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              'Tap to choose or search your service location on the map.',
+              style: AppTextStyles.muted,
             ),
             const SizedBox(height: 20),
             const _Label('Urgency'),

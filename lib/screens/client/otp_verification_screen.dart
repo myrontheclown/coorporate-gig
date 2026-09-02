@@ -66,6 +66,9 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
     String? createdJobId;
 
     if (customerId.isNotEmpty) {
+      // TODO(backend): persist AppState.selectedLocation (address, latitude,
+      // longitude, place_id) here once the jobs schema gains service-location
+      // columns. The picker flow already keeps the full SelectedLocation.
       final newJob = Job(
         id: '',
         workerId: widget.worker.id.length == 36 ? widget.worker.id : null,

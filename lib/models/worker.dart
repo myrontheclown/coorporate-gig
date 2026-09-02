@@ -22,6 +22,11 @@ class Worker {
   final bool available;
   final bool bestMatch;
 
+  /// Optional geographic coordinates, populated when the worker profile
+  /// carries them (used by map markers).
+  final double? latitude;
+  final double? longitude;
+
   const Worker({
     required this.id,
     required this.name,
@@ -43,7 +48,12 @@ class Worker {
     this.skillVerified = false,
     this.available = true,
     this.bestMatch = false,
+    this.latitude,
+    this.longitude,
   });
 
   String get ratingLabel => rating.toStringAsFixed(1);
+
+  /// True when the worker can be placed on the map.
+  bool get hasCoordinates => latitude != null && longitude != null;
 }

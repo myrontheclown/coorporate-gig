@@ -18,6 +18,8 @@ void main() {
         city: 'Mumbai',
         state: 'Maharashtra',
         pincode: '400001',
+        latitude: 19.076,
+        longitude: 72.8777,
       );
 
       final json = user.toJson();
@@ -28,6 +30,19 @@ void main() {
       expect(fromJson.email, user.email);
       expect(fromJson.role, 'customer');
       expect(fromJson.city, 'Mumbai');
+      expect(fromJson.latitude, 19.076);
+      expect(fromJson.longitude, 72.8777);
+    });
+
+    test('UserProfile tolerates missing latitude/longitude', () {
+      final fromJson = UserProfile.fromJson({
+        'id': '11111111-1111-1111-1111-111111111111',
+        'latitude': null,
+        'longitude': null,
+      });
+      expect(fromJson.latitude, isNull);
+      expect(fromJson.longitude, isNull);
+      expect(fromJson.toJson()['latitude'], isNull);
     });
 
     test('CooperativeProfile json serialization', () {

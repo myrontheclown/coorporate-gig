@@ -17,6 +17,14 @@ class Nav {
     );
   }
 
+  /// Pushes a screen and awaits its pop result (e.g. a [SelectedLocation]).
+  static Future<T?> pushForResult<T>(BuildContext context, Widget screen) {
+    return Navigator.push<T>(
+      context,
+      MaterialPageRoute<T>(builder: (_) => screen),
+    );
+  }
+
   static void pushReplacement(BuildContext context, Widget screen) {
     Navigator.pushReplacement(
       context,

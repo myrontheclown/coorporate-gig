@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import '../models/selected_location.dart';
 import '../models/user_profile.dart';
 import '../models/worker.dart';
 import '../models/worker_profile.dart';
@@ -7,6 +8,10 @@ class AppState {
   static final ValueNotifier<Worker?> selectedWorker =
       ValueNotifier(null);
   static final ValueNotifier<String?> currentService =
+      ValueNotifier(null);
+
+  /// Location chosen through the location picker for the current request.
+  static final ValueNotifier<SelectedLocation?> selectedLocation =
       ValueNotifier(null);
   static final ValueNotifier<String> currentBookingStatus =
       ValueNotifier('none'); // none, active, awaiting_otp, completed, paid
@@ -41,6 +46,7 @@ class AppState {
     _activeWorker = null;
     selectedWorker.value = null;
     currentService.value = null;
+    selectedLocation.value = null;
     currentBookingStatus.value = 'none';
     serviceCompleted.value = false;
     paymentMade.value = false;

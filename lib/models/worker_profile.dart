@@ -111,6 +111,7 @@ class WorkerProfile {
     int reviews = 42,
     int jobsCompleted = 24,
     double pricePerHour = 350,
+    double? distanceKm,
     List<String>? skills,
   }) {
     final name = userProfile?.fullName.isNotEmpty == true
@@ -136,7 +137,7 @@ class WorkerProfile {
       rating: rating,
       reviews: reviews,
       jobsCompleted: jobsCompleted,
-      distanceKm: 1.5,
+      distanceKm: distanceKm ?? 1.5,
       pricePerHour: pricePerHour,
       avatarInitials: initials.isNotEmpty ? initials : 'WK',
       color: AppColors.primary,
@@ -147,6 +148,8 @@ class WorkerProfile {
       verified: isVerified,
       skillVerified: isVerified,
       available: isAvailable,
+      latitude: latitude,
+      longitude: longitude,
     );
   }
 }

@@ -10,6 +10,10 @@ class UserProfile {
   final String state;
   final String pincode;
   final String profileImage;
+
+  /// Persisted last-known client location (double precision, nullable).
+  final double? latitude;
+  final double? longitude;
   final DateTime? createdAt;
 
   const UserProfile({
@@ -23,6 +27,8 @@ class UserProfile {
     this.state = '',
     this.pincode = '',
     this.profileImage = '',
+    this.latitude,
+    this.longitude,
     this.createdAt,
   });
 
@@ -38,6 +44,12 @@ class UserProfile {
       state: json['state'] as String? ?? '',
       pincode: json['pincode'] as String? ?? '',
       profileImage: json['profile_image'] as String? ?? '',
+      latitude: json['latitude'] is num
+          ? (json['latitude'] as num).toDouble()
+          : double.tryParse(json['latitude']?.toString() ?? ''),
+      longitude: json['longitude'] is num
+          ? (json['longitude'] as num).toDouble()
+          : double.tryParse(json['longitude']?.toString() ?? ''),
       createdAt: json['created_at'] != null
           ? DateTime.tryParse(json['created_at'].toString())
           : null,
@@ -56,6 +68,8 @@ class UserProfile {
       'state': state,
       'pincode': pincode,
       'profile_image': profileImage,
+      'latitude': latitude,
+      'longitude': longitude,
       if (createdAt != null) 'created_at': createdAt!.toIso8601String(),
     };
   }
@@ -71,6 +85,8 @@ class UserProfile {
     String? state,
     String? pincode,
     String? profileImage,
+    double? latitude,
+    double? longitude,
     DateTime? createdAt,
   }) {
     return UserProfile(
@@ -84,6 +100,8 @@ class UserProfile {
       state: state ?? this.state,
       pincode: pincode ?? this.pincode,
       profileImage: profileImage ?? this.profileImage,
+      latitude: latitude ?? this.latitude,
+      longitude: longitude ?? this.longitude,
       createdAt: createdAt ?? this.createdAt,
     );
   }

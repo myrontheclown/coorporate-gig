@@ -40,6 +40,8 @@ class MockData {
       verified: true,
       skillVerified: true,
       bestMatch: true,
+      latitude: 18.9625,
+      longitude: 72.8175,
     ),
     Worker(
       id: 'w2',
@@ -60,6 +62,8 @@ class MockData {
       cooperative: coopName,
       verified: true,
       skillVerified: true,
+      latitude: 18.9555,
+      longitude: 72.8090,
     ),
     Worker(
       id: 'w3',
@@ -80,6 +84,8 @@ class MockData {
       cooperative: 'Dadar Electricians Union',
       verified: true,
       skillVerified: true,
+      latitude: 18.9640,
+      longitude: 72.8220,
     ),
     Worker(
       id: 'w4',
@@ -99,6 +105,8 @@ class MockData {
       description: 'Master carpenter with experience in custom furniture, cabinet making, and furniture repairs.',
       cooperative: coopName,
       verified: false,
+      latitude: 18.9430,
+      longitude: 72.8260,
     ),
     Worker(
       id: 'w5',
@@ -118,6 +126,8 @@ class MockData {
       description: 'Professional painter skilled in interior and exterior painting, wall textures, and waterproofing.',
       cooperative: coopName,
       verified: true,
+      latitude: 18.9700,
+      longitude: 72.8190,
     ),
     Worker(
       id: 'w6',
@@ -138,6 +148,8 @@ class MockData {
       cooperative: 'Powai AC Technicians Coop',
       verified: true,
       skillVerified: true,
+      latitude: 18.9500,
+      longitude: 72.8330,
     ),
     Worker(
       id: 'w7',
@@ -157,6 +169,8 @@ class MockData {
       description: 'Home chef specializing in North and South Indian cuisine, bakery items, and customized diet meals.',
       cooperative: coopName,
       verified: true,
+      latitude: 18.9380,
+      longitude: 72.8150,
     ),
     Worker(
       id: 'w8',
@@ -175,6 +189,8 @@ class MockData {
       experience: '4 years',
       description: 'Professional packer and mover. Handles household shifting, packing, loading, and furniture assembly.',
       cooperative: coopName,
+      latitude: 18.9320,
+      longitude: 72.8060,
     ),
     Worker(
       id: 'w9',
@@ -194,6 +210,8 @@ class MockData {
       description: 'Experienced gardener for lawn care, planting, pruning, and small-scale landscaping.',
       cooperative: coopName,
       verified: true,
+      latitude: 18.9660,
+      longitude: 72.8090,
     ),
     Worker(
       id: 'w10',
@@ -213,6 +231,8 @@ class MockData {
       description: 'Trained security personnel with experience in patrolling, CCTV monitoring, and access control.',
       cooperative: coopName,
       verified: true,
+      latitude: 18.9520,
+      longitude: 72.8400,
     ),
     Worker(
       id: 'w11',
@@ -232,6 +252,8 @@ class MockData {
       description: 'Compassionate and thorough housekeeping professional with elder-care experience.',
       cooperative: coopName,
       verified: true,
+      latitude: 18.9450,
+      longitude: 72.8000,
     ),
     Worker(
       id: 'w12',
@@ -251,6 +273,8 @@ class MockData {
       description: 'Residential electrician skilled in wiring, appliance setup, and fixtures.',
       cooperative: 'Ghatkopar Electrician Coop',
       verified: true,
+      latitude: 18.9680,
+      longitude: 72.8300,
     ),
   ];
 

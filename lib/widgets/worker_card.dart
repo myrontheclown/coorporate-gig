@@ -102,7 +102,9 @@ class WorkerCard extends StatelessWidget {
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
-                                '${worker.experience} exp • ${worker.distanceKm.toStringAsFixed(1)} km',
+                                worker.distanceKm > 0
+                                    ? '${worker.experience} exp • ${worker.distanceKm.toStringAsFixed(1)} km'
+                                    : '${worker.experience} exp',
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
                                 style: const TextStyle(
