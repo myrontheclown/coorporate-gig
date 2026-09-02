@@ -24,6 +24,9 @@ class _MatchingEngineScreenState extends State<MatchingEngineScreen> {
   @override
   void initState() {
     super.initState();
+    // The cosmetic animation shows similar mock workers, but the ACTUAL
+    // engaged worker is always the real one the customer selected — its UUID
+    // must carry through to the job, transaction, and review records.
     _matches = MockData.workers.where((w) =>
         w.profession.toLowerCase() ==
         widget.worker.profession.toLowerCase()).toList();
@@ -38,7 +41,8 @@ class _MatchingEngineScreenState extends State<MatchingEngineScreen> {
       setState(() => _step = i);
     }
     setState(() {
-      _finalMatch = _matches.isNotEmpty ? _matches.first : widget.worker;
+      // Keep the real worker identity (id, coordinates, profile) throughout.
+      _finalMatch = widget.worker;
     });
     AppState.activeWorker = _finalMatch;
     await Future.delayed(const Duration(milliseconds: 800));

@@ -46,23 +46,44 @@ class _FeedbackRatingScreenState extends State<FeedbackRatingScreen> {
 
     setState(() => _submitting = true);
 
-    // Look up the real worker_profile UUID from Supabase.
-    // Mock workers have short IDs like 'w1'; real workers have 36-char UUIDs.
+    // Resolve the real worker_profile UUID from Supabase so the review always
+    // carries a valid worker_id (reviews.worker_id is NOT NULL in the schema).
+    // Real workers keep their 36-char UUID; mock/short ids are resolved by
+    // matching the currently selected/navigated worker by name or id.
     String? resolvedWorkerId;
     if (widget.worker.id.length == 36) {
       resolvedWorkerId = widget.worker.id;
     } else {
-      try {
-        final profiles = await WorkerProfileService.getWorkers();
-        for (final p in profiles) {
-          if (p.userProfile?.fullName == widget.worker.name) {
-            resolvedWorkerId = p.id;
-            break;
+      final active = AppState.activeWorker;
+      if (active != null && active.id.length == 36) {
+        resolvedWorkerId = active.id;
+      } else {
+        try {
+          final profiles = await WorkerProfileService.getWorkers();
+          for (final p in profiles) {
+            if (p.userProfile?.fullName == widget.worker.name ||
+                p.id == widget.worker.id) {
+              resolvedWorkerId = p.id;
+              break;
+            }
           }
+        } catch (_) {
+          // Ignore lookup errors — handled by the check below.
         }
-      } catch (_) {
-        // Ignore lookup errors — review will be created without worker_id
       }
+    }
+
+    if (resolvedWorkerId == null || resolvedWorkerId.isEmpty) {
+      if (!mounted) return;
+      setState(() => _submitting = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text(
+            'Could not identify the worker. Please try again from the service list.',
+          ),
+        ),
+      );
+      return;
     }
 
     final review = Review(
